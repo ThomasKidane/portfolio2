@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: white;
+    color: rgb(17 24 39);
+    font-family: Georgia, serif;
+  }
+}
+
+@layer components {
+  .pixel-title {
+    font-family: "Press Start 2P", monospace;
+    color: #4169E1;
+    letter-spacing: 0.1em;
+    line-height: 1.5;
+  }
+  
+  .dotted-separator {
+    border-top: 2px dotted rgb(209 213 219);
+  }
+  
+  .serif-text {
+    font-family: Georgia, serif;
+    line-height: 1.7;
+    color: #000;
+  }
+}

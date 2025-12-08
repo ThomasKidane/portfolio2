@@ -9,6 +9,7 @@ export default {
       fontFamily: {
         'pixel': ['"Press Start 2P"', 'monospace'],
         'serif': ['Georgia', 'serif'],
+        'mono': ['"JetBrains Mono"', 'monospace'],
       },
       colors: {
         primary: {

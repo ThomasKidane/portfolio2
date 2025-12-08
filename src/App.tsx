@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { Navigation } from './components/Navigation'
 import { Home } from './pages/Home'
 import { About } from './pages/About'
@@ -24,6 +24,7 @@ export default function App() {
           <Route path="/blog/runahead-execution" element={<RunaheadBlogPost />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
     </div>

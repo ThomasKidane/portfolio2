@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,6 +6,11 @@
   body {
     background-color: white;
     color: rgb(17 24 39);
+    font-family: 'Space Mono', 'IBM Plex Mono', monospace;
+  }
+  
+  /* For serif text sections */
+  .serif-body {
     font-family: Georgia, serif;
   }
 }
@@ -18,6 +21,11 @@
     color: #4169E1;
     letter-spacing: 0.1em;
     line-height: 1.5;
+  }
+  
+  .departure-mono {
+    font-family: 'Space Mono', 'IBM Plex Mono', monospace;
+    letter-spacing: -0.02em;
   }
   
   .dotted-separator {

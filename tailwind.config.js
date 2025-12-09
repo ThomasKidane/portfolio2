@@ -10,6 +10,9 @@ export default {
         'pixel': ['"Press Start 2P"', 'monospace'],
         'serif': ['Georgia', 'serif'],
         'mono': ['"JetBrains Mono"', 'monospace'],
+        'departure': ['"Space Mono"', '"IBM Plex Mono"', 'monospace'],
+        'space': ['"Space Mono"', 'monospace'],
+        'ibm': ['"IBM Plex Mono"', 'monospace'],
       },
       colors: {
         primary: {

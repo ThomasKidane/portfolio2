@@ -45,7 +45,7 @@ export function Blog() {
                     lineHeight: '1.3'
                   }}
                 >
-                  Runahead Execution: Turning Memory Stalls into Computational Opportunities
+                  Runahead Execution: Turning Memory Level Parallelism to Instruction Level Parllelism
                 </h3>
                 <span 
                   style={{ 

@@ -39,43 +39,53 @@
   }
 
   /* Custom cursor styles - replicating makingsoftware.com */
-  .custom-cursor {
-    position: fixed;
-    pointer-events: none;
-    z-index: 9999;
-    width: 40px;
-    height: 40px;
-    transform: translate(-50%, -50%);
-    mix-blend-mode: difference;
+  /* Only show custom cursor on desktop devices */
+  @media (min-width: 768px) and (hover: hover) and (pointer: fine) {
+    .custom-cursor {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      width: 40px;
+      height: 40px;
+      transform: translate(-50%, -50%);
+      mix-blend-mode: difference;
+    }
+    
+    .custom-cursor::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(65, 105, 225, 0.5);
+      border-radius: 50%;
+    }
+
+    .custom-cursor::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 6px;
+      height: 6px;
+      background: #4169E1;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Hide default cursor on blog post */
+    .blog-post-container {
+      cursor: none;
+    }
+
+    .blog-post-container a,
+    .blog-post-container button {
+      cursor: none;
+    }
   }
   
-  .custom-cursor::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border: 1px solid rgba(65, 105, 225, 0.5);
-    border-radius: 50%;
-  }
-
-  .custom-cursor::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 6px;
-    height: 6px;
-    background: #4169E1;
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  /* Hide default cursor on blog post */
-  .blog-post-container {
-    cursor: none;
-  }
-
-  .blog-post-container a,
-  .blog-post-container button {
-    cursor: none;
+  /* Hide custom cursor on mobile/tablet */
+  @media (max-width: 767px), (hover: none), (pointer: coarse) {
+    .custom-cursor {
+      display: none !important;
+    }
   }
 }

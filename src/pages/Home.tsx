@@ -1,7 +1,7 @@
 import { Hero } from '../components/Hero'
 import { TriangleIllustration } from '../components/TriangleIllustration'
 import { NewspaperSection } from '../components/NewspaperSection'
-import { IntersectionSection } from '../components/IntersectionSection'
+import { WhatsNewSection } from '../components/WhatsNewSection'
 
 export function Home() {
   return (
@@ -9,7 +9,7 @@ export function Home() {
       <Hero />
       <TriangleIllustration />
       <NewspaperSection />
-      <IntersectionSection />
+      <WhatsNewSection />
     </div>
   )
 }

@@ -97,6 +97,71 @@ export function Blog() {
               </div>
             </article>
           </Link>
+
+          {/* The Intersections Post */}
+          <Link to="/blog/the-intersections" className="block mt-8">
+            <article className="border-4 border-blue-500 p-6 hover:bg-blue-50 transition-colors">
+              <div className="flex justify-between items-start mb-4">
+                <h2 
+                  style={{ 
+                    fontFamily: '"Press Start 2P", monospace',
+                    fontSize: '1rem',
+                    color: '#000',
+                    lineHeight: '1.6'
+                  }}
+                >
+                  The Intersections
+                </h2>
+                <span 
+                  style={{ 
+                    fontFamily: '"Space Mono", monospace',
+                    fontSize: '0.75rem',
+                    color: '#666',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  Aug 2025
+                </span>
+              </div>
+              
+              <p 
+                style={{ 
+                  fontFamily: 'Georgia, serif',
+                  fontSize: '1rem',
+                  lineHeight: '1.7',
+                  color: '#333',
+                  marginBottom: '1rem'
+                }}
+              >
+                Where Engineering, Mathematics, and Statistics Converge - A framework for understanding modern computer science. 
+                The most powerful advances happen not within any single discipline, but at their boundaries—where theoretical 
+                elegance meets practical constraints, where proofs meet performance, where algorithms meet architectures.
+              </p>
+              
+              <div className="flex items-center gap-4">
+                <span 
+                  style={{ 
+                    fontFamily: '"Space Mono", monospace',
+                    fontSize: '0.75rem',
+                    color: '#4169E1'
+                  }}
+                >
+                  Read more →
+                </span>
+                <div className="flex gap-2">
+                  <span className="px-2 py-1 bg-blue-100 text-xs font-mono text-blue-700 rounded">
+                    Engineering
+                  </span>
+                  <span className="px-2 py-1 bg-blue-100 text-xs font-mono text-blue-700 rounded">
+                    Mathematics
+                  </span>
+                  <span className="px-2 py-1 bg-blue-100 text-xs font-mono text-blue-700 rounded">
+                    Statistics
+                  </span>
+                </div>
+              </div>
+            </article>
+          </Link>
         </div>
         
         {/* Coming Soon Section */}

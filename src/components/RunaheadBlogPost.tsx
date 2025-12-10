@@ -5,6 +5,7 @@ export function RunaheadBlogPost() {
   const [scrollProgress, setScrollProgress] = useState(0)
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 })
   const [activeSection, setActiveSection] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
   const sections = [
@@ -20,6 +21,17 @@ export function RunaheadBlogPost() {
   ]
 
   useEffect(() => {
+    // Check if mobile on mount and window resize
+    const checkMobile = () => {
+      const mobile = window.matchMedia('(max-width: 767px)').matches || 
+                     window.matchMedia('(hover: none)').matches ||
+                     window.matchMedia('(pointer: coarse)').matches
+      setIsMobile(mobile)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
     const handleScroll = () => {
       const scrolled = window.scrollY
       const maxHeight = document.documentElement.scrollHeight - window.innerHeight
@@ -39,14 +51,20 @@ export function RunaheadBlogPost() {
     }
 
     window.addEventListener('scroll', handleScroll)
-    window.addEventListener('mousemove', handleMouseMove)
+    
+    // Only add mouse tracking on desktop devices
+    if (!isMobile) {
+      window.addEventListener('mousemove', handleMouseMove)
+    }
+    
     handleScroll()
 
     return () => {
       window.removeEventListener('scroll', handleScroll)
       window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('resize', checkMobile)
     }
-  }, [])
+  }, [isMobile])
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId)
@@ -57,14 +75,16 @@ export function RunaheadBlogPost() {
 
   return (
     <>
-      {/* Custom Cursor */}
-      <div 
-        className="custom-cursor"
-        style={{
-          left: `${cursorPosition.x}px`,
-          top: `${cursorPosition.y}px`,
-        }}
-      />
+      {/* Custom Cursor - Only on Desktop */}
+      {!isMobile && (
+        <div 
+          className="custom-cursor"
+          style={{
+            left: `${cursorPosition.x}px`,
+            top: `${cursorPosition.y}px`,
+          }}
+        />
+      )}
 
       {/* Progress Bar */}
       <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">

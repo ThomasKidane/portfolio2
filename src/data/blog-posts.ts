@@ -2,6 +2,15 @@ import { BlogPost } from '@/types/blog'
 
 export const blogPosts: BlogPost[] = [
   {
+    id: 'the-intersections',
+    title: 'The Intersections',
+    excerpt: 'Where Engineering, Mathematics, and Statistics Converge - A framework for understanding modern computer science.',
+    content: ``,
+    date: '2025-08-15',
+    tags: ['engineering', 'mathematics', 'statistics', 'computer-science'],
+    readTime: 8
+  },
+  {
     id: 'mathematical-beauty-in-code',
     title: 'On Mathematical Beauty in Code',
     excerpt: 'Exploring how mathematical elegance translates into clean, beautiful code structures and algorithms.',

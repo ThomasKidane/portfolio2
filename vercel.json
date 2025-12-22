@@ -1,10 +1,12 @@
 {
   "rewrites": [
     {
+      "source": "/gnri/:path*",
+      "destination": "https://gnri.vercel.app/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
 }
-
-

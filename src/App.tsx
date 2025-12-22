@@ -8,10 +8,13 @@ import { Contact } from './pages/Contact'
 import { Intersections } from './pages/Intersections'
 import { RunaheadBlogPost } from './components/RunaheadBlogPost'
 import { IntersectionsBlogPost } from './components/IntersectionsBlogPost'
+import GNRIBlogPost from './components/GNRIBlogPost'
 
 export default function App() {
   const location = useLocation()
-  const isBlogPost = location.pathname.startsWith('/blog/runahead') || location.pathname.startsWith('/blog/the-intersections')
+  const isBlogPost = location.pathname.startsWith('/blog/runahead') || 
+                     location.pathname.startsWith('/blog/the-intersections') ||
+                     location.pathname.startsWith('/blog/guided-newton')
 
   return (
     <div className={`min-h-screen bg-white ${isBlogPost ? 'blog-post-container' : ''}`}>
@@ -24,6 +27,7 @@ export default function App() {
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/runahead-execution" element={<RunaheadBlogPost />} />
         <Route path="/blog/the-intersections" element={<IntersectionsBlogPost />} />
+        <Route path="/blog/guided-newton-raphson-inversion" element={<GNRIBlogPost />} />
         <Route path="/projects" element={<Projects />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="*" element={<Navigate to="/" replace />} />

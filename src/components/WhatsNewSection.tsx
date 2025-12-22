@@ -5,10 +5,26 @@ export function WhatsNewSection() {
     {
       date: 'Dec 2025',
       type: 'BLOG POST',
+      title: 'Guided Newton-Raphson Inversion',
+      description: 'Real-time image editing via gradient-based latent space optimization in diffusion models',
+      link: '/blog/guided-newton-raphson-inversion',
+      highlight: true
+    },
+    {
+      date: 'Dec 2025',
+      type: 'PROJECT',
+      title: 'GNRI Demo',
+      description: 'Live demo comparing Google AI Studio against SDXL+GNRI for image generation and editing',
+      link: '/gnri',
+      highlight: true
+    },
+    {
+      date: 'Dec 2025',
+      type: 'BLOG POST',
       title: 'Runahead Execution',
       description: 'Deep dive into implementing speculative prefetching in gem5 O3CPU',
       link: '/blog/runahead-execution',
-      highlight: true
+      highlight: false
     },
     {
       date: 'Nov 2025',

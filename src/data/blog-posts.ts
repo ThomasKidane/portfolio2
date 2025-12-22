@@ -2,6 +2,15 @@ import { BlogPost } from '@/types/blog'
 
 export const blogPosts: BlogPost[] = [
   {
+    id: 'guided-newton-raphson-inversion',
+    title: 'Guided Newton-Raphson Inversion',
+    excerpt: 'Real-time image editing via gradient-based latent space optimization. Implementing GNRI on SDXL models for precise image manipulation.',
+    content: ``,
+    date: '2025-12-15',
+    tags: ['machine-learning', 'diffusion-models', 'computer-vision', 'optimization'],
+    readTime: 15
+  },
+  {
     id: 'the-intersections',
     title: 'The Intersections',
     excerpt: 'Where Engineering, Mathematics, and Statistics Converge - A framework for understanding modern computer science.',

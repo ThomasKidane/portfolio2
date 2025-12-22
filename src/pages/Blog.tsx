@@ -98,6 +98,71 @@ export function Blog() {
             </article>
           </Link>
 
+          {/* GNRI Post */}
+          <Link to="/blog/guided-newton-raphson-inversion" className="block mt-8">
+            <article className="border-4 border-blue-500 p-6 hover:bg-blue-50 transition-colors">
+              <div className="flex justify-between items-start mb-4">
+                <h2 
+                  style={{ 
+                    fontFamily: '"Press Start 2P", monospace',
+                    fontSize: '1rem',
+                    color: '#000',
+                    lineHeight: '1.6'
+                  }}
+                >
+                  Guided Newton-Raphson Inversion
+                </h2>
+                <span 
+                  style={{ 
+                    fontFamily: '"Space Mono", monospace',
+                    fontSize: '0.75rem',
+                    color: '#666',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  Dec 2025
+                </span>
+              </div>
+              
+              <p 
+                style={{ 
+                  fontFamily: 'Georgia, serif',
+                  fontSize: '1rem',
+                  lineHeight: '1.7',
+                  color: '#333',
+                  marginBottom: '1rem'
+                }}
+              >
+                Real-time image editing via gradient-based latent space optimization. Implementing GNRI on SDXL models 
+                for precise image manipulation through mathematical optimization, comparing results against Google's 
+                Gemini to understand where classical methods outperform modern API-based approaches.
+              </p>
+              
+              <div className="flex items-center gap-4">
+                <span 
+                  style={{ 
+                    fontFamily: '"Space Mono", monospace',
+                    fontSize: '0.75rem',
+                    color: '#4169E1'
+                  }}
+                >
+                  Read more →
+                </span>
+                <div className="flex gap-2">
+                  <span className="px-2 py-1 bg-blue-100 text-xs font-mono text-blue-700 rounded">
+                    Machine Learning
+                  </span>
+                  <span className="px-2 py-1 bg-blue-100 text-xs font-mono text-blue-700 rounded">
+                    Diffusion Models
+                  </span>
+                  <span className="px-2 py-1 bg-blue-100 text-xs font-mono text-blue-700 rounded">
+                    Optimization
+                  </span>
+                </div>
+              </div>
+            </article>
+          </Link>
+
           {/* The Intersections Post */}
           <Link to="/blog/the-intersections" className="block mt-8">
             <article className="border-4 border-blue-500 p-6 hover:bg-blue-50 transition-colors">

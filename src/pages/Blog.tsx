@@ -163,14 +163,79 @@ export function Blog() {
             </article>
           </Link>
 
-          {/* The Intersections Post */}
-          <Link to="/blog/the-intersections" className="block mt-8">
+          {/* Audio Source Separation Post */}
+          <Link to="/blog/audio-source-separation" className="block mt-8">
             <article className="border-4 border-blue-500 p-6 hover:bg-blue-50 transition-colors">
               <div className="flex justify-between items-start mb-4">
                 <h2 
                   style={{ 
                     fontFamily: '"Press Start 2P", monospace',
                     fontSize: '1rem',
+                    color: '#000',
+                    lineHeight: '1.6'
+                  }}
+                >
+                  Audio Source Separation
+                </h2>
+                <span 
+                  style={{ 
+                    fontFamily: '"Space Mono", monospace',
+                    fontSize: '0.75rem',
+                    color: '#666',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  Dec 2025
+                </span>
+              </div>
+              
+              <p 
+                style={{ 
+                  fontFamily: 'Georgia, serif',
+                  fontSize: '1rem',
+                  lineHeight: '1.7',
+                  color: '#333',
+                  marginBottom: '1rem'
+                }}
+              >
+                A deep dive into removing background music from voice recordings. Exploring classical signal processing 
+                (phase cancellation, NLMS, spectral subtraction), echo cancellation (WebRTC AEC3, SpeexDSP), and 
+                deep learning approaches (Demucs, Spleeter, RNNoise).
+              </p>
+              
+              <div className="flex items-center gap-4">
+                <span 
+                  style={{ 
+                    fontFamily: '"Space Mono", monospace',
+                    fontSize: '0.75rem',
+                    color: '#4169E1'
+                  }}
+                >
+                  Read more →
+                </span>
+                <div className="flex gap-2">
+                  <span className="px-2 py-1 bg-blue-100 text-xs font-mono text-blue-700 rounded">
+                    Audio Processing
+                  </span>
+                  <span className="px-2 py-1 bg-blue-100 text-xs font-mono text-blue-700 rounded">
+                    Signal Processing
+                  </span>
+                  <span className="px-2 py-1 bg-blue-100 text-xs font-mono text-blue-700 rounded">
+                    Deep Learning
+                  </span>
+                </div>
+              </div>
+            </article>
+          </Link>
+
+          {/* The Intersections Post */}
+          <Link to="/blog/the-intersections" className="block mt-8">
+            <article className="border-4 border-blue-500 p-6 hover:bg-blue-50 transition-colors">
+              <div className="flex justify-between items-start mb-4">
+                <h2 
+            style={{ 
+              fontFamily: '"Press Start 2P", monospace',
+              fontSize: '1rem',
                     color: '#000',
                     lineHeight: '1.6'
                   }}
@@ -187,14 +252,14 @@ export function Blog() {
                 >
                   Aug 2025
                 </span>
-              </div>
-              
-              <p 
-                style={{ 
-                  fontFamily: 'Georgia, serif',
+          </div>
+          
+          <p 
+            style={{ 
+              fontFamily: 'Georgia, serif',
                   fontSize: '1rem',
                   lineHeight: '1.7',
-                  color: '#333',
+              color: '#333',
                   marginBottom: '1rem'
                 }}
               >
@@ -232,8 +297,8 @@ export function Blog() {
         {/* Coming Soon Section */}
         <div className="border-t-2 border-dotted border-gray-300 pt-12">
           <h2 
-            style={{ 
-              fontFamily: '"Press Start 2P", monospace',
+              style={{ 
+                fontFamily: '"Press Start 2P", monospace',
               fontSize: '0.875rem',
               color: '#999',
               letterSpacing: '0.1em',

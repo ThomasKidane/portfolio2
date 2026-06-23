@@ -1,0 +1,2058 @@
+{
+  "source": "https://www.quantguide.io/questions",
+  "generatedAt": "2026-06-17T04:54:03.052Z",
+  "count": 151,
+  "questions": [
+    {
+      "id": "B1L8TUxaBEHP4KpopK9a",
+      "title": "29 Divide",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": true,
+      "companies": [],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/29-divide"
+    },
+    {
+      "id": "nacxZI9UgnUuVqqNbLrc",
+      "title": "5 Pairwise Sum",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": true,
+      "companies": [
+        "Five Rings",
+        "SIG"
+      ],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/5-pairwise-sum"
+    },
+    {
+      "id": "LPzIodQmqjhSoekQ5ves",
+      "title": "Balanced Beans II",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": false,
+      "companies": [
+        "Belvedere Trading",
+        "Blackedge Capital",
+        "Chicago Trading Company",
+        "Citadel",
+        "DE Shaw",
+        "IMC",
+        "Optiver",
+        "SIG",
+        "Virtu Financial",
+        "WorldQuant"
+      ],
+      "tags": [
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/balanced-beans-ii"
+    },
+    {
+      "id": "eY8gKQSu69Puu7UhkJA6",
+      "title": "Balanced Beans IV",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": false,
+      "companies": [],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/balanced-beans-iv"
+    },
+    {
+      "id": "aFSzz82BOvsrf8KtoJPA",
+      "title": "Card Diff",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": true,
+      "companies": [
+        "Jane Street"
+      ],
+      "tags": [
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/card-diff"
+    },
+    {
+      "id": "LlwSRMuQbZUj5k7n72KQ",
+      "title": "Card Shuffling",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": true,
+      "companies": [],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/card-shuffling"
+    },
+    {
+      "id": "ei0bKxMfztVebDtAcZdD",
+      "title": "Cats and Mice",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": false,
+      "companies": [],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/cats-and-mice"
+    },
+    {
+      "id": "GvBEMmqfP6KoxUKtskSE",
+      "title": "Clockwise Murder",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": false,
+      "companies": [],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/clockwise-murder"
+    },
+    {
+      "id": "1MRfIOzHJCNcerddamQT",
+      "title": "Colosseum Fight II",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/colosseum-fight-ii"
+    },
+    {
+      "id": "fR9MLPDXBO8BhjXTKXNW",
+      "title": "Consecutive Children",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": false,
+      "companies": [],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/consecutive-children"
+    },
+    {
+      "id": "23wRX9m1EleeCDfgHxkt",
+      "title": "Cyclic 4",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": true,
+      "companies": [
+        "WorldQuant"
+      ],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/cyclic-4"
+    },
+    {
+      "id": "E6cKA2h7irML6WKQ9xYl",
+      "title": "Egg Drop II",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": false,
+      "companies": [
+        "Akuna",
+        "Aquatic Capital",
+        "Optiver",
+        "Tower Research Capital",
+        "TransMarket Group",
+        "Virtu Financial",
+        "WorldQuant"
+      ],
+      "tags": [
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/egg-drop-ii"
+    },
+    {
+      "id": "QlcJGx6uplgQZ4pI6Y0A",
+      "title": "Egg Drop III",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": true,
+      "companies": [
+        "Akuna",
+        "Aquatic Capital",
+        "Optiver",
+        "Tower Research Capital",
+        "TransMarket Group",
+        "Virtu Financial",
+        "WorldQuant"
+      ],
+      "tags": [
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/egg-drop-ii"
+    },
+    {
+      "id": "qFkffezdCMXYcPX4Nz87",
+      "title": "Exponential Ball Draw",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": true,
+      "companies": [
+        "WorldQuant"
+      ],
+      "tags": [
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/exponential-ball-draw"
+    },
+    {
+      "id": "d7ddYvOc9lvBJD03RjIz",
+      "title": "Find the Triangle",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": false,
+      "companies": [],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/find-the-triangle"
+    },
+    {
+      "id": "v6fKNumd4Dncap6b8i55",
+      "title": "Geometrical Progression",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": false,
+      "companies": [],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/geometrical-progression"
+    },
+    {
+      "id": "3rOGTWveEwlZzOUR4qlI",
+      "title": "Heaven 37",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": false,
+      "companies": [],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/heaven-37"
+    },
+    {
+      "id": "PvsrHAsnRnGJRNVVLkYi",
+      "title": "Infected Dinner II",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": false,
+      "companies": [
+        "Jane Street"
+      ],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/infected-dinner-ii"
+    },
+    {
+      "id": "f9d7gN5z6Kw92pKeU1QY",
+      "title": "Josephus' Dilemma",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": true,
+      "companies": [
+        "Belvedere Trading",
+        "Virtu Financial"
+      ],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/josephus-dilemma"
+    },
+    {
+      "id": "I6Jko42r23GhloJmKXoI",
+      "title": "Minimal Shade",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Combinatorics"
+      ],
+      "url": "https://www.quantguide.io/questions/minimal-shade"
+    },
+    {
+      "id": "j6DdsKWJVolo3hKawx6s",
+      "title": "Needy Friends",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": true,
+      "companies": [],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/needy-friends"
+    },
+    {
+      "id": "LTA4ugyvCYFyX7lYhWea",
+      "title": "Numerical Triangle",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": false,
+      "companies": [
+        "Akuna",
+        "Flow Traders"
+      ],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/numerical-triangle"
+    },
+    {
+      "id": "j2fLLevrqdhp030papX3",
+      "title": "Poisoned Kegs IV",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": true,
+      "companies": [
+        "Five Rings",
+        "Goldman Sachs",
+        "Jane Street",
+        "Old Mission",
+        "SIG",
+        "Two Sigma"
+      ],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/poisoned-kegs-iv"
+    },
+    {
+      "id": "1OuOQCoeAA39ersz5ir5",
+      "title": "Prime First",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": true,
+      "companies": [
+        "Jane Street"
+      ],
+      "tags": [
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/prime-first"
+    },
+    {
+      "id": "BkzyXBl3jNfhye6lZGec",
+      "title": "Prime Janitors",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": false,
+      "companies": [
+        "SIG"
+      ],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/prime-janitors"
+    },
+    {
+      "id": "L0TqJwayFwQguxCuDcXE",
+      "title": "Prime Subset",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": false,
+      "companies": [
+        "Jane Street"
+      ],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/prime-subset"
+    },
+    {
+      "id": "w8cbC8ZkCy5DF6iSTwEo",
+      "title": "Remainders",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": true,
+      "companies": [],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/remainders"
+    },
+    {
+      "id": "aPtiTaULGBsdnXqNlTYm",
+      "title": "Safe Cracking",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": true,
+      "companies": [
+        "Citadel",
+        "IMC"
+      ],
+      "tags": [
+        "Combinatorics"
+      ],
+      "url": "https://www.quantguide.io/questions/safe-cracking"
+    },
+    {
+      "id": "1LcGqQOtUicTUOwK8JqP",
+      "title": "Shuffled Deck",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Pure Math"
+      ],
+      "url": "https://www.quantguide.io/questions/shuffled-deck"
+    },
+    {
+      "id": "Q1T8zg2Py2c4VDRu5HnI",
+      "title": "Square Shade",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Combinatorics"
+      ],
+      "url": "https://www.quantguide.io/questions/square-shade"
+    },
+    {
+      "id": "UlaxEdl0fIUyTknHZmak",
+      "title": "Stack Double",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": false,
+      "companies": [],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/stack-double"
+    },
+    {
+      "id": "tV35PQujQ2JZN6uGfLfs",
+      "title": "Terminating Sum",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": false,
+      "companies": [],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/terminating-sum"
+    },
+    {
+      "id": "5BH7xnjubu08lfHMW6eN",
+      "title": "Triangle of Primes",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Combinatorics"
+      ],
+      "url": "https://www.quantguide.io/questions/triangle-of-primes"
+    },
+    {
+      "id": "A5BbPdI3frVxnUIwJCiu",
+      "title": "Water Measurement",
+      "difficulty": "hard",
+      "topic": "brainteasers",
+      "isPremium": false,
+      "companies": [],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/water-measurement"
+    },
+    {
+      "id": "8TZ0xFbe7plcbRtVrTZm",
+      "title": "Arbitrage Detective IV",
+      "difficulty": "hard",
+      "topic": "finance",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Finance"
+      ],
+      "url": "https://www.quantguide.io/questions/arbitrage-detective-i"
+    },
+    {
+      "id": "qSvGoQ6SpbtUCr3tBtva",
+      "title": "Delta Decay",
+      "difficulty": "hard",
+      "topic": "finance",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Finance"
+      ],
+      "url": "https://www.quantguide.io/questions/delta-decay"
+    },
+    {
+      "id": "yyZ4vJIf92L4eNI9v1bp",
+      "title": "Delta Decay II",
+      "difficulty": "hard",
+      "topic": "finance",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Finance"
+      ],
+      "url": "https://www.quantguide.io/questions/delta-decay-ii"
+    },
+    {
+      "id": "HcF8d3RtNvf0QKm8ORoG",
+      "title": "Game Arbitrage I",
+      "difficulty": "hard",
+      "topic": "finance",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Finance"
+      ],
+      "url": "https://www.quantguide.io/questions/game-arbitrage"
+    },
+    {
+      "id": "eq3JybYxXg3OamCEW5Oz",
+      "title": "Game Arbitrage II",
+      "difficulty": "hard",
+      "topic": "finance",
+      "isPremium": true,
+      "companies": [],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/game-arbitrage-ii"
+    },
+    {
+      "id": "N9uH8b6WViFBF8ceEtKM",
+      "title": "Put Option Price Estimate",
+      "difficulty": "hard",
+      "topic": "finance",
+      "isPremium": false,
+      "companies": [],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/put-option-price-estimate"
+    },
+    {
+      "id": "fsXMV8BLD95BsW3LqaL8",
+      "title": "Sharpe Maximization",
+      "difficulty": "hard",
+      "topic": "finance",
+      "isPremium": true,
+      "companies": [
+        "WorldQuant"
+      ],
+      "tags": [
+        "Finance",
+        "Pure Math"
+      ],
+      "url": "https://www.quantguide.io/questions/sharpe-maximization"
+    },
+    {
+      "id": "ITODZEMBkcgakuwHWHNR",
+      "title": "1 Glove Off",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Five Rings"
+      ],
+      "tags": [
+        "Combinatorics"
+      ],
+      "url": "https://www.quantguide.io/questions/1-glove-off"
+    },
+    {
+      "id": "36l3hzURS7cf8DDGgkn9",
+      "title": "20-30 Die Split III",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Citadel",
+        "DRW",
+        "Jane Street"
+      ],
+      "tags": [
+        "Conditional Probability"
+      ],
+      "url": "https://www.quantguide.io/questions/2030-die-split-iii"
+    },
+    {
+      "id": "4XkHNWXtMDBKxHbyqmbL",
+      "title": "2D Paths IV",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Combinatorics"
+      ],
+      "url": "https://www.quantguide.io/questions/2d-paths-iv"
+    },
+    {
+      "id": "Fsolgsdnl1tcki9zPjTd",
+      "title": "Beer Bottles",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Expected Value",
+        "Limit Theorems"
+      ],
+      "url": "https://www.quantguide.io/questions/beer-bottles"
+    },
+    {
+      "id": "1NSnAQ4fuUqWAlEL0o41",
+      "title": "Bowl of Cherries V",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Conditional Probability",
+        "Events"
+      ],
+      "url": "https://www.quantguide.io/questions/bowl-of-cherries-v"
+    },
+    {
+      "id": "4BVg7cdIpxlXCp1gpayp",
+      "title": "Car Crash",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Citadel",
+        "DE Shaw",
+        "Optiver",
+        "Squarepoint Capital",
+        "WorldQuant"
+      ],
+      "tags": [
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/car-crash"
+    },
+    {
+      "id": "TuMo2bGSyksqeLFKbr4B",
+      "title": "Car Question",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "DE Shaw"
+      ],
+      "tags": [
+        "Conditional Expectation",
+        "Conditional Probability",
+        "Discrete Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/car-question-i"
+    },
+    {
+      "id": "SxSiE7gSOY4NIyFKHBLd",
+      "title": "Carded Pair",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Citadel",
+        "Five Rings"
+      ],
+      "tags": [
+        "Conditional Expectation",
+        "Conditional Probability"
+      ],
+      "url": "https://www.quantguide.io/questions/carded-pair"
+    },
+    {
+      "id": "rjzyBhUVg1B8GkeEST6W",
+      "title": "Central Containment",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [
+        "Akuna",
+        "Goldman Sachs",
+        "Jane Street"
+      ],
+      "tags": [
+        "Continuous Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/central-containment"
+    },
+    {
+      "id": "tI24OWF7YcGDhMwbSRj5",
+      "title": "Circular Cut",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Continuous Random Variables",
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/circular-cut"
+    },
+    {
+      "id": "RGIIGSUtCGDV9v8n5372",
+      "title": "Circular Slice I",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Continuous Random Variables",
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/circular-slice-i"
+    },
+    {
+      "id": "Cw1RF0lom2iANot7fnZv",
+      "title": "Clarence's Bread",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Old Mission"
+      ],
+      "tags": [
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/clarences-bread"
+    },
+    {
+      "id": "raYzCJsJXXT1z1kVICLP",
+      "title": "Close Dice II",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/close-dice-ii"
+    },
+    {
+      "id": "tBIp9AEjfabBj7WTSnyL",
+      "title": "Coin Flipping Competition II",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Continuous Random Variables",
+        "Discrete Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/coin-flipping-competition-ii"
+    },
+    {
+      "id": "hGt4QLlVwVbDMmswBz6t",
+      "title": "Coin Flipping Competition III",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Conditional Probability",
+        "Discrete Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/coin-flipping-competition-iii"
+    },
+    {
+      "id": "9lMYt4RZ35l5wKWV5g8h",
+      "title": "Collecting Toys II",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Optiver",
+        "Squarepoint Capital"
+      ],
+      "tags": [
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/collecting-toys-ii"
+    },
+    {
+      "id": "xJZ0gXFboBsYdMrQaMtT",
+      "title": "Coloring Components III",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/coloring-components-iii"
+    },
+    {
+      "id": "1jNQ8ZSzEMN0KlEgQGoN",
+      "title": "Colosseum Fight I",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Combinatorics",
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/colosseum-fight"
+    },
+    {
+      "id": "AQdeqquIfGcgtR8vg3Sd",
+      "title": "Common Ball Draw",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Combinatorics"
+      ],
+      "url": "https://www.quantguide.io/questions/common-ball-draw"
+    },
+    {
+      "id": "QzjQwEvmp7tNX71pOcZu",
+      "title": "Competitive Sampling",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Conditional Probability",
+        "Continuous Random Variables",
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/competitive-sampling"
+    },
+    {
+      "id": "JVmfWyBRw9Fjzz98NX9s",
+      "title": "Conditional First Ace",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/conditional-first-ace"
+    },
+    {
+      "id": "W8bPdp4iHXr2xXwyiAeU",
+      "title": "Consecutive Pairs",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Combinatorics"
+      ],
+      "url": "https://www.quantguide.io/questions/consecutive-pairs"
+    },
+    {
+      "id": "dNeIFDaDM9EPn7X4gFxl",
+      "title": "Continuous Blackjack",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/continuous-blackjack"
+    },
+    {
+      "id": "yO5TW5ODe6Ii4tKIfXQQ",
+      "title": "Counting Nash Equillibria",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Jane Street"
+      ],
+      "tags": [
+        "Combinatorics",
+        "Games",
+        "Pure Math"
+      ],
+      "url": "https://www.quantguide.io/questions/counting-nash-equillibria"
+    },
+    {
+      "id": "tDb2EF6nHPpPOnvP8mBt",
+      "title": "Decreasing Uniform Chain",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Five Rings"
+      ],
+      "tags": [
+        "Conditional Expectation",
+        "Continuous Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/decreasing-uniform-chain"
+    },
+    {
+      "id": "dVfaWDcITd2GARpRY6de",
+      "title": "Delayed Ruin",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Conditional Probability",
+        "Discrete Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/delayed-ruin"
+    },
+    {
+      "id": "tm602UhWY1f2r87JeOTx",
+      "title": "Dice Order III",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [
+        "Squarepoint Capital"
+      ],
+      "tags": [
+        "Conditional Expectation",
+        "Discrete Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/dice-order-iii"
+    },
+    {
+      "id": "Z1ghT3x25SmG1XSXjbrh",
+      "title": "Dice Profits",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Expected Value",
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/dice-profits"
+    },
+    {
+      "id": "655wHS4eyEqw0SRWdsl2",
+      "title": "Die Roll LCM",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Discrete Random Variables",
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/die-roll-lcm"
+    },
+    {
+      "id": "btchs05xUKZ5mRxcNutT",
+      "title": "Dominated Turtle",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Combinatorics"
+      ],
+      "url": "https://www.quantguide.io/questions/dominated-turtle"
+    },
+    {
+      "id": "AXdyPsFl4pbJwFbiJvMz",
+      "title": "Doubly 5 I",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Combinatorics",
+        "Discrete Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/doubly-5"
+    },
+    {
+      "id": "ENkqSk3L9ToRxd2n4RGn",
+      "title": "Empty Urn",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Combinatorics",
+        "Conditional Probability"
+      ],
+      "url": "https://www.quantguide.io/questions/empty-urn"
+    },
+    {
+      "id": "a0BEfm8dWv1EyAFvCg4S",
+      "title": "Expected Chord Length",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Jane Street"
+      ],
+      "tags": [
+        "Continuous Random Variables",
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/expected-chord-length"
+    },
+    {
+      "id": "lUIb8aWtw4ENTHUeVmmY",
+      "title": "Expected Returns",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [
+        "Citadel"
+      ],
+      "tags": [
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/expected-returns"
+    },
+    {
+      "id": "KaCa6Ed8gddzYbxjMAdZ",
+      "title": "Finite Coin Equalizer",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Conditional Probability",
+        "Discrete Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/finite-coin-equalizer"
+    },
+    {
+      "id": "wYSfSrZeF4YfvVPVgDHW",
+      "title": "First Flip",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Conditional Expectation",
+        "Discrete Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/first-flip"
+    },
+    {
+      "id": "xqE0AF4WFcDdcn96qkUn",
+      "title": "Fixed Point Variance",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [
+        "WorldQuant"
+      ],
+      "tags": [
+        "Combinatorics",
+        "Conditional Probability",
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/fixed-point-variance"
+    },
+    {
+      "id": "Tt1jmhIduNPZDIPAfknI",
+      "title": "Forming a Triangle",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Akuna",
+        "Chicago Trading Company",
+        "Citadel",
+        "DE Shaw",
+        "Goldman Sachs",
+        "JP Morgan",
+        "Jane Street",
+        "Morgan Stanley",
+        "WorldQuant"
+      ],
+      "tags": [
+        "Continuous Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/forming-a-triangle"
+    },
+    {
+      "id": "qRPVQCF8H7ViHcv7Icck",
+      "title": "Free Sundae",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Conditional Probability",
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/free-sundae"
+    },
+    {
+      "id": "kbMv8dlJJ30yLYG17gBy",
+      "title": "Game Time",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Combinatorics"
+      ],
+      "url": "https://www.quantguide.io/questions/game-time"
+    },
+    {
+      "id": "HRkGVMWujQD5ELVgc8tB",
+      "title": "Good Grid II",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [
+        "Tower Research Capital"
+      ],
+      "tags": [
+        "Combinatorics",
+        "Discrete Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/good-grid-ii"
+    },
+    {
+      "id": "jc6lFsmQXzC94eowvtUN",
+      "title": "Half Cycle",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Jane Street",
+        "Maven Securities"
+      ],
+      "tags": [
+        "Calculus",
+        "Combinatorics",
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/half-cycle"
+    },
+    {
+      "id": "VocPdnEujkZNMmqj9WzW",
+      "title": "Head-Tail Equality",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [
+        "Five Rings"
+      ],
+      "tags": [
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/heads-and-tails-ii"
+    },
+    {
+      "id": "g3HMWQe5Fag0CSKzdtIq",
+      "title": "Increasing Uniform Chain I",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [
+        "Five Rings"
+      ],
+      "tags": [
+        "Conditional Probability",
+        "Continuous Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/increasing-uniform-chain"
+    },
+    {
+      "id": "AH9gWG6sFsB7AUJihRA6",
+      "title": "Intersecting Intervals",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Combinatorics",
+        "Continuous Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/intersecting-intervals"
+    },
+    {
+      "id": "AClMeye9TqGd9tqWzGdc",
+      "title": "Leftwards Frog",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Combinatorics"
+      ],
+      "url": "https://www.quantguide.io/questions/leftwards-frog"
+    },
+    {
+      "id": "X43EeolWKFBHRDhk6Dlm",
+      "title": "Likely Targets I",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "DE Shaw"
+      ],
+      "tags": [
+        "Continuous Random Variables",
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/likely-targets"
+    },
+    {
+      "id": "gDlCpfYuahaWKFwqoVBF",
+      "title": "Likely Targets II",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [
+        "DE Shaw"
+      ],
+      "tags": [
+        "Continuous Random Variables",
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/likely-target-ii"
+    },
+    {
+      "id": "tGHjvNCXZkFww9tBWUpH",
+      "title": "Likely Targets III",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [
+        "DE Shaw"
+      ],
+      "tags": [
+        "Continuous Random Variables",
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/likely-targets-iii"
+    },
+    {
+      "id": "hcWZt0jJ74ZMYInB9y7e",
+      "title": "Limited Urns",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Conditional Probability"
+      ],
+      "url": "https://www.quantguide.io/questions/limited-urns"
+    },
+    {
+      "id": "CYuP6Dmb6oljgSEkgedA",
+      "title": "Marble Runs",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "DRW",
+        "Hudson River Trading"
+      ],
+      "tags": [
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/marble-runs"
+    },
+    {
+      "id": "fsum2DSHItj4JHB8uV04",
+      "title": "Maximize Head Ratio II",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "SIG"
+      ],
+      "tags": [
+        "Combinatorics",
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/maximize-head-ratio-ii"
+    },
+    {
+      "id": "yJhXKRCOxKAfZ4VxB7p3",
+      "title": "Minimax Box",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/minimax-box"
+    },
+    {
+      "id": "3mGvD3hr6Ir6aOYEl83V",
+      "title": "Non-Consecutive Sequence",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Conditional Expectation",
+        "Conditional Probability",
+        "Discrete Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/nonconsecutive-sequence"
+    },
+    {
+      "id": "kA2LUgCAfirINZlmaTRD",
+      "title": "Non-Disjoint Subsets",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Combinatorics"
+      ],
+      "url": "https://www.quantguide.io/questions/nondisjoint-subsets"
+    },
+    {
+      "id": "LvYElF9rQSTZk1EVHk2h",
+      "title": "Numerous Uniforms",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Continuous Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/numerous-uniforms"
+    },
+    {
+      "id": "qU30v79qdGXghQmBDPen",
+      "title": "Optimal Marbles I",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Jane Street"
+      ],
+      "tags": [
+        "Expected Value",
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/optimal-marbles-i"
+    },
+    {
+      "id": "8nFwlPozqJXC3ggfgfz3",
+      "title": "Optimal Marbles II",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Expected Value",
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/optimal-marbles-ii"
+    },
+    {
+      "id": "w3DicS7QkivGtUeaIM3N",
+      "title": "Optimizing Aces",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/optimizing-aces"
+    },
+    {
+      "id": "0xF2scnTY4xW7ebT6x08",
+      "title": "Parking Rush",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Conditional Probability",
+        "Events"
+      ],
+      "url": "https://www.quantguide.io/questions/parking-rush"
+    },
+    {
+      "id": "1Qzcaj8Qe5ZU89sQkDgw",
+      "title": "Party Groups I",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Jane Street",
+        "Maven Securities"
+      ],
+      "tags": [
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/party-groups"
+    },
+    {
+      "id": "pjSCKiq39SvESirmwFq4",
+      "title": "Place or Take",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Jane Street"
+      ],
+      "tags": [
+        "Expected Value",
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/place-or-take"
+    },
+    {
+      "id": "eNPUT4ariQkUI5tpR5u4",
+      "title": "Proper Tables",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Continuous Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/proper-tables"
+    },
+    {
+      "id": "JPJuA143X1ms9ZW4EWoa",
+      "title": "Ramen Bowl",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Goldman Sachs",
+        "Hudson River Trading",
+        "IMC",
+        "Jane Street"
+      ],
+      "tags": [
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/ramen-bowl"
+    },
+    {
+      "id": "3Ol2vDSokTtQ2BPqmBwa",
+      "title": "Random Minimal Sum",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/random-minimal-sum"
+    },
+    {
+      "id": "ERPRwgsSiPGtA93o6k1c",
+      "title": "Random Particles",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Continuous Random Variables",
+        "Events"
+      ],
+      "url": "https://www.quantguide.io/questions/random-particles"
+    },
+    {
+      "id": "fEKA22kaWPw2LKdwLjoO",
+      "title": "Random Subsets",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Combinatorics",
+        "Events"
+      ],
+      "url": "https://www.quantguide.io/questions/random-subsets"
+    },
+    {
+      "id": "1q8iJXA9qHNxvtOsRjVN",
+      "title": "Random Triangle",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [
+        "Jane Street"
+      ],
+      "tags": [
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/random-triangle"
+    },
+    {
+      "id": "fJ2IcSBY4WdbBqDyiA1e",
+      "title": "Ranged Stars and Bars",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [
+        "Five Rings"
+      ],
+      "tags": [
+        "Combinatorics"
+      ],
+      "url": "https://www.quantguide.io/questions/ranged-stars-and-bars"
+    },
+    {
+      "id": "OkjGPPzVeT3ZLL1B5JNg",
+      "title": "Real Solutions",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Continuous Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/real-solutions"
+    },
+    {
+      "id": "T88X71RpCexToqcnt07w",
+      "title": "RNG on RNG",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Continuous Random Variables",
+        "Expected Value",
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/rng-on-rng"
+    },
+    {
+      "id": "wqIjRqn607AZKpHcZopw",
+      "title": "Segment Traversal",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Hudson River Trading",
+        "Virtu Financial"
+      ],
+      "tags": [
+        "Continuous Random Variables",
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/segment-traversal"
+    },
+    {
+      "id": "NOLtRNIPaLwVRgctgcKS",
+      "title": "Sequence Terminator",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Citadel",
+        "Five Rings",
+        "SIG",
+        "Two Sigma"
+      ],
+      "tags": [
+        "Conditional Expectation",
+        "Discrete Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/sequence-terminator"
+    },
+    {
+      "id": "ERUkLp1l5OziD6obRUYs",
+      "title": "Shattering Orbs",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Virtu Financial"
+      ],
+      "tags": [
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/shattering-orbs"
+    },
+    {
+      "id": "0UZh0D3TCInNyEFr5WF3",
+      "title": "Short Wood",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Akuna",
+        "SIG",
+        "Two Sigma"
+      ],
+      "tags": [
+        "Continuous Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/short-wood"
+    },
+    {
+      "id": "T2qDZ3f3FclRV6EZuSTA",
+      "title": "Soccer Practice",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Citadel"
+      ],
+      "tags": [
+        "Conditional Probability",
+        "Events"
+      ],
+      "url": "https://www.quantguide.io/questions/soccer-practice"
+    },
+    {
+      "id": "49vHyPvSTUOkVqNnKfVk",
+      "title": "Spaced Darts",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Continuous Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/spaced-darts"
+    },
+    {
+      "id": "OVV5sGPNkZmxH3BgmX6y",
+      "title": "Spacious Uniform Values I",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Citadel",
+        "WorldQuant"
+      ],
+      "tags": [
+        "Continuous Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/spacious-uniform-values-i"
+    },
+    {
+      "id": "R22mxBB03qPVPbJU7d0e",
+      "title": "Spacious Uniform Values II",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [
+        "Citadel",
+        "WorldQuant"
+      ],
+      "tags": [
+        "Continuous Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/spacious-uniform-values-ii"
+    },
+    {
+      "id": "WEqfNODbJBcZOwTbq63b",
+      "title": "Specific Partition",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Combinatorics"
+      ],
+      "url": "https://www.quantguide.io/questions/specific-partition"
+    },
+    {
+      "id": "GayN5z1FtTfpSIqdFfLN",
+      "title": "Sphere Slicer",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/sphere-slicer"
+    },
+    {
+      "id": "YJVn1TuDJG3zCyC2vvgD",
+      "title": "Spherical Coodinates",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [
+        "Citadel",
+        "DRW",
+        "Five Rings"
+      ],
+      "tags": [
+        "Continuous Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/spherical-coodinates"
+    },
+    {
+      "id": "UBiQtWkldIGe46D0ALrs",
+      "title": "Square Ratio",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Continuous Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/square-ratio"
+    },
+    {
+      "id": "l4uwanpJy3ahoLr9JVMW",
+      "title": "Standing Table",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Akuna",
+        "Chicago Trading Company",
+        "Citadel",
+        "DE Shaw",
+        "Goldman Sachs",
+        "JP Morgan",
+        "Jane Street",
+        "Morgan Stanley",
+        "WorldQuant"
+      ],
+      "tags": [
+        "Continuous Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/standing-table"
+    },
+    {
+      "id": "D3z7mNptMSPp1ZrcvJXa",
+      "title": "Sum Exceedance I",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Akuna",
+        "DE Shaw",
+        "Goldman Sachs",
+        "Hudson River Trading",
+        "JP Morgan",
+        "Vatic Labs"
+      ],
+      "tags": [
+        "Continuous Random Variables",
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/sum-exceedance-i"
+    },
+    {
+      "id": "vtY09VAizttaJaVMm6da",
+      "title": "Sum Exceedance II",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Akuna",
+        "DE Shaw",
+        "Goldman Sachs",
+        "Hudson River Trading",
+        "JP Morgan",
+        "Vatic Labs"
+      ],
+      "tags": [
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/sum-exceedance-ii"
+    },
+    {
+      "id": "YnGoKPA247RunO3W6Vdr",
+      "title": "Sum Exceedance III",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Hudson River Trading",
+        "Vatic Labs"
+      ],
+      "tags": [
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/sum-exceedance-iii"
+    },
+    {
+      "id": "2Yb3TGMTI1jWl0E70S9C",
+      "title": "Sum Exceedance IV",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Akuna",
+        "Citadel",
+        "Hudson River Trading",
+        "Jane Street",
+        "Millennium Management"
+      ],
+      "tags": [
+        "Conditional Expectation",
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/sum-exceedance-iv"
+    },
+    {
+      "id": "GIZilPbwoQiDBKOF3v8d",
+      "title": "Take And Roll II",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Jane Street"
+      ],
+      "tags": [
+        "Expected Value",
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/take-and-roll-ii"
+    },
+    {
+      "id": "4PPq98Sotm26F1Hb5Ejf",
+      "title": "The Picking Hat",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [
+        "Akuna",
+        "Goldman Sachs",
+        "Jane Street"
+      ],
+      "tags": [
+        "Expected Value",
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/the-picking-hat"
+    },
+    {
+      "id": "PsiVTlOQJxIpF0j1J4NA",
+      "title": "The Sum Is Right",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Continuous Random Variables"
+      ],
+      "url": "https://www.quantguide.io/questions/the-sum-is-right"
+    },
+    {
+      "id": "33yz9ZngPB8MtKfCh75Y",
+      "title": "Thick Coin",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Events"
+      ],
+      "url": "https://www.quantguide.io/questions/thick-coin"
+    },
+    {
+      "id": "R0kTTigczINRfSZKr7tO",
+      "title": "Three-Way Tile",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Combinatorics"
+      ],
+      "url": "https://www.quantguide.io/questions/threeway-tile"
+    },
+    {
+      "id": "GSufXepnY4OBJnw0Jrzt",
+      "title": "Trading Cards",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Combinatorics",
+        "Events",
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/trading-cards"
+    },
+    {
+      "id": "txEZGu2s3fC8fbbe5n6T",
+      "title": "Turducken Hunt",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/turducken-hunt"
+    },
+    {
+      "id": "8zL4E9AMtFauE8Io8Pat",
+      "title": "Unknown Starter",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "Optiver"
+      ],
+      "tags": [
+        "Expected Value",
+        "Games"
+      ],
+      "url": "https://www.quantguide.io/questions/unknown-starter"
+    },
+    {
+      "id": "SKkgwWRenTi3kNBpaiUH",
+      "title": "Voter Mayhem I",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [
+        "AQR"
+      ],
+      "tags": [
+        "Conditional Probability"
+      ],
+      "url": "https://www.quantguide.io/questions/voter-mayhem"
+    },
+    {
+      "id": "XWtOdaD56yLGh6SZdPOK",
+      "title": "Voter Mayhem II",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": false,
+      "companies": [
+        "AQR"
+      ],
+      "tags": [
+        "Conditional Probability"
+      ],
+      "url": "https://www.quantguide.io/questions/voter-mayhem-ii"
+    },
+    {
+      "id": "rZn1Y5vO42ft5PrlYm9Z",
+      "title": "Wandering Ant II",
+      "difficulty": "hard",
+      "topic": "probability",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Conditional Expectation",
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/wandering-ant-ii"
+    },
+    {
+      "id": "A7oQw1tqsPglJCmqpNuF",
+      "title": "Brownian Supremum",
+      "difficulty": "hard",
+      "topic": "pure math",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Stochastic Calculus"
+      ],
+      "url": "https://www.quantguide.io/questions/brownian-supremum"
+    },
+    {
+      "id": "nYobBMqlhOIXBRlIGeCp",
+      "title": "Integral Limit",
+      "difficulty": "hard",
+      "topic": "pure math",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Calculus"
+      ],
+      "url": "https://www.quantguide.io/questions/integral-limit"
+    },
+    {
+      "id": "I1aixQd986vmcxE7XIOm",
+      "title": "Non-Zero Eigenvalue",
+      "difficulty": "hard",
+      "topic": "pure math",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Linear Algebra"
+      ],
+      "url": "https://www.quantguide.io/questions/nonzero-eigenvalue"
+    },
+    {
+      "id": "Vy2YtbfpQO42iB5yO3zH",
+      "title": "Positive Brownian II",
+      "difficulty": "hard",
+      "topic": "pure math",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Calculus",
+        "Stochastic Calculus"
+      ],
+      "url": "https://www.quantguide.io/questions/positive-brownian-ii"
+    },
+    {
+      "id": "cEYNfinl6SBLUrS2Epmk",
+      "title": "Silly SDE",
+      "difficulty": "hard",
+      "topic": "pure math",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Stochastic Calculus"
+      ],
+      "url": "https://www.quantguide.io/questions/silly-sde"
+    },
+    {
+      "id": "DlfDBYj2ym7Stu5rBOJz",
+      "title": "Vasicek Equation",
+      "difficulty": "hard",
+      "topic": "pure math",
+      "isPremium": true,
+      "companies": [],
+      "tags": [
+        "Stochastic Calculus"
+      ],
+      "url": "https://www.quantguide.io/questions/vasicek-equation"
+    },
+    {
+      "id": "U8TzETYi3O5ROkXBUfOp",
+      "title": "Determination II",
+      "difficulty": "hard",
+      "topic": "statistics",
+      "isPremium": true,
+      "companies": [
+        "DE Shaw",
+        "Squarepoint Capital",
+        "Two Sigma"
+      ],
+      "tags": [
+        "Linear Regression"
+      ],
+      "url": "https://www.quantguide.io/questions/determination-ii"
+    },
+    {
+      "id": "b7twVPGbaKN4auz6qd4x",
+      "title": "Identical Alpha",
+      "difficulty": "hard",
+      "topic": "statistics",
+      "isPremium": true,
+      "companies": [],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/identical-alpha"
+    },
+    {
+      "id": "1KoSBNZhCV6XsJqwxqKd",
+      "title": "Longest Rope I",
+      "difficulty": "hard",
+      "topic": "statistics",
+      "isPremium": true,
+      "companies": [
+        "Akuna",
+        "Citadel",
+        "Five Rings",
+        "Goldman Sachs",
+        "Jane Street",
+        "Two Sigma"
+      ],
+      "tags": [
+        "Continuous Random Variables",
+        "Expected Value"
+      ],
+      "url": "https://www.quantguide.io/questions/longest-rope"
+    },
+    {
+      "id": "1NDHczrPVOjatmK4XAZr",
+      "title": "Shopping Habits",
+      "difficulty": "hard",
+      "topic": "statistics",
+      "isPremium": false,
+      "companies": [
+        "Jane Street",
+        "Two Sigma"
+      ],
+      "tags": [],
+      "url": "https://www.quantguide.io/questions/shopping-habits"
+    },
+    {
+      "id": "vF5KUcsUGeViqq2lBR9x",
+      "title": "Significant Others",
+      "difficulty": "hard",
+      "topic": "statistics",
+      "isPremium": false,
+      "companies": [],
+      "tags": [
+        "Linear Regression"
+      ],
+      "url": "https://www.quantguide.io/questions/significant-others"
+    }
+  ]
+}

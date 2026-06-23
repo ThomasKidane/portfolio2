@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react'
 import questionsData from '../data/quant-questions.json'
+import prompts from '../data/quant-prompts.json'
 import { solutions } from '../data/quant-solutions'
+import { LatexRenderer } from '../components/LatexRenderer'
 
 interface Question {
   id: string
@@ -14,6 +16,7 @@ interface Question {
 }
 
 const questions: Question[] = questionsData.questions
+const questionPrompts: Record<string, string> = prompts
 
 function slugify(title: string): string {
   return title
@@ -206,6 +209,17 @@ export function Quant() {
                 {isExpanded && (
                   <div className="px-4 pb-4 border-t border-gray-800">
                     <div className="pt-3 space-y-3">
+                      {/* Question Prompt */}
+                      {questionPrompts[slug] && (
+                        <div className="p-4 bg-gray-800/70 rounded-lg border border-gray-700">
+                          <p className="text-xs text-gray-400 font-mono mb-2 uppercase tracking-wider">Question</p>
+                          <LatexRenderer
+                            text={questionPrompts[slug]}
+                            className="text-sm text-gray-200 leading-relaxed"
+                          />
+                        </div>
+                      )}
+
                       {/* Tags & Meta */}
                       <div className="flex flex-wrap gap-2">
                         {q.tags.map(tag => (
@@ -249,16 +263,17 @@ export function Quant() {
 
                           {isSolutionShown && (
                             <div className="mt-3 p-4 bg-gray-800 rounded-lg border border-gray-700">
-                              <div
-                                className="prose prose-invert prose-sm max-w-none font-mono text-sm leading-relaxed whitespace-pre-wrap"
-                                style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: '0.8rem' }}
-                              >
-                                {sol.solution}
-                              </div>
+                              <LatexRenderer
+                                text={sol.solution}
+                                className="text-sm text-gray-200 leading-relaxed"
+                              />
                               {sol.answer && (
                                 <div className="mt-4 pt-3 border-t border-gray-700">
                                   <span className="text-xs text-gray-400 font-mono">Answer: </span>
-                                  <span className="text-sm text-green-400 font-mono font-bold">{sol.answer}</span>
+                                  <LatexRenderer
+                                    text={`$${sol.answer}$`}
+                                    className="inline text-sm text-green-400 font-mono font-bold"
+                                  />
                                 </div>
                               )}
                             </div>

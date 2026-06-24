@@ -11,6 +11,7 @@ import { IntersectionsBlogPost } from './components/IntersectionsBlogPost'
 import GNRIBlogPost from './components/GNRIBlogPost'
 import AudioSeparationBlogPost from './components/AudioSeparationBlogPost'
 import { Quant } from './pages/Quant'
+import { Figgie } from './pages/Figgie'
 
 export default function App() {
   const location = useLocation()
@@ -19,10 +20,11 @@ export default function App() {
                      location.pathname.startsWith('/blog/guided-newton') ||
                      location.pathname.startsWith('/blog/audio-source-separation')
   const isQuantPage = location.pathname.startsWith('/quant')
+  const isToolPage = location.pathname.startsWith('/figgie')
 
   return (
     <div className={`min-h-screen bg-white ${isBlogPost ? 'blog-post-container' : ''}`}>
-      {!isBlogPost && !isQuantPage && <Navigation />}
+      {!isBlogPost && !isQuantPage && !isToolPage && <Navigation />}
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -35,6 +37,7 @@ export default function App() {
         <Route path="/blog/audio-source-separation" element={<AudioSeparationBlogPost />} />
         <Route path="/projects" element={<Projects />} />
           <Route path="/quant" element={<Quant />} />
+          <Route path="/figgie" element={<Figgie />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

@@ -53,9 +53,9 @@ export interface EvalResult {
   valuePerCard: Record<Suit, number>
 }
 
-export function evaluate(hand: Record<Suit, number>): EvalResult {
+export function evaluate(hand: Record<Suit, number>, handSize: 8 | 10 = 10): EvalResult {
   const total = SUITS.reduce((sum, s) => sum + hand[s], 0)
-  if (total !== 10) throw new Error('A Figgie hand has 10 cards')
+  if (total !== handSize) throw new Error(`Hand must have exactly ${handSize} cards`)
 
   const assignments = getAssignments()
   const post: Record<string, number> = {}

@@ -2,24 +2,26 @@ import { useState, useMemo } from 'react'
 import { evaluate, SUITS, SUIT_NAMES, SUIT_SYMBOLS, SUIT_COLORS, PARTNER, type Suit, type EvalResult } from '../lib/figgie'
 
 export function Figgie() {
+  const [players, setPlayers] = useState<4 | 5>(4)
+  const handSize = players === 4 ? 10 : 8
   const [hand, setHand] = useState<Record<Suit, number>>({ S: 4, C: 3, H: 2, D: 1 })
   const [error, setError] = useState<string | null>(null)
 
   const total = SUITS.reduce((sum, s) => sum + hand[s], 0)
 
   const result: EvalResult | null = useMemo(() => {
-    if (total !== 10) {
-      setError(`Hand must have exactly 10 cards (currently ${total})`)
+    if (total !== handSize) {
+      setError(`Hand must have exactly ${handSize} cards (currently ${total})`)
       return null
     }
     setError(null)
     try {
-      return evaluate(hand)
+      return evaluate(hand, handSize as 8 | 10)
     } catch (e) {
       setError((e as Error).message)
       return null
     }
-  }, [hand, total])
+  }, [hand, total, handSize])
 
   const bestGoal = result
     ? SUITS.reduce((best, s) => result.pGoal[s] > result.pGoal[best] ? s : best, SUITS[0])
@@ -27,8 +29,16 @@ export function Figgie() {
 
   const updateSuit = (suit: Suit, delta: number) => {
     const newVal = hand[suit] + delta
-    if (newVal < 0 || newVal > 10) return
+    if (newVal < 0 || newVal > handSize) return
     setHand(prev => ({ ...prev, [suit]: newVal }))
+  }
+
+  const switchPlayers = (p: 4 | 5) => {
+    setPlayers(p)
+    const newHandSize = p === 4 ? 10 : 8
+    if (total > newHandSize) {
+      setHand({ S: Math.floor(newHandSize / 4), C: Math.floor(newHandSize / 4), H: Math.floor(newHandSize / 4), D: newHandSize - 3 * Math.floor(newHandSize / 4) })
+    }
   }
 
   return (
@@ -69,6 +79,33 @@ export function Figgie() {
           </p>
         </div>
 
+        {/* Player Count Toggle */}
+        <div className="mb-6">
+          <h2 className="text-sm font-mono text-gray-400 mb-3 uppercase tracking-wider">Players</h2>
+          <div className="flex gap-2">
+            <button
+              onClick={() => switchPlayers(4)}
+              className={`px-4 py-2 rounded font-mono text-sm transition-colors ${
+                players === 4
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-800 border border-gray-700 text-gray-400 hover:border-gray-500'
+              }`}
+            >
+              4 players (10 cards)
+            </button>
+            <button
+              onClick={() => switchPlayers(5)}
+              className={`px-4 py-2 rounded font-mono text-sm transition-colors ${
+                players === 5
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-800 border border-gray-700 text-gray-400 hover:border-gray-500'
+              }`}
+            >
+              5 players (8 cards)
+            </button>
+          </div>
+        </div>
+
         {/* Hand Input */}
         <div className="mb-8">
           <h2 className="text-sm font-mono text-gray-400 mb-4 uppercase tracking-wider">Your Hand</h2>
@@ -106,8 +143,8 @@ export function Figgie() {
             ))}
           </div>
           <div className="mt-3 flex justify-between items-center">
-            <span className={`text-xs font-mono ${total === 10 ? 'text-green-500' : 'text-red-400'}`}>
-              Total: {total}/10
+            <span className={`text-xs font-mono ${total === handSize ? 'text-green-500' : 'text-red-400'}`}>
+              Total: {total}/{handSize}
             </span>
             {error && <span className="text-xs font-mono text-red-400">{error}</span>}
           </div>

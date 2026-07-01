@@ -12,6 +12,7 @@ import GNRIBlogPost from './components/GNRIBlogPost'
 import AudioSeparationBlogPost from './components/AudioSeparationBlogPost'
 import { Quant } from './pages/Quant'
 import { Figgie } from './pages/Figgie'
+import { FiggieGame } from './pages/FiggieGame'
 
 export default function App() {
   const location = useLocation()
@@ -38,6 +39,7 @@ export default function App() {
         <Route path="/projects" element={<Projects />} />
           <Route path="/quant" element={<Quant />} />
           <Route path="/figgie" element={<Figgie />} />
+          <Route path="/figgie-game" element={<FiggieGame />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

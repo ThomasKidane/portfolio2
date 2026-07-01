@@ -187,18 +187,24 @@ export function FiggieGame() {
     if (!data) return
     const allSubmitted = data.every(p => p.prediction !== null)
     if (allSubmitted) {
-      // Score everyone
+      // Prevent double-scoring: check if already scored this round
+      if (data.some(p => p.last_round_score !== null)) return
+
       for (const p of data) {
         if (!p.hand || !p.prediction) continue
         const result = evaluate(p.hand, (lobby.num_players === 5 ? 8 : 10) as 8 | 10)
         const predTotal = SUITS.reduce((sum, s) => sum + (p.prediction as Record<Suit, number>)[s], 0)
-        let brier = 0
+        let kl = 0
         for (const s of SUITS) {
-          const predicted = (p.prediction as Record<Suit, number>)[s] / predTotal
-          brier += (predicted - result.pGoal[s]) ** 2
+          const predicted = Math.max((p.prediction as Record<Suit, number>)[s] / predTotal, 0.001)
+          const actual = result.pGoal[s]
+          if (actual > 0) {
+            kl += actual * Math.log(actual / predicted)
+          }
         }
+        const newTotal = p.total_score + kl
         await supabase.from('figgie_players')
-          .update({ last_round_score: brier, total_score: p.total_score + brier })
+          .update({ last_round_score: kl, total_score: newTotal })
           .eq('id', p.id)
       }
       await supabase.from('figgie_lobbies').update({ phase: 'results' }).eq('id', lobby.id)
@@ -222,7 +228,7 @@ export function FiggieGame() {
             Figgie Multiplayer
           </h1>
           <p className="text-xs font-mono text-gray-500 mt-1">
-            Real-time calibration game. Lowest Brier score wins.
+            Real-time calibration game. Lowest KL divergence wins.
           </p>
         </div>
 
@@ -412,7 +418,7 @@ export function FiggieGame() {
                         {player.id === myPlayerId && <span className="text-xs font-mono text-gray-500">(you)</span>}
                       </div>
                       <span className={`font-mono text-sm font-bold ${rank === 0 ? 'text-green-400' : 'text-gray-300'}`}>
-                        {player.last_round_score?.toFixed(4) ?? '—'}
+                        {player.last_round_score?.toFixed(4) ?? '—'} nats
                       </span>
                     </div>
                     {result && pred && (

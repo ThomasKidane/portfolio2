@@ -107,3 +107,6 @@ Thumbs.db
 # QuantGuide source repo
 quantguide-hard-index/
 
+# Scraped questions source data
+scraped-questions/
+

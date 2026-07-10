@@ -66,6 +66,7 @@ interface GameParams {
   roundDuration: number
   goalCardValue: number
   ante: number
+  totalRounds: number
 }
 
 const DEFAULT_PARAMS: GameParams = {
@@ -76,6 +77,7 @@ const DEFAULT_PARAMS: GameParams = {
   roundDuration: 180,
   goalCardValue: GOAL_CARD_VALUE,
   ante: 10,
+  totalRounds: 5,
 }
 
 export function FiggieMarket() {
@@ -220,6 +222,15 @@ export function FiggieMarket() {
       .eq('id', lobby.id)
     setTrades([])
     setTimeLeft(params.roundDuration)
+  }
+
+  const resetAndStart = async () => {
+    if (!lobby) return
+    for (const p of players) {
+      await supabase.from('figgie_market_players').update({ total_score: 0 }).eq('id', p.id)
+    }
+    await supabase.from('figgie_market_lobbies').update({ round: 0 }).eq('id', lobby.id)
+    await startRound()
   }
 
 
@@ -371,6 +382,11 @@ export function FiggieMarket() {
                 <div>
                   <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Ante per player ($)</label>
                   <input type="number" value={params.ante} onChange={e => setParams(p => ({ ...p, ante: Math.max(0, parseInt(e.target.value) || 10) }))}
+                    className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Total rounds</label>
+                  <input type="number" value={params.totalRounds} onChange={e => setParams(p => ({ ...p, totalRounds: Math.max(1, parseInt(e.target.value) || 5) }))}
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
               </div>
@@ -535,8 +551,20 @@ export function FiggieMarket() {
 
         {phase === 'results' && lobby && (
           <div className="space-y-6">
+            {lobby.round >= params.totalRounds ? (
+              <div className="text-center border-2 border-dotted border-yellow-300 bg-yellow-50 rounded-lg p-6">
+                <p className="text-xs text-yellow-600 mb-2" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.55rem' }}>GAME OVER</p>
+                <p className="text-sm text-gray-600" style={{ fontFamily: 'Georgia, serif' }}>
+                  Final round complete ({params.totalRounds} rounds played)
+                </p>
+              </div>
+            ) : (
+              <div className="text-center">
+                <p className="text-xs text-gray-400" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.5rem' }}>ROUND {lobby.round}/{params.totalRounds} COMPLETE</p>
+              </div>
+            )}
+
             <div className="text-center">
-              <p className="text-xs text-gray-400" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.5rem' }}>ROUND {lobby.round} COMPLETE</p>
               <p className="text-sm text-gray-600 mt-2" style={{ fontFamily: 'Georgia, serif' }}>
                 Goal suit was: <span className="font-bold text-lg" style={{ color: SUIT_COLORS[lobby.goal_suit!] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[lobby.goal_suit!]}</span> (worth ${params.goalCardValue}/card)
               </p>
@@ -546,7 +574,7 @@ export function FiggieMarket() {
             </div>
 
             <div className="border-2 border-dotted border-gray-200 rounded-lg p-5">
-              <p className="text-xs text-gray-400 mb-3" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>ROUND RESULTS</p>
+              <p className="text-xs text-gray-400 mb-3" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>ROUND {lobby.round} RESULTS</p>
               <div className="space-y-3">
                 {[...players].sort((a, b) => b.total_score - a.total_score).map((p, i) => {
                   const goalCards = (p.hand as Record<Suit, number>)?.[lobby.goal_suit!] || 0
@@ -581,21 +609,39 @@ export function FiggieMarket() {
               </div>
             </div>
 
-            <div className="border-2 border-dotted border-gray-200 rounded-lg p-5">
-              <p className="text-xs text-gray-400 mb-3" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>LEADERBOARD (CUMULATIVE)</p>
+            <div className={`border-2 border-dotted rounded-lg p-5 ${lobby.round >= params.totalRounds ? 'border-yellow-300 bg-yellow-50' : 'border-gray-200'}`}>
+              <p className="text-xs text-gray-400 mb-3" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>
+                {lobby.round >= params.totalRounds ? 'FINAL STANDINGS' : `LEADERBOARD (${lobby.round}/${params.totalRounds} ROUNDS)`}
+              </p>
               <div className="space-y-2">
                 {[...players].sort((a, b) => b.total_score - a.total_score).map((p, i) => (
                   <div key={p.id} className="flex justify-between items-center">
-                    <span className="text-sm text-gray-700" style={{ fontFamily: 'Georgia, serif' }}>{i + 1}. {p.name}</span>
-                    <span className="text-sm font-bold text-gray-800" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.5rem' }}>{p.total_score.toFixed(0)}</span>
+                    <div className="flex items-center gap-2">
+                      {lobby.round >= params.totalRounds && i === 0 && <span className="text-lg">&#x1F3C6;</span>}
+                      <span className={`text-sm ${lobby.round >= params.totalRounds && i === 0 ? 'text-yellow-700 font-bold' : 'text-gray-700'}`} style={{ fontFamily: 'Georgia, serif' }}>
+                        {i + 1}. {p.name}
+                      </span>
+                      {p.id === myPlayerId && <span className="text-xs text-gray-400">(you)</span>}
+                    </div>
+                    <span className={`text-sm font-bold ${lobby.round >= params.totalRounds && i === 0 ? 'text-yellow-700' : 'text-gray-800'}`} style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.5rem' }}>
+                      {p.total_score >= 0 ? '+' : ''}{p.total_score.toFixed(0)}
+                    </span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {players[0]?.id === myPlayerId && (
+            {lobby.round < params.totalRounds && players[0]?.id === myPlayerId && (
               <button onClick={startRound} className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.55rem' }}>
-                NEXT ROUND
+                NEXT ROUND ({lobby.round + 1}/{params.totalRounds})
+              </button>
+            )}
+            {lobby.round < params.totalRounds && players[0]?.id !== myPlayerId && (
+              <p className="text-center text-xs text-gray-400" style={{ fontFamily: 'Georgia, serif' }}>Waiting for host to start next round...</p>
+            )}
+            {lobby.round >= params.totalRounds && players[0]?.id === myPlayerId && (
+              <button onClick={resetAndStart} className="w-full px-4 py-3 border-2 border-dotted border-blue-300 text-blue-600 hover:bg-blue-50 text-xs rounded transition-colors" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.55rem' }}>
+                PLAY AGAIN (NEW SET)
               </button>
             )}
           </div>

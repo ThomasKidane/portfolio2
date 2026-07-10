@@ -127,7 +127,7 @@ export function About() {
                     color: '#666'
                   }}
                 >
-                  Sophomore • Class of 2027
+                  Junior • Class of 2028
                 </div>
               </div>
             </div>

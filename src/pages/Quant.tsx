@@ -22,12 +22,16 @@ interface QuantableQuestion {
   difficulty: string
   url: string
   problem: string
-  problemLatex: string[]
   hint: string
   solution: string
-  solutionLatex: string[]
   hasHint: boolean
-  hasLatex: boolean
+}
+
+interface Playlist {
+  id: number
+  name: string
+  url: string
+  questions: string[]
 }
 
 const quantGuideQuestions: QuantGuideQuestion[] = questionsData.questions
@@ -44,19 +48,6 @@ const allTopics = [...new Set(quantGuideQuestions.map(q => q.topic))].sort()
 const allCompanies = [...new Set(quantGuideQuestions.flatMap(q => q.companies))].sort()
 const allTags = [...new Set(quantGuideQuestions.flatMap(q => q.tags))].sort()
 
-function reconstructLatex(problem: string, latexParts: string[]): string {
-  if (!latexParts || latexParts.length === 0) return problem
-  let result = problem
-  for (const part of latexParts) {
-    if (!part.trim()) continue
-    const plainText = part.replace(/[\\{}^_]/g, '').replace(/dfrac|frac|sqrt|cdot|times|left|right|ln|log|sin|cos|tan/g, '')
-    if (plainText && result.includes(plainText)) {
-      result = result.replace(plainText, `$${part}$`)
-    }
-  }
-  return result
-}
-
 export function Quant() {
   const [activeTab, setActiveTab] = useState<'quantguide' | 'quantable'>('quantguide')
   const [search, setSearch] = useState('')
@@ -64,9 +55,11 @@ export function Quant() {
   const [companyFilter, setCompanyFilter] = useState('')
   const [tagFilter, setTagFilter] = useState('')
   const [difficultyFilter, setDifficultyFilter] = useState('')
+  const [playlistFilter, setPlaylistFilter] = useState('')
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [showSolution, setShowSolution] = useState<string | null>(null)
   const [quantableQuestions, setQuantableQuestions] = useState<QuantableQuestion[]>([])
+  const [playlists, setPlaylists] = useState<Playlist[]>([])
   const [quantableLoading, setQuantableLoading] = useState(false)
   const [solvedSet, setSolvedSet] = useState<Set<string>>(() => {
     try {
@@ -82,6 +75,7 @@ export function Quant() {
         .then(r => r.json())
         .then(data => {
           setQuantableQuestions(data.questions)
+          setPlaylists(data.playlists || [])
           setQuantableLoading(false)
         })
         .catch(() => setQuantableLoading(false))
@@ -99,12 +93,16 @@ export function Quant() {
   }, [search, topicFilter, companyFilter, tagFilter])
 
   const filteredQuantable = useMemo(() => {
+    const selectedPlaylist = playlists.find(p => p.name === playlistFilter)
+    const playlistTitles = selectedPlaylist ? new Set(selectedPlaylist.questions) : null
+
     return quantableQuestions.filter(q => {
       if (search && !q.title.toLowerCase().includes(search.toLowerCase())) return false
       if (difficultyFilter && q.difficulty !== difficultyFilter) return false
+      if (playlistTitles && !playlistTitles.has(q.title)) return false
       return true
     })
-  }, [search, difficultyFilter])
+  }, [search, difficultyFilter, quantableQuestions, playlistFilter, playlists])
 
   const toggleSolved = (id: string) => {
     setSolvedSet(prev => {
@@ -219,7 +217,15 @@ export function Quant() {
                 <option value="hard">Hard</option>
                 <option value="extreme">Extreme</option>
               </select>
-              <div />
+              <select
+                value={playlistFilter}
+                onChange={e => setPlaylistFilter(e.target.value)}
+                className="border-2 border-dotted border-gray-300 rounded px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-blue-500 bg-white"
+                style={{ fontFamily: 'Georgia, serif' }}
+              >
+                <option value="">All Playlists</option>
+                {playlists.map(p => <option key={p.id} value={p.name}>{p.name} ({p.questions.length})</option>)}
+              </select>
               <div />
             </>
           )}
@@ -430,7 +436,7 @@ export function Quant() {
                       <div className="p-4 bg-gray-50 rounded-lg border-2 border-dotted border-gray-200">
                         <p className="text-xs text-gray-400 mb-2 uppercase tracking-wider" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.5rem' }}>QUESTION</p>
                         <LatexRenderer
-                          text={reconstructLatex(q.problem, q.problemLatex)}
+                          text={q.problem}
                           className="text-sm text-gray-700 leading-relaxed"
                         />
                       </div>
@@ -465,7 +471,7 @@ export function Quant() {
                           {isSolutionShown && (
                             <div className="mt-3 p-4 bg-gray-50 rounded-lg border-2 border-dotted border-blue-200">
                               <LatexRenderer
-                                text={reconstructLatex(q.solution, q.solutionLatex)}
+                                text={q.solution}
                                 className="text-sm text-gray-700 leading-relaxed"
                               />
                             </div>

@@ -25,7 +25,7 @@ export const solutions: Record<string, QuantSolution> = {
     answer: `1405/4`
   },
   "arbitrage-detective-i": {
-    solution: `Put-call parity is violated. Box spread (165,170): cost=4, payoff=5. Guaranteed profit = \$1.`,
+    solution: `Put-call parity is violated. Box spread (165,170): cost=4, payoff=5. Guaranteed profit = \\$1.`,
     answer: `1`
   },
   "balanced-beans-ii": {
@@ -177,7 +177,7 @@ export const solutions: Record<string, QuantSolution> = {
     answer: `49/24`
   },
   "dice-profits": {
-    solution: `20-sided die, n rolls costs \$(n-1). Optimal n=3: Profit = $1079/80$.`,
+    solution: `20-sided die, $n$ rolls costs \\$(n-1). Optimal n=3: Profit = $1079/80$.`,
     answer: `1079/80`
   },
   "die-roll-lcm": {
@@ -333,7 +333,7 @@ export const solutions: Record<string, QuantSolution> = {
     answer: `200`
   },
   "needy-friends": {
-    solution: `Solving: n=20, W=120. Each person gets \$6.`,
+    solution: `Solving: n=20, W=120. Each person gets \\$6.`,
     answer: `6`
   },
   "nonconsecutive-sequence": {

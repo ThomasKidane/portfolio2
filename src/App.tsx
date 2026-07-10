@@ -1,5 +1,7 @@
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { Navigation } from './components/Navigation'
+import { AuthProvider } from './lib/auth'
+import { ProtectedRoute } from './components/ProtectedRoute'
 import { Home } from './pages/Home'
 import { About } from './pages/About'
 import { Blog } from './pages/Blog'
@@ -14,6 +16,8 @@ import { Quant } from './pages/Quant'
 import { Figgie } from './pages/Figgie'
 import { FiggieGame } from './pages/FiggieGame'
 import { FiggieMarket } from './pages/FiggieMarket'
+import { Login } from './pages/Login'
+import { Admin } from './pages/Admin'
 
 export default function App() {
   const location = useLocation()
@@ -23,29 +27,34 @@ export default function App() {
                      location.pathname.startsWith('/blog/audio-source-separation')
   const isQuantPage = location.pathname.startsWith('/quant')
   const isToolPage = location.pathname.startsWith('/figgie')
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/admin'
 
   return (
-    <div className={`min-h-screen bg-white ${isBlogPost ? 'blog-post-container' : ''}`}>
-      {!isBlogPost && !isQuantPage && !isToolPage && <Navigation />}
-      <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/intersections" element={<Intersections />} />
-          <Route path="/about" element={<About />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/blog/runahead-execution" element={<RunaheadBlogPost />} />
-        <Route path="/blog/the-intersections" element={<IntersectionsBlogPost />} />
-        <Route path="/blog/guided-newton-raphson-inversion" element={<GNRIBlogPost />} />
-        <Route path="/blog/audio-source-separation" element={<AudioSeparationBlogPost />} />
-        <Route path="/projects" element={<Projects />} />
-          <Route path="/quant" element={<Quant />} />
-          <Route path="/figgie" element={<Figgie />} />
-          <Route path="/figgie-game" element={<FiggieGame />} />
-          <Route path="/figgie-market" element={<FiggieMarket />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </main>
-    </div>
+    <AuthProvider>
+      <div className={`min-h-screen bg-white ${isBlogPost ? 'blog-post-container' : ''}`}>
+        {!isBlogPost && !isQuantPage && !isToolPage && !isAuthPage && <Navigation />}
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/admin" element={<ProtectedRoute pageKey="admin" requireAdmin><Admin /></ProtectedRoute>} />
+            <Route path="/intersections" element={<Intersections />} />
+            <Route path="/about" element={<ProtectedRoute pageKey="about"><About /></ProtectedRoute>} />
+            <Route path="/blog" element={<ProtectedRoute pageKey="blog"><Blog /></ProtectedRoute>} />
+            <Route path="/blog/runahead-execution" element={<ProtectedRoute pageKey="blog"><RunaheadBlogPost /></ProtectedRoute>} />
+            <Route path="/blog/the-intersections" element={<ProtectedRoute pageKey="blog"><IntersectionsBlogPost /></ProtectedRoute>} />
+            <Route path="/blog/guided-newton-raphson-inversion" element={<ProtectedRoute pageKey="blog"><GNRIBlogPost /></ProtectedRoute>} />
+            <Route path="/blog/audio-source-separation" element={<ProtectedRoute pageKey="blog"><AudioSeparationBlogPost /></ProtectedRoute>} />
+            <Route path="/projects" element={<ProtectedRoute pageKey="projects"><Projects /></ProtectedRoute>} />
+            <Route path="/quant" element={<ProtectedRoute pageKey="quant"><Quant /></ProtectedRoute>} />
+            <Route path="/figgie" element={<ProtectedRoute pageKey="figgie"><Figgie /></ProtectedRoute>} />
+            <Route path="/figgie-game" element={<ProtectedRoute pageKey="figgie-game"><FiggieGame /></ProtectedRoute>} />
+            <Route path="/figgie-market" element={<ProtectedRoute pageKey="figgie-market"><FiggieMarket /></ProtectedRoute>} />
+            <Route path="/contact" element={<ProtectedRoute pageKey="contact"><Contact /></ProtectedRoute>} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
+      </div>
+    </AuthProvider>
   )
 }

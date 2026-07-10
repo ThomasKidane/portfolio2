@@ -13,6 +13,7 @@ import AudioSeparationBlogPost from './components/AudioSeparationBlogPost'
 import { Quant } from './pages/Quant'
 import { Figgie } from './pages/Figgie'
 import { FiggieGame } from './pages/FiggieGame'
+import { FiggieMarket } from './pages/FiggieMarket'
 
 export default function App() {
   const location = useLocation()
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="/quant" element={<Quant />} />
           <Route path="/figgie" element={<Figgie />} />
           <Route path="/figgie-game" element={<FiggieGame />} />
+          <Route path="/figgie-market" element={<FiggieMarket />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

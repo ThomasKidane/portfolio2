@@ -1,12 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '../lib/supabase'
-import { SUITS, SUIT_SYMBOLS, SUIT_COLORS, PARTNER, type Suit } from '../lib/figgie'
+import { SUITS, SUIT_SYMBOLS, SUIT_COLORS, type Suit } from '../lib/figgie'
 import {
-  validateQuote,
   dealMarketHands,
   assignMarketSuits,
-  PENALTY_INTERVAL_MS,
-  PENALTY_AMOUNT,
   MAX_SPREAD,
   STARTING_CASH,
   ROUND_DURATION_MS,
@@ -61,6 +58,24 @@ function generateCode(): string {
 }
 
 
+interface GameParams {
+  penaltyInterval: number
+  penaltyAmount: number
+  maxSpread: number
+  startingCash: number
+  roundDuration: number
+  goalCardValue: number
+}
+
+const DEFAULT_PARAMS: GameParams = {
+  penaltyInterval: 14,
+  penaltyAmount: 2,
+  maxSpread: MAX_SPREAD,
+  startingCash: STARTING_CASH,
+  roundDuration: 180,
+  goalCardValue: GOAL_CARD_VALUE,
+}
+
 export function FiggieMarket() {
   const [phase, setPhase] = useState<Phase>('join')
   const [lobbyCode, setLobbyCode] = useState('')
@@ -74,6 +89,8 @@ export function FiggieMarket() {
   const [timeLeft, setTimeLeft] = useState(ROUND_DURATION_MS / 1000)
   const [bidInput, setBidInput] = useState('')
   const [askInput, setAskInput] = useState('')
+  const [params, setParams] = useState<GameParams>(DEFAULT_PARAMS)
+  const [showRules, setShowRules] = useState(false)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const penaltyRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
@@ -104,9 +121,10 @@ export function FiggieMarket() {
 
   useEffect(() => {
     if (phase !== 'trading' || !lobby?.round_start_time) return
+    const roundMs = params.roundDuration * 1000
     timerRef.current = setInterval(() => {
       const elapsed = Date.now() - new Date(lobby.round_start_time!).getTime()
-      const remaining = Math.max(0, Math.ceil((ROUND_DURATION_MS - elapsed) / 1000))
+      const remaining = Math.max(0, Math.ceil((roundMs - elapsed) / 1000))
       setTimeLeft(remaining)
       if (remaining <= 0) endRound()
     }, 1000)
@@ -115,19 +133,20 @@ export function FiggieMarket() {
 
   useEffect(() => {
     if (phase !== 'trading' || !myPlayerId || !myAssignedSuit) return
+    const penaltyIntervalMs = params.penaltyInterval * 1000
     penaltyRef.current = setInterval(async () => {
       const me = players.find(p => p.id === myPlayerId)
       if (!me || me.quote_bid !== null) return
       const lastTime = me.last_quote_time ? new Date(me.last_quote_time).getTime() : (lobby?.round_start_time ? new Date(lobby.round_start_time).getTime() : Date.now())
       const elapsed = Date.now() - lastTime
-      if (elapsed >= PENALTY_INTERVAL_MS) {
-        const newDrained = me.penalty_drained + PENALTY_AMOUNT
-        const newCash = me.cash - PENALTY_AMOUNT
+      if (elapsed >= penaltyIntervalMs) {
+        const newDrained = me.penalty_drained + params.penaltyAmount
+        const newCash = me.cash - params.penaltyAmount
         await supabase.from('figgie_market_players')
           .update({ penalty_drained: newDrained, cash: newCash, last_quote_time: new Date().toISOString() })
           .eq('id', myPlayerId)
         await supabase.from('figgie_market_lobbies')
-          .update({ penalty_pot: (lobby?.penalty_pot || 0) + PENALTY_AMOUNT })
+          .update({ penalty_pot: (lobby?.penalty_pot || 0) + params.penaltyAmount })
           .eq('id', lobby?.id)
       }
     }, 3000)
@@ -152,7 +171,7 @@ export function FiggieMarket() {
     if (err || !lobbyData) { setError('Failed to create lobby'); return }
     const { data: playerData, error: pErr } = await supabase
       .from('figgie_market_players')
-      .insert({ lobby_id: lobbyData.id, name: playerName.trim(), cash: STARTING_CASH, trade_volume: 0, penalty_drained: 0, total_score: 0 })
+      .insert({ lobby_id: lobbyData.id, name: playerName.trim(), cash: params.startingCash, trade_volume: 0, penalty_drained: 0, total_score: 0 })
       .select().single()
     if (pErr || !playerData) { setError('Failed to join'); return }
     setLobby(lobbyData)
@@ -173,7 +192,7 @@ export function FiggieMarket() {
     if (existing && existing.length >= lobbyData.num_players) { setError('Lobby full'); return }
     const { data: playerData, error: pErr } = await supabase
       .from('figgie_market_players')
-      .insert({ lobby_id: lobbyData.id, name: playerName.trim(), cash: STARTING_CASH, trade_volume: 0, penalty_drained: 0, total_score: 0 })
+      .insert({ lobby_id: lobbyData.id, name: playerName.trim(), cash: params.startingCash, trade_volume: 0, penalty_drained: 0, total_score: 0 })
       .select().single()
     if (pErr || !playerData) { setError('Failed to join'); return }
     setLobby(lobbyData)
@@ -189,14 +208,14 @@ export function FiggieMarket() {
     const suitAssignments = assignMarketSuits(playerIds, lobby.num_players)
     for (let i = 0; i < players.length; i++) {
       await supabase.from('figgie_market_players')
-        .update({ hand: hands[i], cash: STARTING_CASH, trade_volume: 0, penalty_drained: 0, quote_bid: null, quote_ask: null, quote_suit: null, last_quote_time: null })
+        .update({ hand: hands[i], cash: params.startingCash, trade_volume: 0, penalty_drained: 0, quote_bid: null, quote_ask: null, quote_suit: null, last_quote_time: null })
         .eq('id', players[i].id)
     }
     await supabase.from('figgie_market_lobbies')
       .update({ phase: 'trading', round: lobby.round + 1, deck_assignment: assignment, goal_suit: goalSuit, round_start_time: new Date().toISOString(), suit_assignments: suitAssignments, penalty_pot: 0 })
       .eq('id', lobby.id)
     setTrades([])
-    setTimeLeft(ROUND_DURATION_MS / 1000)
+    setTimeLeft(params.roundDuration)
   }
 
 
@@ -204,8 +223,10 @@ export function FiggieMarket() {
     if (!myPlayerId || !myAssignedSuit || !lobby) return
     const bid = parseInt(bidInput)
     const ask = parseInt(askInput)
-    const err = validateQuote(bid, ask)
-    if (err) { setError(err); return }
+    if (isNaN(bid) || isNaN(ask)) { setError('Enter valid numbers'); return }
+    if (bid < 0 || ask < 0) { setError('Prices must be non-negative'); return }
+    if (bid >= ask) { setError('Bid must be less than ask'); return }
+    if (ask - bid > params.maxSpread) { setError(`Spread cannot exceed ${params.maxSpread}`); return }
     setError(null)
     await supabase.from('figgie_market_players')
       .update({ quote_bid: bid, quote_ask: ask, quote_suit: myAssignedSuit, last_quote_time: new Date().toISOString() })
@@ -251,15 +272,15 @@ export function FiggieMarket() {
     const totalVolume = pls.reduce((s, p) => s + p.trade_volume, 0)
     const pot = lobby.penalty_pot
     for (const p of pls) {
-      const cardValue = (p.hand as Record<Suit, number>)?.[lobby.goal_suit!] * GOAL_CARD_VALUE || 0
+      const cardValue = (p.hand as Record<Suit, number>)?.[lobby.goal_suit!] * params.goalCardValue || 0
       const potShare = totalVolume > 0 ? (p.trade_volume / totalVolume) * pot : pot / pls.length
-      const roundScore = p.cash + cardValue + potShare - STARTING_CASH
+      const roundScore = p.cash + cardValue + potShare - params.startingCash
       await supabase.from('figgie_market_players')
         .update({ total_score: p.total_score + roundScore })
         .eq('id', p.id)
     }
     await supabase.from('figgie_market_lobbies').update({ phase: 'results' }).eq('id', lobby.id)
-  }, [lobby])
+  }, [lobby, params])
 
 
   return (
@@ -270,7 +291,7 @@ export function FiggieMarket() {
             FIGGIE MARKET
           </h1>
           <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.9rem', color: '#666', marginTop: '0.5rem' }}>
-            Spread obligation trading game &bull; 14s quote timer &bull; Max spread: {MAX_SPREAD}
+            Spread obligation trading game &bull; {params.penaltyInterval}s quote timer &bull; Max spread: {params.maxSpread}
           </p>
         </div>
       </div>
@@ -281,7 +302,69 @@ export function FiggieMarket() {
         )}
 
         {phase === 'join' && (
-          <div className="max-w-md mx-auto space-y-6">
+          <div className="max-w-lg mx-auto space-y-6">
+            {/* Rules toggle */}
+            <div className="border-2 border-dotted border-blue-200 rounded-lg overflow-hidden">
+              <button onClick={() => setShowRules(!showRules)} className="w-full flex justify-between items-center px-5 py-3 hover:bg-blue-50/50 transition-colors">
+                <span className="text-xs text-blue-600" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.5rem' }}>RULES</span>
+                <svg className={`w-4 h-4 text-blue-400 transition-transform ${showRules ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {showRules && (
+                <div className="px-5 pb-5 space-y-3 text-sm text-gray-600 border-t-2 border-dotted border-blue-100 pt-3" style={{ fontFamily: 'Georgia, serif' }}>
+                  <p><strong>Setup:</strong> A 40-card deck has 4 suits with asymmetric counts (12, 10, 10, 8). One suit is the "goal suit" — it's the partner of the 12-card suit. Partners: ♠↔♣, ♥↔♦.</p>
+                  <p><strong>Hands:</strong> Cards are dealt evenly. You see only your own hand and must infer the goal suit from the distribution.</p>
+                  <p><strong>Market Making:</strong> Each player is randomly assigned a suit they must continuously quote (post a bid and ask). If you fail to maintain a live quote for <strong>{params.penaltyInterval} seconds</strong>, ${params.penaltyAmount} drains from your cash into the penalty pot.</p>
+                  <p><strong>Spread Constraint:</strong> Your ask minus bid cannot exceed <strong>{params.maxSpread}</strong>. This forces tight, informative prices.</p>
+                  <p><strong>Trading:</strong> Other players can hit your bid (sell to you) or lift your ask (buy from you). When your quote is filled, it clears — you must re-quote within the penalty window.</p>
+                  <p><strong>Scoring:</strong> After {params.roundDuration}s, each goal-suit card is worth <strong>${params.goalCardValue}</strong>. The penalty pot is distributed proportionally by trade volume. Your P&L = cash + card value + pot share − starting cash.</p>
+                  <p><strong>Strategy:</strong> Information leaks through your quotes. If you know the goal suit, you must still quote it tightly — revealing your edge. Trade actively to earn pot share.</p>
+                </div>
+              )}
+            </div>
+
+            {/* Game parameters */}
+            <div className="border-2 border-dotted border-gray-200 rounded-lg p-5 space-y-4">
+              <p className="text-xs text-gray-400 mb-1" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.5rem' }}>GAME PARAMETERS</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Penalty timer (s)</label>
+                  <input type="number" value={params.penaltyInterval} onChange={e => setParams(p => ({ ...p, penaltyInterval: Math.max(1, parseInt(e.target.value) || 14) }))}
+                    className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Penalty drain ($)</label>
+                  <input type="number" value={params.penaltyAmount} onChange={e => setParams(p => ({ ...p, penaltyAmount: Math.max(1, parseInt(e.target.value) || 2) }))}
+                    className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Max spread</label>
+                  <input type="number" value={params.maxSpread} onChange={e => setParams(p => ({ ...p, maxSpread: Math.max(1, parseInt(e.target.value) || 4) }))}
+                    className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Starting cash ($)</label>
+                  <input type="number" value={params.startingCash} onChange={e => setParams(p => ({ ...p, startingCash: Math.max(10, parseInt(e.target.value) || 100) }))}
+                    className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Round duration (s)</label>
+                  <input type="number" value={params.roundDuration} onChange={e => setParams(p => ({ ...p, roundDuration: Math.max(30, parseInt(e.target.value) || 180) }))}
+                    className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Goal card value ($)</label>
+                  <input type="number" value={params.goalCardValue} onChange={e => setParams(p => ({ ...p, goalCardValue: Math.max(1, parseInt(e.target.value) || 10) }))}
+                    className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
+                </div>
+              </div>
+              <button onClick={() => setParams(DEFAULT_PARAMS)} className="text-xs text-blue-500 hover:text-blue-700 underline" style={{ fontFamily: 'Georgia, serif' }}>
+                Reset to defaults
+              </button>
+            </div>
+
+            {/* Lobby creation / join */}
             <div className="border-2 border-dotted border-gray-200 rounded-lg p-6 space-y-4">
               <input type="text" placeholder="Your name" value={playerName} onChange={e => setPlayerName(e.target.value)}
                 className="w-full border-2 border-dotted border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500" style={{ fontFamily: 'Georgia, serif' }} />
@@ -368,7 +451,7 @@ export function FiggieMarket() {
             {/* Post quote */}
             <div className="border-2 border-dotted border-gray-200 rounded-lg p-4">
               <p className="text-xs text-gray-400 mb-2" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>
-                POST QUOTE ON {SUIT_SYMBOLS[myAssignedSuit!]} (max spread: {MAX_SPREAD})
+                POST QUOTE ON {SUIT_SYMBOLS[myAssignedSuit!]} (max spread: {params.maxSpread})
               </p>
               <div className="flex gap-2 items-end">
                 <div className="flex-1">
@@ -440,7 +523,7 @@ export function FiggieMarket() {
             <div className="text-center">
               <p className="text-xs text-gray-400" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.5rem' }}>ROUND {lobby.round} COMPLETE</p>
               <p className="text-sm text-gray-600 mt-2" style={{ fontFamily: 'Georgia, serif' }}>
-                Goal suit was: <span className="font-bold text-lg" style={{ color: SUIT_COLORS[lobby.goal_suit!] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[lobby.goal_suit!]}</span> (worth ${GOAL_CARD_VALUE}/card)
+                Goal suit was: <span className="font-bold text-lg" style={{ color: SUIT_COLORS[lobby.goal_suit!] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[lobby.goal_suit!]}</span> (worth ${params.goalCardValue}/card)
               </p>
               <p className="text-xs text-gray-500 mt-1" style={{ fontFamily: 'Georgia, serif' }}>
                 Penalty pot: ${lobby.penalty_pot} &bull; distributed by trade volume
@@ -451,10 +534,10 @@ export function FiggieMarket() {
               <p className="text-xs text-gray-400 mb-3" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>ROUND RESULTS</p>
               <div className="space-y-3">
                 {[...players].sort((a, b) => b.total_score - a.total_score).map((p, i) => {
-                  const cardVal = (p.hand as Record<Suit, number>)?.[lobby.goal_suit!] * GOAL_CARD_VALUE || 0
+                  const cardVal = (p.hand as Record<Suit, number>)?.[lobby.goal_suit!] * params.goalCardValue || 0
                   const totalVol = players.reduce((s, pl) => s + pl.trade_volume, 0)
                   const potShare = totalVol > 0 ? (p.trade_volume / totalVol) * lobby.penalty_pot : lobby.penalty_pot / players.length
-                  const profit = p.cash + cardVal + potShare - STARTING_CASH
+                  const profit = p.cash + cardVal + potShare - params.startingCash
                   return (
                     <div key={p.id} className={`border-2 border-dotted rounded-lg p-3 ${i === 0 ? 'border-yellow-300 bg-yellow-50' : 'border-gray-100'}`}>
                       <div className="flex justify-between items-center">

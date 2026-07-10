@@ -252,8 +252,11 @@ export function FiggieMarket() {
     if (bid < 0 || ask < 0) { setError('Prices must be non-negative'); return }
     if (bid >= ask) { setError('Bid must be less than ask'); return }
     if (ask - bid > params.maxSpread) { setError(`Spread cannot exceed ${params.maxSpread}`); return }
-    setError(null)
     const me = players.find(p => p.id === myPlayerId)
+    if (!me) return
+    if (me.hand && me.hand[quoteSuit] <= 0) { setError(`You have no ${SUIT_SYMBOLS[quoteSuit]} cards — can only bid (buy), not ask (sell). Post a bid-only by setting ask higher than you'd accept.`); return }
+    if (me.cash < bid) { setError(`Insufficient cash to back bid of $${bid}`); return }
+    setError(null)
     const currentQuotes = me?.quotes || {}
     const updatedQuotes = { ...currentQuotes, [quoteSuit]: { bid, ask } }
     const isAssignedSuit = quoteSuit === myAssignedSuit
@@ -716,7 +719,8 @@ export function FiggieMarket() {
                           {profit >= 0 ? '+' : ''}{profit.toFixed(0)}
                         </span>
                       </div>
-                      <div className="flex gap-4 mt-1 text-xs text-gray-500" style={{ fontFamily: 'Georgia, serif' }}>
+                      <div className="flex flex-wrap gap-3 mt-1 text-xs text-gray-500" style={{ fontFamily: 'Georgia, serif' }}>
+                        <span className="text-red-400">Ante: -${params.ante}</span>
                         <span>Cards: +${cardVal}</span>
                         <span>Cash: ${p.cash}</span>
                         <span>Pot: +${potShare.toFixed(0)}</span>

@@ -110,3 +110,13 @@ quantguide-hard-index/
 # Scraped questions source data
 scraped-questions/
 
+# Secrets
+client_secret_*
+*.secret.*
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Temp batches
+tmp-batches/

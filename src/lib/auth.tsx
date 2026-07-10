@@ -59,6 +59,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (!error && data) {
       setProfile(data as Profile)
+    } else if (error?.code === 'PGRST116') {
+      // Profile doesn't exist yet — create one
+      const user = (await supabase.auth.getUser()).data.user
+      if (user) {
+        // Check if any admins exist; if not, make this user admin
+        const { count } = await supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true })
+          .eq('role', 'admin')
+        
+        const role = count === 0 ? 'admin' : 'user'
+        const { data: newProfile } = await supabase
+          .from('profiles')
+          .insert({ id: userId, email: user.email || '', role, display_name: null, banned: false })
+          .select()
+          .single()
+        
+        if (newProfile) {
+          setProfile(newProfile as Profile)
+        } else {
+          setProfile(null)
+        }
+      } else {
+        setProfile(null)
+      }
     } else {
       setProfile(null)
     }

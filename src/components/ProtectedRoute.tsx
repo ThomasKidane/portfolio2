@@ -59,8 +59,7 @@ export function ProtectedRoute({ children, pageKey, requireAdmin }: ProtectedRou
     }
   }, [])
 
-  // Wait for auth AND profile to load (profile is null while fetching)
-  const stillLoading = loading || settingsLoading || (user && !profile)
+  const stillLoading = loading || settingsLoading
 
   if (stillLoading) {
     return (

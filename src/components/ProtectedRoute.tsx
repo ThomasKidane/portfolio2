@@ -59,7 +59,10 @@ export function ProtectedRoute({ children, pageKey, requireAdmin }: ProtectedRou
     }
   }, [])
 
-  if (loading || settingsLoading) {
+  // Wait for auth AND profile to load (profile is null while fetching)
+  const stillLoading = loading || settingsLoading || (user && !profile)
+
+  if (stillLoading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <p className="text-gray-400" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.6rem' }}>

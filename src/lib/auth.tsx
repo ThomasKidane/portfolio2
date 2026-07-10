@@ -50,6 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   async function fetchProfile(userId: string) {
+    setLoading(true)
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
@@ -58,6 +59,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (!error && data) {
       setProfile(data as Profile)
+    } else {
+      setProfile(null)
     }
     setLoading(false)
   }

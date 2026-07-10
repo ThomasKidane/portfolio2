@@ -25,6 +25,11 @@ interface LobbyData {
   penalty_pot: number
 }
 
+interface QuoteEntry {
+  bid: number
+  ask: number
+}
+
 interface PlayerData {
   id: string
   lobby_id: string
@@ -36,6 +41,7 @@ interface PlayerData {
   quote_bid: number | null
   quote_ask: number | null
   quote_suit: Suit | null
+  quotes: Record<Suit, QuoteEntry | null> | null
   last_quote_time: string | null
   total_score: number
 }
@@ -93,6 +99,8 @@ export function FiggieMarket() {
   const [timeLeft, setTimeLeft] = useState(ROUND_DURATION_MS / 1000)
   const [bidInput, setBidInput] = useState('')
   const [askInput, setAskInput] = useState('')
+  const [quoteSuit, setQuoteSuit] = useState<Suit>('S')
+  const [selectedBookSuit, setSelectedBookSuit] = useState<Suit>('S')
   const [params, setParams] = useState<GameParams>(DEFAULT_PARAMS)
   const [showRules, setShowRules] = useState(false)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -140,7 +148,9 @@ export function FiggieMarket() {
     const penaltyIntervalMs = params.penaltyInterval * 1000
     penaltyRef.current = setInterval(async () => {
       const me = players.find(p => p.id === myPlayerId)
-      if (!me || me.quote_bid !== null) return
+      if (!me) return
+      const hasAssignedQuote = me.quotes?.[myAssignedSuit] != null
+      if (hasAssignedQuote) return
       const lastTime = me.last_quote_time ? new Date(me.last_quote_time).getTime() : (lobby?.round_start_time ? new Date(lobby.round_start_time).getTime() : Date.now())
       const elapsed = Date.now() - lastTime
       if (elapsed >= penaltyIntervalMs) {
@@ -213,7 +223,7 @@ export function FiggieMarket() {
     const cashAfterAnte = params.startingCash - params.ante
     for (let i = 0; i < players.length; i++) {
       await supabase.from('figgie_market_players')
-        .update({ hand: hands[i], cash: cashAfterAnte, trade_volume: 0, penalty_drained: 0, quote_bid: null, quote_ask: null, quote_suit: null, last_quote_time: null })
+        .update({ hand: hands[i], cash: cashAfterAnte, trade_volume: 0, penalty_drained: 0, quote_bid: null, quote_ask: null, quote_suit: null, quotes: {}, last_quote_time: null })
         .eq('id', players[i].id)
     }
     const antePot = params.ante * players.length
@@ -235,7 +245,7 @@ export function FiggieMarket() {
 
 
   const postQuote = async () => {
-    if (!myPlayerId || !myAssignedSuit || !lobby) return
+    if (!myPlayerId || !lobby) return
     const bid = parseInt(bidInput)
     const ask = parseInt(askInput)
     if (isNaN(bid) || isNaN(ask)) { setError('Enter valid numbers'); return }
@@ -243,40 +253,62 @@ export function FiggieMarket() {
     if (bid >= ask) { setError('Bid must be less than ask'); return }
     if (ask - bid > params.maxSpread) { setError(`Spread cannot exceed ${params.maxSpread}`); return }
     setError(null)
+    const me = players.find(p => p.id === myPlayerId)
+    const currentQuotes = me?.quotes || {}
+    const updatedQuotes = { ...currentQuotes, [quoteSuit]: { bid, ask } }
+    const isAssignedSuit = quoteSuit === myAssignedSuit
     await supabase.from('figgie_market_players')
-      .update({ quote_bid: bid, quote_ask: ask, quote_suit: myAssignedSuit, last_quote_time: new Date().toISOString() })
+      .update({
+        quotes: updatedQuotes,
+        ...(isAssignedSuit ? { last_quote_time: new Date().toISOString() } : {}),
+      })
       .eq('id', myPlayerId)
   }
 
-  const hitBid = async (seller: PlayerData) => {
-    if (!myPlayerId || !lobby || !seller.quote_bid || !seller.quote_suit) return
-    if (myPlayerId === seller.id) return
+  const cancelQuote = async (suit: Suit) => {
+    if (!myPlayerId) return
     const me = players.find(p => p.id === myPlayerId)
-    if (!me || !me.hand || me.hand[seller.quote_suit] <= 0) { setError('You have no cards of that suit to sell'); return }
-    const price = seller.quote_bid
-    const suit = seller.quote_suit
-    setError(null)
-    const newMyHand = { ...me.hand, [suit]: me.hand[suit] - 1 }
-    const sellerHand = seller.hand ? { ...seller.hand, [suit]: seller.hand[suit] + 1 } : null
-    await supabase.from('figgie_market_players').update({ hand: newMyHand, cash: me.cash + price, trade_volume: me.trade_volume + 1 }).eq('id', myPlayerId)
-    await supabase.from('figgie_market_players').update({ hand: sellerHand, cash: seller.cash - price, trade_volume: seller.trade_volume + 1, quote_bid: null, quote_ask: null, quote_suit: null }).eq('id', seller.id)
-    await supabase.from('figgie_market_trades').insert({ lobby_id: lobby.id, buyer_name: seller.name, seller_name: me.name, suit, price })
+    const currentQuotes = { ...(me?.quotes || {}) }
+    delete currentQuotes[suit]
+    await supabase.from('figgie_market_players')
+      .update({ quotes: currentQuotes })
+      .eq('id', myPlayerId)
   }
 
-  const liftAsk = async (buyer: PlayerData) => {
-    if (!myPlayerId || !lobby || !buyer.quote_ask || !buyer.quote_suit) return
-    if (myPlayerId === buyer.id) return
+  const hitBid = async (quoter: PlayerData, suit: Suit) => {
+    if (!myPlayerId || !lobby) return
+    if (myPlayerId === quoter.id) return
+    const quote = quoter.quotes?.[suit]
+    if (!quote) return
     const me = players.find(p => p.id === myPlayerId)
-    if (!me || me.cash < buyer.quote_ask) { setError('Insufficient cash'); return }
-    const suit = buyer.quote_suit
-    const price = buyer.quote_ask
-    const quoter = buyer
+    if (!me || !me.hand || me.hand[suit] <= 0) { setError('You have no cards of that suit to sell'); return }
+    const price = quote.bid
+    setError(null)
+    const newMyHand = { ...me.hand, [suit]: me.hand[suit] - 1 }
+    const quoterHand = quoter.hand ? { ...quoter.hand, [suit]: quoter.hand[suit] + 1 } : null
+    const quoterQuotes = { ...(quoter.quotes || {}) }
+    delete quoterQuotes[suit]
+    await supabase.from('figgie_market_players').update({ hand: newMyHand, cash: me.cash + price, trade_volume: me.trade_volume + 1 }).eq('id', myPlayerId)
+    await supabase.from('figgie_market_players').update({ hand: quoterHand, cash: quoter.cash - price, trade_volume: quoter.trade_volume + 1, quotes: quoterQuotes }).eq('id', quoter.id)
+    await supabase.from('figgie_market_trades').insert({ lobby_id: lobby.id, buyer_name: quoter.name, seller_name: me.name, suit, price })
+  }
+
+  const liftAsk = async (quoter: PlayerData, suit: Suit) => {
+    if (!myPlayerId || !lobby) return
+    if (myPlayerId === quoter.id) return
+    const quote = quoter.quotes?.[suit]
+    if (!quote) return
+    const me = players.find(p => p.id === myPlayerId)
+    if (!me || me.cash < quote.ask) { setError('Insufficient cash'); return }
+    const price = quote.ask
     if (!quoter.hand || quoter.hand[suit] <= 0) { setError('Quoter has no cards to sell'); return }
     setError(null)
     const newMyHand = me.hand ? { ...me.hand, [suit]: me.hand[suit] + 1 } : null
     const quoterHand = { ...quoter.hand, [suit]: quoter.hand[suit] - 1 }
+    const quoterQuotes = { ...(quoter.quotes || {}) }
+    delete quoterQuotes[suit]
     await supabase.from('figgie_market_players').update({ hand: newMyHand, cash: me.cash - price, trade_volume: me.trade_volume + 1 }).eq('id', myPlayerId)
-    await supabase.from('figgie_market_players').update({ hand: quoterHand, cash: quoter.cash + price, trade_volume: quoter.trade_volume + 1, quote_bid: null, quote_ask: null, quote_suit: null }).eq('id', quoter.id)
+    await supabase.from('figgie_market_players').update({ hand: quoterHand, cash: quoter.cash + price, trade_volume: quoter.trade_volume + 1, quotes: quoterQuotes }).eq('id', quoter.id)
     await supabase.from('figgie_market_trades').insert({ lobby_id: lobby.id, buyer_name: me.name, seller_name: quoter.name, suit, price })
   }
 
@@ -453,7 +485,7 @@ export function FiggieMarket() {
         {phase === 'trading' && lobby && myPlayer && (
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500" style={{ fontFamily: 'Georgia, serif' }}>Round {lobby.round}</span>
+              <span className="text-sm text-gray-500" style={{ fontFamily: 'Georgia, serif' }}>Round {lobby.round}/{params.totalRounds}</span>
               <span className={`text-sm font-bold ${timeLeft <= 30 ? 'text-red-600' : 'text-gray-700'}`} style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.6rem' }}>
                 {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
               </span>
@@ -475,16 +507,26 @@ export function FiggieMarket() {
                 ))}
               </div>
               <p className="text-xs text-center text-gray-400 mt-2" style={{ fontFamily: 'Georgia, serif' }}>
-                You must quote: <span className="font-bold" style={{ color: SUIT_COLORS[myAssignedSuit!] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[myAssignedSuit!]} {myAssignedSuit}</span>
+                Obligated suit: <span className="font-bold" style={{ color: SUIT_COLORS[myAssignedSuit!] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[myAssignedSuit!]}</span>
+                {myPlayer.quotes?.[myAssignedSuit!] ? <span className="text-green-600 ml-2">&#10003; quoted</span> : <span className="text-red-500 ml-2">&#9888; no quote!</span>}
               </p>
             </div>
 
-            {/* Post quote */}
+            {/* Post quote - any suit */}
             <div className="border-2 border-dotted border-gray-200 rounded-lg p-4">
               <p className="text-xs text-gray-400 mb-2" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>
-                POST QUOTE ON {SUIT_SYMBOLS[myAssignedSuit!]} (max spread: {params.maxSpread})
+                POST QUOTE (max spread: {params.maxSpread})
               </p>
               <div className="flex gap-2 items-end">
+                <div className="flex gap-1">
+                  {SUITS.map(s => (
+                    <button key={s} onClick={() => setQuoteSuit(s)}
+                      className={`w-8 h-8 rounded flex items-center justify-center text-lg border-2 border-dotted transition-colors ${quoteSuit === s ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}
+                      style={{ color: SUIT_COLORS[s] === 'red' ? '#dc2626' : '#1f2937' }}>
+                      {SUIT_SYMBOLS[s]}
+                    </button>
+                  ))}
+                </div>
                 <div className="flex-1">
                   <label className="text-xs text-gray-500">Bid</label>
                   <input type="number" value={bidInput} onChange={e => setBidInput(e.target.value)} placeholder="0"
@@ -497,38 +539,116 @@ export function FiggieMarket() {
                 </div>
                 <button onClick={postQuote} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>QUOTE</button>
               </div>
-              {myPlayer.quote_bid !== null && (
-                <p className="text-xs text-green-600 mt-2" style={{ fontFamily: 'Georgia, serif' }}>
-                  Active: {SUIT_SYMBOLS[myAssignedSuit!]} {myPlayer.quote_bid} / {myPlayer.quote_ask}
-                </p>
+              {/* My active quotes */}
+              {myPlayer.quotes && Object.keys(myPlayer.quotes).length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {SUITS.map(s => {
+                    const q = myPlayer.quotes?.[s]
+                    if (!q) return null
+                    return (
+                      <div key={s} className="flex items-center gap-1 px-2 py-1 bg-gray-50 border-2 border-dotted border-gray-200 rounded text-xs">
+                        <span style={{ color: SUIT_COLORS[s] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[s]}</span>
+                        <span className="text-gray-600">{q.bid}/{q.ask}</span>
+                        <button onClick={() => cancelQuote(s)} className="text-red-400 hover:text-red-600 ml-1">&times;</button>
+                      </div>
+                    )
+                  })}
+                </div>
               )}
             </div>
 
-
-            {/* Order book */}
+            {/* MARKET OVERVIEW - Best bid/ask per suit */}
             <div className="border-2 border-dotted border-gray-200 rounded-lg p-4">
-              <p className="text-xs text-gray-400 mb-3" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>LIVE QUOTES</p>
-              <div className="space-y-2">
-                {players.filter(p => p.quote_bid !== null && p.id !== myPlayerId).map(p => (
-                  <div key={p.id} className="flex items-center justify-between border-2 border-dotted border-gray-100 rounded px-3 py-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg" style={{ color: SUIT_COLORS[p.quote_suit!] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[p.quote_suit!]}</span>
-                      <span className="text-xs text-gray-500" style={{ fontFamily: 'Georgia, serif' }}>{p.name}</span>
+              <p className="text-xs text-gray-400 mb-3" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>MARKET OVERVIEW</p>
+              <div className="grid grid-cols-4 gap-2">
+                {SUITS.map(s => {
+                  const allQuotes = players.filter(p => p.id !== myPlayerId && p.quotes?.[s])
+                  const bestBid = allQuotes.length > 0 ? Math.max(...allQuotes.map(p => p.quotes![s]!.bid)) : null
+                  const bestAsk = allQuotes.length > 0 ? Math.min(...allQuotes.map(p => p.quotes![s]!.ask)) : null
+                  const bestBidPlayer = allQuotes.find(p => p.quotes![s]!.bid === bestBid)
+                  const bestAskPlayer = allQuotes.find(p => p.quotes![s]!.ask === bestAsk)
+                  return (
+                    <div key={s} className="border-2 border-dotted border-gray-100 rounded p-2 text-center">
+                      <span className="text-xl block mb-1" style={{ color: SUIT_COLORS[s] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[s]}</span>
+                      <div className="space-y-1">
+                        {bestBid !== null ? (
+                          <button onClick={() => bestBidPlayer && hitBid(bestBidPlayer, s)} className="w-full px-1 py-0.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs rounded border border-red-200 transition-colors" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>
+                            SELL {bestBid}
+                          </button>
+                        ) : (
+                          <div className="text-xs text-gray-300 py-0.5">—</div>
+                        )}
+                        {bestAsk !== null ? (
+                          <button onClick={() => bestAskPlayer && liftAsk(bestAskPlayer, s)} className="w-full px-1 py-0.5 bg-green-50 hover:bg-green-100 text-green-700 text-xs rounded border border-green-200 transition-colors" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>
+                            BUY {bestAsk}
+                          </button>
+                        ) : (
+                          <div className="text-xs text-gray-300 py-0.5">—</div>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <button onClick={() => hitBid(p)} className="px-2 py-1 bg-red-100 hover:bg-red-200 text-red-700 text-xs rounded border border-red-200 transition-colors" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>
-                        SELL @ {p.quote_bid}
-                      </button>
-                      <span className="text-xs text-gray-400">/</span>
-                      <button onClick={() => liftAsk(p)} className="px-2 py-1 bg-green-100 hover:bg-green-200 text-green-700 text-xs rounded border border-green-200 transition-colors" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>
-                        BUY @ {p.quote_ask}
-                      </button>
-                    </div>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* ORDER BOOK - Full depth per suit */}
+            <div className="border-2 border-dotted border-gray-200 rounded-lg p-4">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs text-gray-400" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>ORDER BOOK</p>
+                <div className="flex gap-1">
+                  {SUITS.map(s => (
+                    <button key={s} onClick={() => setSelectedBookSuit(s)}
+                      className={`w-7 h-7 rounded flex items-center justify-center text-sm border-2 border-dotted transition-colors ${selectedBookSuit === s ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}
+                      style={{ color: SUIT_COLORS[s] === 'red' ? '#dc2626' : '#1f2937' }}>
+                      {SUIT_SYMBOLS[s]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {/* Bids (buy orders) - sorted high to low */}
+                <div>
+                  <p className="text-xs text-green-600 mb-1 font-bold" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>BIDS (BUY)</p>
+                  <div className="space-y-1">
+                    {players.filter(p => p.quotes?.[selectedBookSuit]).sort((a, b) => (b.quotes![selectedBookSuit]!.bid) - (a.quotes![selectedBookSuit]!.bid)).map(p => (
+                      <div key={p.id} className="flex items-center justify-between px-2 py-1 bg-green-50 rounded text-xs border border-green-100">
+                        <span className="text-gray-500" style={{ fontFamily: 'Georgia, serif' }}>{p.name}{p.id === myPlayerId ? ' (you)' : ''}</span>
+                        {p.id !== myPlayerId ? (
+                          <button onClick={() => hitBid(p, selectedBookSuit)} className="font-bold text-green-700 hover:text-green-900" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>
+                            {p.quotes![selectedBookSuit]!.bid}
+                          </button>
+                        ) : (
+                          <span className="font-bold text-green-700" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>{p.quotes![selectedBookSuit]!.bid}</span>
+                        )}
+                      </div>
+                    ))}
+                    {players.filter(p => p.quotes?.[selectedBookSuit]).length === 0 && (
+                      <p className="text-xs text-gray-300 text-center py-2">No bids</p>
+                    )}
                   </div>
-                ))}
-                {players.filter(p => p.quote_bid !== null && p.id !== myPlayerId).length === 0 && (
-                  <p className="text-xs text-gray-400 text-center" style={{ fontFamily: 'Georgia, serif' }}>No live quotes from other players</p>
-                )}
+                </div>
+                {/* Asks (sell orders) - sorted low to high */}
+                <div>
+                  <p className="text-xs text-red-600 mb-1 font-bold" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>ASKS (SELL)</p>
+                  <div className="space-y-1">
+                    {players.filter(p => p.quotes?.[selectedBookSuit]).sort((a, b) => (a.quotes![selectedBookSuit]!.ask) - (b.quotes![selectedBookSuit]!.ask)).map(p => (
+                      <div key={p.id} className="flex items-center justify-between px-2 py-1 bg-red-50 rounded text-xs border border-red-100">
+                        <span className="text-gray-500" style={{ fontFamily: 'Georgia, serif' }}>{p.name}{p.id === myPlayerId ? ' (you)' : ''}</span>
+                        {p.id !== myPlayerId ? (
+                          <button onClick={() => liftAsk(p, selectedBookSuit)} className="font-bold text-red-700 hover:text-red-900" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>
+                            {p.quotes![selectedBookSuit]!.ask}
+                          </button>
+                        ) : (
+                          <span className="font-bold text-red-700" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>{p.quotes![selectedBookSuit]!.ask}</span>
+                        )}
+                      </div>
+                    ))}
+                    {players.filter(p => p.quotes?.[selectedBookSuit]).length === 0 && (
+                      <p className="text-xs text-gray-300 text-center py-2">No asks</p>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
 

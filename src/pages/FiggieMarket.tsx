@@ -65,6 +65,7 @@ interface GameParams {
   startingCash: number
   roundDuration: number
   goalCardValue: number
+  ante: number
 }
 
 const DEFAULT_PARAMS: GameParams = {
@@ -74,6 +75,7 @@ const DEFAULT_PARAMS: GameParams = {
   startingCash: STARTING_CASH,
   roundDuration: 180,
   goalCardValue: GOAL_CARD_VALUE,
+  ante: 10,
 }
 
 export function FiggieMarket() {
@@ -206,13 +208,15 @@ export function FiggieMarket() {
     const { assignment, hands, goalSuit } = dealMarketHands(lobby.num_players)
     const playerIds = players.map(p => p.id)
     const suitAssignments = assignMarketSuits(playerIds, lobby.num_players)
+    const cashAfterAnte = params.startingCash - params.ante
     for (let i = 0; i < players.length; i++) {
       await supabase.from('figgie_market_players')
-        .update({ hand: hands[i], cash: params.startingCash, trade_volume: 0, penalty_drained: 0, quote_bid: null, quote_ask: null, quote_suit: null, last_quote_time: null })
+        .update({ hand: hands[i], cash: cashAfterAnte, trade_volume: 0, penalty_drained: 0, quote_bid: null, quote_ask: null, quote_suit: null, last_quote_time: null })
         .eq('id', players[i].id)
     }
+    const antePot = params.ante * players.length
     await supabase.from('figgie_market_lobbies')
-      .update({ phase: 'trading', round: lobby.round + 1, deck_assignment: assignment, goal_suit: goalSuit, round_start_time: new Date().toISOString(), suit_assignments: suitAssignments, penalty_pot: 0 })
+      .update({ phase: 'trading', round: lobby.round + 1, deck_assignment: assignment, goal_suit: goalSuit, round_start_time: new Date().toISOString(), suit_assignments: suitAssignments, penalty_pot: antePot })
       .eq('id', lobby.id)
     setTrades([])
     setTimeLeft(params.roundDuration)
@@ -269,12 +273,17 @@ export function FiggieMarket() {
     if (!lobby || lobby.phase !== 'trading') return
     const { data: pls } = await supabase.from('figgie_market_players').select('*').eq('lobby_id', lobby.id)
     if (!pls) return
-    const totalVolume = pls.reduce((s, p) => s + p.trade_volume, 0)
     const pot = lobby.penalty_pot
+    const goalCounts = pls.map(p => (p.hand as Record<Suit, number>)?.[lobby.goal_suit!] || 0)
+    const maxGoal = Math.max(...goalCounts)
+    const winners = pls.filter(p => ((p.hand as Record<Suit, number>)?.[lobby.goal_suit!] || 0) === maxGoal)
+    const potPerWinner = pot / winners.length
+
     for (const p of pls) {
-      const cardValue = (p.hand as Record<Suit, number>)?.[lobby.goal_suit!] * params.goalCardValue || 0
-      const potShare = totalVolume > 0 ? (p.trade_volume / totalVolume) * pot : pot / pls.length
-      const roundScore = p.cash + cardValue + potShare - params.startingCash
+      const cardValue = ((p.hand as Record<Suit, number>)?.[lobby.goal_suit!] || 0) * params.goalCardValue
+      const isWinner = ((p.hand as Record<Suit, number>)?.[lobby.goal_suit!] || 0) === maxGoal
+      const potShare = isWinner ? potPerWinner : 0
+      const roundScore = p.cash + cardValue + potShare - (params.startingCash - params.ante)
       await supabase.from('figgie_market_players')
         .update({ total_score: p.total_score + roundScore })
         .eq('id', p.id)
@@ -318,7 +327,8 @@ export function FiggieMarket() {
                   <p><strong>Market Making:</strong> Each player is randomly assigned a suit they must continuously quote (post a bid and ask). If you fail to maintain a live quote for <strong>{params.penaltyInterval} seconds</strong>, ${params.penaltyAmount} drains from your cash into the penalty pot.</p>
                   <p><strong>Spread Constraint:</strong> Your ask minus bid cannot exceed <strong>{params.maxSpread}</strong>. This forces tight, informative prices.</p>
                   <p><strong>Trading:</strong> Other players can hit your bid (sell to you) or lift your ask (buy from you). When your quote is filled, it clears — you must re-quote within the penalty window.</p>
-                  <p><strong>Scoring:</strong> After {params.roundDuration}s, each goal-suit card is worth <strong>${params.goalCardValue}</strong>. The penalty pot is distributed proportionally by trade volume. Your P&L = cash + card value + pot share − starting cash.</p>
+                  <p><strong>Ante:</strong> Each player puts <strong>${params.ante}</strong> into the pot at the start of each round. The pot (ante + accumulated penalties) is awarded to the player with the most goal suit cards at settlement. Ties split evenly.</p>
+                  <p><strong>Scoring:</strong> After {params.roundDuration}s, each goal-suit card is worth <strong>${params.goalCardValue}</strong>. The pot goes to whoever holds the most goal cards. Your P&L = cash + card value + pot share − (starting cash − ante).</p>
                   <p><strong>Strategy:</strong> Information leaks through your quotes. If you know the goal suit, you must still quote it tightly — revealing your edge. Trade actively to earn pot share.</p>
                 </div>
               )}
@@ -356,6 +366,11 @@ export function FiggieMarket() {
                 <div>
                   <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Goal card value ($)</label>
                   <input type="number" value={params.goalCardValue} onChange={e => setParams(p => ({ ...p, goalCardValue: Math.max(1, parseInt(e.target.value) || 10) }))}
+                    className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Ante per player ($)</label>
+                  <input type="number" value={params.ante} onChange={e => setParams(p => ({ ...p, ante: Math.max(0, parseInt(e.target.value) || 10) }))}
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
               </div>
@@ -526,7 +541,7 @@ export function FiggieMarket() {
                 Goal suit was: <span className="font-bold text-lg" style={{ color: SUIT_COLORS[lobby.goal_suit!] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[lobby.goal_suit!]}</span> (worth ${params.goalCardValue}/card)
               </p>
               <p className="text-xs text-gray-500 mt-1" style={{ fontFamily: 'Georgia, serif' }}>
-                Penalty pot: ${lobby.penalty_pot} &bull; distributed by trade volume
+                Pot: ${lobby.penalty_pot} (ante + penalties) &bull; awarded to most goal cards
               </p>
             </div>
 
@@ -534,10 +549,13 @@ export function FiggieMarket() {
               <p className="text-xs text-gray-400 mb-3" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>ROUND RESULTS</p>
               <div className="space-y-3">
                 {[...players].sort((a, b) => b.total_score - a.total_score).map((p, i) => {
-                  const cardVal = (p.hand as Record<Suit, number>)?.[lobby.goal_suit!] * params.goalCardValue || 0
-                  const totalVol = players.reduce((s, pl) => s + pl.trade_volume, 0)
-                  const potShare = totalVol > 0 ? (p.trade_volume / totalVol) * lobby.penalty_pot : lobby.penalty_pot / players.length
-                  const profit = p.cash + cardVal + potShare - params.startingCash
+                  const goalCards = (p.hand as Record<Suit, number>)?.[lobby.goal_suit!] || 0
+                  const cardVal = goalCards * params.goalCardValue
+                  const maxGoalCards = Math.max(...players.map(pl => (pl.hand as Record<Suit, number>)?.[lobby.goal_suit!] || 0))
+                  const winnersCount = players.filter(pl => ((pl.hand as Record<Suit, number>)?.[lobby.goal_suit!] || 0) === maxGoalCards).length
+                  const isWinner = goalCards === maxGoalCards
+                  const potShare = isWinner ? lobby.penalty_pot / winnersCount : 0
+                  const profit = p.cash + cardVal + potShare - (params.startingCash - params.ante)
                   return (
                     <div key={p.id} className={`border-2 border-dotted rounded-lg p-3 ${i === 0 ? 'border-yellow-300 bg-yellow-50' : 'border-gray-100'}`}>
                       <div className="flex justify-between items-center">

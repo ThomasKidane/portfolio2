@@ -326,7 +326,7 @@ export function FiggieMarket() {
       const cardValue = ((p.hand as Record<Suit, number>)?.[lobby.goal_suit!] || 0) * params.goalCardValue
       const isWinner = ((p.hand as Record<Suit, number>)?.[lobby.goal_suit!] || 0) === maxGoal
       const potShare = isWinner ? potPerWinner : 0
-      const roundScore = p.cash + cardValue + potShare - (params.startingCash - params.ante)
+      const roundScore = p.cash + cardValue + potShare - params.startingCash
       await supabase.from('figgie_market_players')
         .update({ total_score: p.total_score + roundScore })
         .eq('id', p.id)
@@ -703,7 +703,7 @@ export function FiggieMarket() {
                   const winnersCount = players.filter(pl => ((pl.hand as Record<Suit, number>)?.[lobby.goal_suit!] || 0) === maxGoalCards).length
                   const isWinner = goalCards === maxGoalCards
                   const potShare = isWinner ? lobby.penalty_pot / winnersCount : 0
-                  const profit = p.cash + cardVal + potShare - (params.startingCash - params.ante)
+                  const profit = p.cash + cardVal + potShare - params.startingCash
                   return (
                     <div key={p.id} className={`border-2 border-dotted rounded-lg p-3 ${i === 0 ? 'border-yellow-300 bg-yellow-50' : 'border-gray-100'}`}>
                       <div className="flex justify-between items-center">

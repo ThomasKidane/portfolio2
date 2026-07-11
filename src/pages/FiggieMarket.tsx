@@ -101,6 +101,29 @@ export function FiggieMarket() {
   const [askInput, setAskInput] = useState('')
   const [quoteSuit, setQuoteSuit] = useState<Suit>('S')
   const [params, setParams] = useState<GameParams>(DEFAULT_PARAMS)
+  const [paramInputs, setParamInputs] = useState({
+    penaltyInterval: String(DEFAULT_PARAMS.penaltyInterval),
+    penaltyAmount: String(DEFAULT_PARAMS.penaltyAmount),
+    maxSpread: String(DEFAULT_PARAMS.maxSpread),
+    startingCash: String(DEFAULT_PARAMS.startingCash),
+    roundDuration: String(DEFAULT_PARAMS.roundDuration),
+    goalCardValue: String(DEFAULT_PARAMS.goalCardValue),
+    ante: String(DEFAULT_PARAMS.ante),
+    totalRounds: String(DEFAULT_PARAMS.totalRounds),
+  })
+
+  const commitParams = () => {
+    setParams({
+      penaltyInterval: Math.max(1, parseInt(paramInputs.penaltyInterval) || DEFAULT_PARAMS.penaltyInterval),
+      penaltyAmount: Math.max(1, parseInt(paramInputs.penaltyAmount) || DEFAULT_PARAMS.penaltyAmount),
+      maxSpread: Math.max(1, parseInt(paramInputs.maxSpread) || DEFAULT_PARAMS.maxSpread),
+      startingCash: Math.max(10, parseInt(paramInputs.startingCash) || DEFAULT_PARAMS.startingCash),
+      roundDuration: Math.max(30, parseInt(paramInputs.roundDuration) || DEFAULT_PARAMS.roundDuration),
+      goalCardValue: Math.max(1, parseInt(paramInputs.goalCardValue) || DEFAULT_PARAMS.goalCardValue),
+      ante: Math.max(0, parseInt(paramInputs.ante) || DEFAULT_PARAMS.ante),
+      totalRounds: Math.max(1, parseInt(paramInputs.totalRounds) || DEFAULT_PARAMS.totalRounds),
+    })
+  }
   const [showRules, setShowRules] = useState(false)
   const [prevScores, setPrevScores] = useState<Record<string, number>>({})
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -454,46 +477,46 @@ export function FiggieMarket() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Penalty timer (s)</label>
-                  <input type="text" inputMode="numeric" value={params.penaltyInterval} onChange={e => setParams(p => ({ ...p, penaltyInterval: Math.max(1, parseInt(e.target.value) || 14) }))}
+                  <input type="text" value={paramInputs.penaltyInterval} onChange={e => setParamInputs(p => ({ ...p, penaltyInterval: e.target.value }))} onBlur={commitParams}
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
                 <div>
                   <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Penalty drain ($)</label>
-                  <input type="text" inputMode="numeric" value={params.penaltyAmount} onChange={e => setParams(p => ({ ...p, penaltyAmount: Math.max(1, parseInt(e.target.value) || 2) }))}
+                  <input type="text" value={paramInputs.penaltyAmount} onChange={e => setParamInputs(p => ({ ...p, penaltyAmount: e.target.value }))} onBlur={commitParams}
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
                 <div>
                   <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Max spread</label>
-                  <input type="text" inputMode="numeric" value={params.maxSpread} onChange={e => setParams(p => ({ ...p, maxSpread: Math.max(1, parseInt(e.target.value) || 4) }))}
+                  <input type="text" value={paramInputs.maxSpread} onChange={e => setParamInputs(p => ({ ...p, maxSpread: e.target.value }))} onBlur={commitParams}
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
                 <div>
                   <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Starting cash ($)</label>
-                  <input type="text" inputMode="numeric" value={params.startingCash} onChange={e => setParams(p => ({ ...p, startingCash: Math.max(10, parseInt(e.target.value) || 100) }))}
+                  <input type="text" value={paramInputs.startingCash} onChange={e => setParamInputs(p => ({ ...p, startingCash: e.target.value }))} onBlur={commitParams}
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
                 <div>
                   <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Round duration (s)</label>
-                  <input type="text" inputMode="numeric" value={params.roundDuration} onChange={e => setParams(p => ({ ...p, roundDuration: Math.max(30, parseInt(e.target.value) || 180) }))}
+                  <input type="text" value={paramInputs.roundDuration} onChange={e => setParamInputs(p => ({ ...p, roundDuration: e.target.value }))} onBlur={commitParams}
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
                 <div>
                   <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Goal card value ($)</label>
-                  <input type="text" inputMode="numeric" value={params.goalCardValue} onChange={e => setParams(p => ({ ...p, goalCardValue: Math.max(1, parseInt(e.target.value) || 10) }))}
+                  <input type="text" value={paramInputs.goalCardValue} onChange={e => setParamInputs(p => ({ ...p, goalCardValue: e.target.value }))} onBlur={commitParams}
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
                 <div>
                   <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Ante per player ($)</label>
-                  <input type="text" inputMode="numeric" value={params.ante} onChange={e => setParams(p => ({ ...p, ante: Math.max(0, parseInt(e.target.value) || 10) }))}
+                  <input type="text" value={paramInputs.ante} onChange={e => setParamInputs(p => ({ ...p, ante: e.target.value }))} onBlur={commitParams}
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
                 <div>
                   <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Total rounds</label>
-                  <input type="text" inputMode="numeric" value={params.totalRounds} onChange={e => setParams(p => ({ ...p, totalRounds: Math.max(1, parseInt(e.target.value) || 5) }))}
+                  <input type="text" value={paramInputs.totalRounds} onChange={e => setParamInputs(p => ({ ...p, totalRounds: e.target.value }))} onBlur={commitParams}
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
               </div>
-              <button onClick={() => setParams(DEFAULT_PARAMS)} className="text-xs text-blue-500 hover:text-blue-700 underline" style={{ fontFamily: 'Georgia, serif' }}>
+              <button onClick={() => { setParams(DEFAULT_PARAMS); setParamInputs({ penaltyInterval: String(DEFAULT_PARAMS.penaltyInterval), penaltyAmount: String(DEFAULT_PARAMS.penaltyAmount), maxSpread: String(DEFAULT_PARAMS.maxSpread), startingCash: String(DEFAULT_PARAMS.startingCash), roundDuration: String(DEFAULT_PARAMS.roundDuration), goalCardValue: String(DEFAULT_PARAMS.goalCardValue), ante: String(DEFAULT_PARAMS.ante), totalRounds: String(DEFAULT_PARAMS.totalRounds) }) }} className="text-xs text-blue-500 hover:text-blue-700 underline" style={{ fontFamily: 'Georgia, serif' }}>
                 Reset to defaults
               </button>
             </div>

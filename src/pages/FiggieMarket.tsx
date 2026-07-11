@@ -11,6 +11,7 @@ import {
 } from '../lib/figgie-market'
 
 type Phase = 'join' | 'waiting' | 'trading' | 'results'
+type GameMode = 'classic' | 'fullMarket'
 
 interface LobbyData {
   id: string
@@ -23,6 +24,7 @@ interface LobbyData {
   round_start_time: string | null
   suit_assignments: Record<string, Suit> | null
   penalty_pot: number
+  game_mode: GameMode | null
 }
 
 interface QuoteEntry {
@@ -126,8 +128,13 @@ export function FiggieMarket() {
   }
   const [showRules, setShowRules] = useState(false)
   const [prevScores, setPrevScores] = useState<Record<string, number>>({})
+  const [gameMode, setGameMode] = useState<GameMode>('classic')
+  const [initialHands, setInitialHands] = useState<Record<string, Record<Suit, number>>>({})
+  const [quoteTimer, setQuoteTimer] = useState<number>(20)
+  const [replayIndex, setReplayIndex] = useState<number | null>(null)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const penaltyRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const quoteTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const myPlayer = players.find(p => p.id === myPlayerId)
   const myAssignedSuit = lobby?.suit_assignments && myPlayerId
@@ -136,7 +143,7 @@ export function FiggieMarket() {
   // Persist session to localStorage so refresh doesn't kick you out
   useEffect(() => {
     if (lobby && myPlayerId) {
-      localStorage.setItem('figgie-market-session', JSON.stringify({ lobbyId: lobby.id, playerId: myPlayerId, playerName }))
+      localStorage.setItem('figgie-market-session', JSON.stringify({ lobbyId: lobby.id, playerId: myPlayerId, playerName, gameMode }))
     }
   }, [lobby?.id, myPlayerId, playerName])
 
@@ -145,9 +152,10 @@ export function FiggieMarket() {
     const saved = localStorage.getItem('figgie-market-session')
     if (!saved) return
     try {
-      const { lobbyId, playerId, playerName: savedName } = JSON.parse(saved)
+      const { lobbyId, playerId, playerName: savedName, gameMode: savedMode } = JSON.parse(saved)
       if (lobbyId && playerId) {
         setPlayerName(savedName || '')
+        if (savedMode) setGameMode(savedMode)
         // Re-fetch lobby and player data
         supabase.from('figgie_market_lobbies').select('*').eq('id', lobbyId).single()
           .then(({ data: lobbyData }) => {
@@ -182,15 +190,44 @@ export function FiggieMarket() {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'figgie_market_players', filter: `lobby_id=eq.${lobby.id}` },
         () => { fetchPlayers() })
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'figgie_market_trades', filter: `lobby_id=eq.${lobby.id}` },
-        (payload) => { if (payload.new) setTrades(prev => [payload.new as TradeRecord, ...prev].slice(0, 50)) })
+        (payload) => {
+          if (payload.new) {
+            const trade = payload.new as TradeRecord
+            setTrades(prev => [trade, ...prev].slice(0, 200))
+            // Full Market mode: +5s when your quote gets traded
+            if (gameMode === 'fullMarket') {
+              const me = players.find(p => p.id === myPlayerId)
+              if (me && (trade.buyer_name === me.name || trade.seller_name === me.name)) {
+                setQuoteTimer(prev => prev + 5)
+              }
+            }
+          }
+        })
       .subscribe()
     return () => { supabase.removeChannel(channel) }
   }, [lobby?.id])
 
+  // Sync game mode from lobby data (so all players play same mode)
+  useEffect(() => {
+    if (lobby?.game_mode) setGameMode(lobby.game_mode)
+  }, [lobby?.game_mode])
+
   useEffect(() => {
     if (!lobby) return
     if (lobby.phase === 'waiting') setPhase('waiting')
-    else if (lobby.phase === 'trading') setPhase('trading')
+    else if (lobby.phase === 'trading') {
+      setPhase('trading')
+      // Save initial hands for delta display (for non-host players joining the round)
+      if (players.length > 0) {
+        const currentInitHands = initialHands
+        const roundChanged = players.some(p => p.hand && (!currentInitHands[p.id] || p.trade_volume === 0))
+        if (Object.keys(currentInitHands).length === 0 || roundChanged) {
+          const initH: Record<string, Record<Suit, number>> = {}
+          players.forEach(p => { if (p.hand) initH[p.id] = { ...p.hand } })
+          if (Object.keys(initH).length > 0) setInitialHands(initH)
+        }
+      }
+    }
     else if (lobby.phase === 'results') {
       setPhase('results')
       // Fetch full trade history and fresh player data for accurate results
@@ -219,7 +256,7 @@ export function FiggieMarket() {
   }, [phase, lobby?.round_start_time])
 
   useEffect(() => {
-    if (phase !== 'trading' || !myPlayerId || !myAssignedSuit) return
+    if (phase !== 'trading' || !myPlayerId || !myAssignedSuit || gameMode !== 'classic') return
     const penaltyIntervalMs = params.penaltyInterval * 1000
     penaltyRef.current = setInterval(async () => {
       const me = players.find(p => p.id === myPlayerId)
@@ -244,6 +281,48 @@ export function FiggieMarket() {
     return () => { if (penaltyRef.current) clearInterval(penaltyRef.current) }
   }, [phase, myPlayerId, myAssignedSuit, players])
 
+  // Full Market mode: quote timer (20s base, +5s per trade received)
+  useEffect(() => {
+    if (phase !== 'trading' || gameMode !== 'fullMarket' || !myPlayerId) return
+    quoteTimerRef.current = setInterval(() => {
+      setQuoteTimer(prev => {
+        if (prev <= 0) return 0
+        return prev - 1
+      })
+    }, 1000)
+    return () => { if (quoteTimerRef.current) clearInterval(quoteTimerRef.current) }
+  }, [phase, gameMode, myPlayerId])
+
+  // Full Market: apply penalty every penalty interval while timer is at 0 and obligations unmet
+  const fullMarketPenaltyRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  useEffect(() => {
+    if (gameMode !== 'fullMarket' || phase !== 'trading' || !myPlayerId || quoteTimer > 0) {
+      if (fullMarketPenaltyRef.current) { clearInterval(fullMarketPenaltyRef.current); fullMarketPenaltyRef.current = null }
+      return
+    }
+    fullMarketPenaltyRef.current = setInterval(async () => {
+      const me = players.find(p => p.id === myPlayerId)
+      if (!me || !me.hand) return
+      const missingQuotes = SUITS.some(s => {
+        const hasCards = me.hand![s] > 0
+        const quote = me.quotes?.[s]
+        if (hasCards) return !quote || quote.bid == null || quote.ask == null
+        return !quote || (quote.bid == null && quote.ask == null)
+      })
+      if (missingQuotes) {
+        const newDrained = me.penalty_drained + params.penaltyAmount
+        const newCash = me.cash - params.penaltyAmount
+        await supabase.from('figgie_market_players')
+          .update({ penalty_drained: newDrained, cash: newCash })
+          .eq('id', myPlayerId)
+        await supabase.from('figgie_market_lobbies')
+          .update({ penalty_pot: (lobby?.penalty_pot || 0) + params.penaltyAmount })
+          .eq('id', lobby?.id)
+      }
+    }, params.penaltyInterval * 1000)
+    return () => { if (fullMarketPenaltyRef.current) clearInterval(fullMarketPenaltyRef.current) }
+  }, [quoteTimer, phase, gameMode, myPlayerId])
+
 
   const fetchPlayers = async () => {
     if (!lobby?.id) return
@@ -266,7 +345,7 @@ export function FiggieMarket() {
     const code = generateCode()
     const { data: lobbyData, error: err } = await supabase
       .from('figgie_market_lobbies')
-      .insert({ code, num_players: numPlayers, phase: 'waiting', round: 0, penalty_pot: 0 })
+      .insert({ code, num_players: numPlayers, phase: 'waiting', round: 0, penalty_pot: 0, game_mode: gameMode })
       .select().single()
     if (err || !lobbyData) { setError('Failed to create lobby'); return }
     const { data: playerData, error: pErr } = await supabase
@@ -303,7 +382,6 @@ export function FiggieMarket() {
 
   const startRound = async () => {
     if (!lobby) return
-    // Save current scores before resetting for delta display
     const scores: Record<string, number> = {}
     players.forEach(p => { scores[p.id] = p.total_score })
     setPrevScores(scores)
@@ -311,17 +389,23 @@ export function FiggieMarket() {
     const playerIds = players.map(p => p.id)
     const suitAssignments = assignMarketSuits(playerIds, lobby.num_players)
     const cashAfterAnte = params.startingCash - params.ante
+    // Save initial hands for delta display
+    const initHands: Record<string, Record<Suit, number>> = {}
     for (let i = 0; i < players.length; i++) {
+      initHands[players[i].id] = { ...hands[i] }
       await supabase.from('figgie_market_players')
         .update({ hand: hands[i], cash: cashAfterAnte, trade_volume: 0, penalty_drained: 0, quote_bid: null, quote_ask: null, quote_suit: null, quotes: {}, last_quote_time: null })
         .eq('id', players[i].id)
     }
+    setInitialHands(initHands)
     const antePot = params.ante * players.length
     await supabase.from('figgie_market_lobbies')
       .update({ phase: 'trading', round: lobby.round + 1, deck_assignment: assignment, goal_suit: goalSuit, round_start_time: new Date().toISOString(), suit_assignments: suitAssignments, penalty_pot: antePot })
       .eq('id', lobby.id)
     setTrades([])
     setTimeLeft(params.roundDuration)
+    setQuoteTimer(20)
+    setReplayIndex(null)
   }
 
   const resetAndStart = async () => {
@@ -349,6 +433,10 @@ export function FiggieMarket() {
     if (!me) return
     if (ask !== null && me.hand && me.hand[quoteSuit] <= 0) { setError(`You have no ${SUIT_SYMBOLS[quoteSuit]} cards to sell — remove ask or post bid-only`); return }
     if (bid !== null && me.cash < bid) { setError(`Insufficient cash to back bid of $${bid}`); return }
+    // Full Market: must provide two-sided quote for suits you hold
+    if (gameMode === 'fullMarket' && me.hand && me.hand[quoteSuit] > 0) {
+      if (bid === null || ask === null) { setError(`Full Market: two-sided quote required for ${SUIT_SYMBOLS[quoteSuit]} (you hold cards)`); return }
+    }
     setError(null)
     const currentQuotes = me?.quotes || {}
     const quoteEntry: { bid?: number; ask?: number } = {}
@@ -488,6 +576,28 @@ export function FiggieMarket() {
               )}
             </div>
 
+            {/* Game mode selector */}
+            <div className="border-2 border-dotted border-purple-200 rounded-lg p-5 space-y-3">
+              <p className="text-xs text-purple-600 mb-1" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.5rem' }}>GAME MODE</p>
+              <div className="flex gap-3">
+                <button onClick={() => setGameMode('classic')}
+                  className={`flex-1 px-4 py-3 rounded border-2 border-dotted text-xs transition-colors ${gameMode === 'classic' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-200 text-gray-500 hover:border-gray-400'}`}
+                  style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.5rem' }}>
+                  CLASSIC
+                </button>
+                <button onClick={() => setGameMode('fullMarket')}
+                  className={`flex-1 px-4 py-3 rounded border-2 border-dotted text-xs transition-colors ${gameMode === 'fullMarket' ? 'border-purple-500 bg-purple-50 text-purple-700' : 'border-gray-200 text-gray-500 hover:border-gray-400'}`}
+                  style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.5rem' }}>
+                  FULL MARKET
+                </button>
+              </div>
+              <p className="text-xs text-gray-500" style={{ fontFamily: 'Georgia, serif' }}>
+                {gameMode === 'classic'
+                  ? 'Each player is assigned one suit to quote. Penalty every interval without a quote on your assigned suit.'
+                  : 'Two-sided market required for all suits you hold. One-sided for empty suits. 20s to quote all, +5s per trade on your quotes.'}
+              </p>
+            </div>
+
             {/* Game parameters */}
             <div className="border-2 border-dotted border-gray-200 rounded-lg p-5 space-y-4">
               <p className="text-xs text-gray-400 mb-1" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.5rem' }}>GAME PARAMETERS</p>
@@ -586,6 +696,11 @@ export function FiggieMarket() {
                 START TRADING ROUND
               </button>
             )}
+            <div className="text-center">
+              <span className={`text-xs px-3 py-1 rounded ${gameMode === 'fullMarket' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'}`} style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>
+                MODE: {gameMode === 'fullMarket' ? 'FULL MARKET' : 'CLASSIC'}
+              </span>
+            </div>
             {players[0]?.id !== myPlayerId && (
               <p className="text-center text-xs text-gray-400" style={{ fontFamily: 'Georgia, serif' }}>Waiting for host to start...</p>
             )}
@@ -596,7 +711,12 @@ export function FiggieMarket() {
         {phase === 'trading' && lobby && myPlayer && (
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500" style={{ fontFamily: 'Georgia, serif' }}>Round {lobby.round}/{params.totalRounds}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-500" style={{ fontFamily: 'Georgia, serif' }}>Round {lobby.round}/{params.totalRounds}</span>
+                <span className={`text-xs px-2 py-0.5 rounded ${gameMode === 'fullMarket' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'}`} style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.35rem' }}>
+                  {gameMode === 'fullMarket' ? 'FULL MKT' : 'CLASSIC'}
+                </span>
+              </div>
               <span className={`text-sm font-bold ${timeLeft <= 30 ? 'text-red-600' : 'text-gray-700'}`} style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.6rem' }}>
                 {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
               </span>
@@ -604,17 +724,31 @@ export function FiggieMarket() {
             </div>
 
             {/* Penalty countdown warning */}
-            {penaltyCountdown !== null && penaltyCountdown > 0 && (
+            {gameMode === 'classic' && penaltyCountdown !== null && penaltyCountdown > 0 && (
               <div className="border-2 border-dotted border-orange-300 bg-orange-50 rounded-lg p-2 text-center">
                 <span className="text-xs text-orange-700" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>
                   ⚠ PENALTY IN {penaltyCountdown}s — Quote your {SUIT_SYMBOLS[myAssignedSuit!]} market!
                 </span>
               </div>
             )}
-            {penaltyCountdown === 0 && (
+            {penaltyCountdown === 0 && gameMode === 'classic' && (
               <div className="border-2 border-dotted border-red-400 bg-red-50 rounded-lg p-2 text-center animate-pulse">
                 <span className="text-xs text-red-700" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>
                   💸 DRAINING ${params.penaltyAmount}/interval — Quote {SUIT_SYMBOLS[myAssignedSuit!]} NOW!
+                </span>
+              </div>
+            )}
+            {gameMode === 'fullMarket' && quoteTimer <= 5 && quoteTimer > 0 && (
+              <div className="border-2 border-dotted border-orange-300 bg-orange-50 rounded-lg p-2 text-center">
+                <span className="text-xs text-orange-700" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>
+                  ⚠ QUOTE TIMER: {quoteTimer}s — Fill all obligations!
+                </span>
+              </div>
+            )}
+            {gameMode === 'fullMarket' && quoteTimer === 0 && (
+              <div className="border-2 border-dotted border-red-400 bg-red-50 rounded-lg p-2 text-center animate-pulse">
+                <span className="text-xs text-red-700" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>
+                  💸 QUOTE EXPIRED — Penalty draining! Fill all markets!
                 </span>
               </div>
             )}
@@ -623,20 +757,58 @@ export function FiggieMarket() {
             <div className="border-2 border-dotted border-blue-200 rounded-lg p-4">
               <div className="flex justify-between items-center mb-2">
                 <p className="text-xs text-gray-400" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>YOUR HAND</p>
-                <p className="text-sm font-bold text-green-700" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.55rem' }}>${myPlayer.cash}</p>
+                <div className="flex items-center gap-3">
+                  {gameMode === 'fullMarket' && (
+                    <span className={`text-xs font-bold ${quoteTimer <= 5 ? 'text-red-600 animate-pulse' : 'text-orange-500'}`} style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>
+                      QT: {quoteTimer}s
+                    </span>
+                  )}
+                  <p className="text-sm font-bold text-green-700" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.55rem' }}>${myPlayer.cash}</p>
+                </div>
               </div>
               <div className="flex gap-6 justify-center">
-                {SUITS.map(s => (
-                  <div key={s} className="flex flex-col items-center">
-                    <span className="text-2xl" style={{ color: SUIT_COLORS[s] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[s]}</span>
-                    <span className="text-xl font-bold text-gray-800">{myPlayer.hand?.[s] ?? 0}</span>
-                  </div>
-                ))}
+                {SUITS.map(s => {
+                  const current = myPlayer.hand?.[s] ?? 0
+                  const initial = initialHands[myPlayerId!]?.[s] ?? current
+                  const delta = current - initial
+                  return (
+                    <div key={s} className="flex flex-col items-center">
+                      <span className="text-2xl" style={{ color: SUIT_COLORS[s] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[s]}</span>
+                      <span className="text-xl font-bold text-gray-800">{current}</span>
+                      {delta !== 0 && (
+                        <span className={`text-xs font-bold ${delta > 0 ? 'text-green-600' : 'text-red-500'}`} style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>
+                          {delta > 0 ? '+' : ''}{delta}
+                        </span>
+                      )}
+                      {delta === 0 && <span className="text-xs text-gray-300" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>&nbsp;</span>}
+                    </div>
+                  )
+                })}
               </div>
-              <p className="text-xs text-center text-gray-400 mt-2" style={{ fontFamily: 'Georgia, serif' }}>
-                Obligated suit: <span className="font-bold" style={{ color: SUIT_COLORS[myAssignedSuit!] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[myAssignedSuit!]}</span>
-                {myPlayer.quotes?.[myAssignedSuit!] ? <span className="text-green-600 ml-2">&#10003; quoted</span> : <span className="text-red-500 ml-2">&#9888; no quote!</span>}
-              </p>
+              {gameMode === 'classic' && (
+                <p className="text-xs text-center text-gray-400 mt-2" style={{ fontFamily: 'Georgia, serif' }}>
+                  Obligated suit: <span className="font-bold" style={{ color: SUIT_COLORS[myAssignedSuit!] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[myAssignedSuit!]}</span>
+                  {myPlayer.quotes?.[myAssignedSuit!] ? <span className="text-green-600 ml-2">&#10003; quoted</span> : <span className="text-red-500 ml-2">&#9888; no quote!</span>}
+                </p>
+              )}
+              {gameMode === 'fullMarket' && (
+                <div className="text-xs text-center text-gray-400 mt-2 flex justify-center gap-2 flex-wrap" style={{ fontFamily: 'Georgia, serif' }}>
+                  {SUITS.map(s => {
+                    const hasCards = (myPlayer.hand?.[s] ?? 0) > 0
+                    const quote = myPlayer.quotes?.[s]
+                    const hasTwoSided = quote && quote.bid != null && quote.ask != null
+                    const hasOneSided = quote && (quote.bid != null || quote.ask != null)
+                    const fulfilled = hasCards ? hasTwoSided : hasOneSided
+                    return (
+                      <span key={s} className={fulfilled ? 'text-green-600' : 'text-red-500'}>
+                        <span style={{ color: SUIT_COLORS[s] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[s]}</span>
+                        {fulfilled ? '✓' : '✗'}
+                        <span className="text-gray-400 text-[9px]">({hasCards ? '2s' : '1s'})</span>
+                      </span>
+                    )
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Post quote - any suit - one-sided allowed */}
@@ -821,22 +993,129 @@ export function FiggieMarket() {
               </div>
             </div>
 
-            {/* Trade Review */}
+            {/* Trade Review - Chess style replay */}
             <div className="border-2 border-dotted border-gray-200 rounded-lg p-5">
-              <p className="text-xs text-gray-400 mb-3" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>TRADE HISTORY ({trades.length} trades)</p>
-              <div className="max-h-48 overflow-y-auto space-y-1">
-                {trades.length === 0 && <p className="text-xs text-gray-400" style={{ fontFamily: 'Georgia, serif' }}>No trades this round</p>}
-                {[...trades].reverse().map((t, i) => (
-                  <div key={i} className="flex items-center gap-2 px-2 py-1 text-xs border-b border-dotted border-gray-100" style={{ fontFamily: 'Georgia, serif' }}>
-                    <span className="text-gray-400 w-5 text-right">{i + 1}.</span>
-                    <span className="text-lg" style={{ color: SUIT_COLORS[t.suit] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[t.suit]}</span>
-                    <span className="text-gray-600">
-                      <span className="font-semibold text-green-700">{t.buyer_name}</span> bought from <span className="font-semibold text-red-700">{t.seller_name}</span>
-                    </span>
-                    <span className="ml-auto font-bold text-gray-800">${t.price}</span>
-                  </div>
-                ))}
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs text-gray-400" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>TRADE REPLAY ({trades.length} trades)</p>
+                {trades.length > 0 && (
+                  <button
+                    onClick={() => setReplayIndex(replayIndex !== null ? null : 0)}
+                    className={`px-3 py-1 text-xs rounded border-2 border-dotted transition-colors ${replayIndex !== null ? 'border-blue-400 bg-blue-50 text-blue-700' : 'border-gray-200 text-gray-500 hover:border-gray-400'}`}
+                    style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>
+                    {replayIndex !== null ? 'EXIT REPLAY' : '▶ REPLAY'}
+                  </button>
+                )}
               </div>
+              {replayIndex !== null && trades.length > 0 && (() => {
+                const sortedTrades = [...trades].reverse()
+                const currentTrade = sortedTrades[replayIndex]
+                // Reconstruct hands at this point: start from initialHands and apply trades up to replayIndex
+                const replayHands: Record<string, Record<Suit, number>> = {}
+                players.forEach(p => {
+                  replayHands[p.name] = { ...(initialHands[p.id] || { S: 0, H: 0, D: 0, C: 0 }) }
+                })
+                for (let i = 0; i <= replayIndex; i++) {
+                  const t = sortedTrades[i]
+                  if (replayHands[t.buyer_name]) replayHands[t.buyer_name][t.suit] = (replayHands[t.buyer_name][t.suit] || 0) + 1
+                  if (replayHands[t.seller_name]) replayHands[t.seller_name][t.suit] = Math.max(0, (replayHands[t.seller_name][t.suit] || 0) - 1)
+                }
+                return (
+                  <div className="space-y-3">
+                    {/* Navigation */}
+                    <div className="flex items-center justify-center gap-3">
+                      <button onClick={() => setReplayIndex(Math.max(0, replayIndex - 1))} disabled={replayIndex === 0}
+                        className="px-2 py-1 text-xs border border-gray-300 rounded disabled:opacity-30 hover:bg-gray-50">◀</button>
+                      <span className="text-sm font-bold text-gray-700" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.5rem' }}>
+                        {replayIndex + 1} / {sortedTrades.length}
+                      </span>
+                      <button onClick={() => setReplayIndex(Math.min(sortedTrades.length - 1, replayIndex + 1))} disabled={replayIndex === sortedTrades.length - 1}
+                        className="px-2 py-1 text-xs border border-gray-300 rounded disabled:opacity-30 hover:bg-gray-50">▶</button>
+                    </div>
+                    {/* Current trade */}
+                    <div className="text-center text-sm bg-gray-50 rounded p-2" style={{ fontFamily: 'Georgia, serif' }}>
+                      <span className="text-lg" style={{ color: SUIT_COLORS[currentTrade.suit] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[currentTrade.suit]}</span>
+                      {' '}<span className="font-semibold text-green-700">{currentTrade.buyer_name}</span> bought from <span className="font-semibold text-red-700">{currentTrade.seller_name}</span> @ <span className="font-bold">${currentTrade.price}</span>
+                    </div>
+                    {/* Reconstructed hands */}
+                    <div className="grid grid-cols-2 gap-2">
+                      {players.map(p => {
+                        const hand = replayHands[p.name] || { S: 0, H: 0, D: 0, C: 0 }
+                        const initH = initialHands[p.id] || { S: 0, H: 0, D: 0, C: 0 }
+                        return (
+                          <div key={p.id} className={`p-2 rounded border border-dotted ${p.name === currentTrade.buyer_name ? 'border-green-300 bg-green-50' : p.name === currentTrade.seller_name ? 'border-red-300 bg-red-50' : 'border-gray-200'}`}>
+                            <p className="text-xs font-bold text-gray-700 mb-1" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.35rem' }}>{p.name}</p>
+                            <div className="flex gap-2 justify-center">
+                              {SUITS.map(s => (
+                                <div key={s} className="text-center">
+                                  <span className="text-sm" style={{ color: SUIT_COLORS[s] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[s]}</span>
+                                  <div className="text-sm font-bold">{hand[s]}</div>
+                                  {hand[s] - initH[s] !== 0 && (
+                                    <div className={`text-[8px] font-bold ${hand[s] - initH[s] > 0 ? 'text-green-600' : 'text-red-500'}`}>
+                                      {hand[s] - initH[s] > 0 ? '+' : ''}{hand[s] - initH[s]}
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )
+              })()}
+              {replayIndex === null && (
+                <div className="max-h-48 overflow-y-auto space-y-1">
+                  {trades.length === 0 && <p className="text-xs text-gray-400" style={{ fontFamily: 'Georgia, serif' }}>No trades this round</p>}
+                  {[...trades].reverse().map((t, i) => (
+                    <div key={i} className="flex items-center gap-2 px-2 py-1 text-xs border-b border-dotted border-gray-100" style={{ fontFamily: 'Georgia, serif' }}>
+                      <span className="text-gray-400 w-5 text-right">{i + 1}.</span>
+                      <span className="text-lg" style={{ color: SUIT_COLORS[t.suit] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[t.suit]}</span>
+                      <span className="text-gray-600">
+                        <span className="font-semibold text-green-700">{t.buyer_name}</span> bought from <span className="font-semibold text-red-700">{t.seller_name}</span>
+                      </span>
+                      <span className="ml-auto font-bold text-gray-800">${t.price}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* End of Round: Hand Reveal */}
+            <div className="border-2 border-dotted border-purple-200 rounded-lg p-5">
+              <p className="text-xs text-gray-400 mb-3" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>HAND REVEAL</p>
+              <div className="space-y-3">
+                {players.map(p => {
+                  const initH = initialHands[p.id] || { S: 0, H: 0, D: 0, C: 0 }
+                  const finalH = p.hand || { S: 0, H: 0, D: 0, C: 0 }
+                  return (
+                    <div key={p.id} className="flex items-center gap-4 p-2 border border-dotted border-gray-100 rounded">
+                      <span className="text-xs font-bold w-24 truncate text-gray-700" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>{p.name}</span>
+                      <div className="flex-1">
+                        <div className="flex gap-3">
+                          {SUITS.map(s => (
+                            <div key={s} className="text-center flex-1">
+                              <span className="text-sm" style={{ color: SUIT_COLORS[s] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[s]}</span>
+                              <div className="text-xs text-gray-500">{initH[s]}</div>
+                              <div className="text-xs font-bold text-gray-800">→ {finalH[s]}</div>
+                              {finalH[s] - initH[s] !== 0 && (
+                                <div className={`text-[9px] font-bold ${finalH[s] - initH[s] > 0 ? 'text-green-600' : 'text-red-500'}`}>
+                                  {finalH[s] - initH[s] > 0 ? '+' : ''}{finalH[s] - initH[s]}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+              {lobby.goal_suit && (
+                <p className="text-xs text-center text-gray-500 mt-3" style={{ fontFamily: 'Georgia, serif' }}>
+                  Goal suit was: <span className="font-bold text-lg" style={{ color: SUIT_COLORS[lobby.goal_suit] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[lobby.goal_suit]}</span>
+                </p>
+              )}
             </div>
 
             <div className={`border-2 border-dotted rounded-lg p-5 ${lobby.round >= params.totalRounds ? 'border-yellow-300 bg-yellow-50' : 'border-gray-200'}`}>

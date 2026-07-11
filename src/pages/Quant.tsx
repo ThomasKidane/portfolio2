@@ -58,8 +58,18 @@ export function Quant() {
   const [playlistFilter, setPlaylistFilter] = useState('')
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [showSolution, setShowSolution] = useState<string | null>(null)
-  const [quantableQuestions, setQuantableQuestions] = useState<QuantableQuestion[]>([])
-  const [playlists, setPlaylists] = useState<Playlist[]>([])
+  const [quantableQuestions, setQuantableQuestions] = useState<QuantableQuestion[]>(() => {
+    try {
+      const cached = sessionStorage.getItem('quantable-cache')
+      return cached ? JSON.parse(cached).questions : []
+    } catch { return [] }
+  })
+  const [playlists, setPlaylists] = useState<Playlist[]>(() => {
+    try {
+      const cached = sessionStorage.getItem('quantable-cache')
+      return cached ? JSON.parse(cached).playlists || [] : []
+    } catch { return [] }
+  })
   const [quantableLoading, setQuantableLoading] = useState(false)
   const [solvedSet, setSolvedSet] = useState<Set<string>>(() => {
     try {
@@ -76,6 +86,7 @@ export function Quant() {
         .then(data => {
           setQuantableQuestions(data.questions)
           setPlaylists(data.playlists || [])
+          sessionStorage.setItem('quantable-cache', JSON.stringify(data))
           setQuantableLoading(false)
         })
         .catch(() => setQuantableLoading(false))
@@ -442,10 +453,10 @@ export function Quant() {
                       </div>
 
                       {q.hint && (
-                        <div className="p-3 bg-yellow-50 rounded-lg border-2 border-dotted border-yellow-200">
-                          <p className="text-xs text-yellow-600 mb-1" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>HINT</p>
-                          <p className="text-sm text-yellow-800" style={{ fontFamily: 'Georgia, serif' }}>{q.hint}</p>
-                        </div>
+                        <details className="p-3 bg-yellow-50 rounded-lg border-2 border-dotted border-yellow-200">
+                          <summary className="text-xs text-yellow-600 cursor-pointer select-none" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>HINT</summary>
+                          <p className="text-sm text-yellow-800 mt-2" style={{ fontFamily: 'Georgia, serif' }}>{q.hint}</p>
+                        </details>
                       )}
 
                       <a

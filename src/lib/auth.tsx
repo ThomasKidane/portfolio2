@@ -27,7 +27,9 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
-  const [profile, setProfile] = useState<Profile | null>(null)
+  const [profile, setProfile] = useState<Profile | null>(() => {
+    try { const c = sessionStorage.getItem('auth-profile'); return c ? JSON.parse(c) : null } catch { return null }
+  })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -59,6 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (!error && data) {
       setProfile(data as Profile)
+      sessionStorage.setItem('auth-profile', JSON.stringify(data))
     } else if (error?.code === 'PGRST116') {
       // Profile doesn't exist yet — create one
       const user = (await supabase.auth.getUser()).data.user
@@ -78,8 +81,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         
         if (newProfile) {
           setProfile(newProfile as Profile)
+          sessionStorage.setItem('auth-profile', JSON.stringify(newProfile))
         } else {
           setProfile(null)
+          sessionStorage.removeItem('auth-profile')
         }
       } else {
         setProfile(null)
@@ -112,6 +117,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut()
     setSession(null)
     setProfile(null)
+    sessionStorage.removeItem('auth-profile')
   }
 
   return (

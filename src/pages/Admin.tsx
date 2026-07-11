@@ -25,26 +25,34 @@ type Tab = 'users' | 'visibility' | 'analytics'
 export function Admin() {
   const { profile, signOut } = useAuth()
   const [tab, setTab] = useState<Tab>('visibility')
-  const [users, setUsers] = useState<Profile[]>([])
-  const [settings, setSettings] = useState<SiteSetting[]>([])
-  const [loading, setLoading] = useState(true)
+  const [users, setUsers] = useState<Profile[]>(() => {
+    try { const c = sessionStorage.getItem('admin-users'); return c ? JSON.parse(c) : [] } catch { return [] }
+  })
+  const [settings, setSettings] = useState<SiteSetting[]>(() => {
+    try { const c = sessionStorage.getItem('admin-settings'); return c ? JSON.parse(c) : [] } catch { return [] }
+  })
+  const [loading, setLoading] = useState(false)
   const [stats, setStats] = useState({ total: 0, admins: 0, banned: 0 })
 
   const fetchData = useCallback(async () => {
-    setLoading(true)
+    if (users.length === 0) setLoading(true)
     const [usersRes, settingsRes] = await Promise.all([
       supabase.from('profiles').select('*').order('created_at', { ascending: false }),
       supabase.from('site_settings').select('*').order('page_key'),
     ])
     if (usersRes.data) {
       setUsers(usersRes.data as Profile[])
+      sessionStorage.setItem('admin-users', JSON.stringify(usersRes.data))
       setStats({
         total: usersRes.data.length,
         admins: usersRes.data.filter(u => u.role === 'admin').length,
         banned: usersRes.data.filter(u => u.banned).length,
       })
     }
-    if (settingsRes.data) setSettings(settingsRes.data as SiteSetting[])
+    if (settingsRes.data) {
+      setSettings(settingsRes.data as SiteSetting[])
+      sessionStorage.setItem('admin-settings', JSON.stringify(settingsRes.data))
+    }
     setLoading(false)
   }, [])
 

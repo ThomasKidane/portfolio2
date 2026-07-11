@@ -102,6 +102,12 @@ export function FiggieMarket() {
   const [bidInput, setBidInput] = useState('')
   const [askInput, setAskInput] = useState('')
   const [quoteSuit, setQuoteSuit] = useState<Suit>('S')
+  const [suitInputs, setSuitInputs] = useState<Record<Suit, { bid: string; ask: string }>>({
+    S: { bid: '', ask: '' },
+    H: { bid: '', ask: '' },
+    D: { bid: '', ask: '' },
+    C: { bid: '', ask: '' },
+  })
   const [params, setParams] = useState<GameParams>(DEFAULT_PARAMS)
   const [paramInputs, setParamInputs] = useState({
     penaltyInterval: String(DEFAULT_PARAMS.penaltyInterval),
@@ -418,32 +424,40 @@ export function FiggieMarket() {
   }
 
 
-  const postQuote = async () => {
+  const postQuote = async (suit?: Suit) => {
     if (!myPlayerId || !lobby) return
-    const bid = bidInput.trim() !== '' ? parseInt(bidInput) : null
-    const ask = askInput.trim() !== '' ? parseInt(askInput) : null
+    const targetSuit = suit || quoteSuit
+    const inputs = suit ? suitInputs[suit] : { bid: bidInput, ask: askInput }
+    let bid = inputs.bid.trim() !== '' ? parseInt(inputs.bid) : null
+    let ask = inputs.ask.trim() !== '' ? parseInt(inputs.ask) : null
     if (bid === null && ask === null) { setError('Enter at least a bid or ask'); return }
+    if (bid !== null && isNaN(bid)) { setError('Bid must be a number'); return }
+    if (ask !== null && isNaN(ask)) { setError('Ask must be a number'); return }
     if (bid !== null && bid < 0) { setError('Bid must be non-negative'); return }
     if (ask !== null && ask < 0) { setError('Ask must be non-negative'); return }
+    const me = players.find(p => p.id === myPlayerId)
+    if (!me) return
+    // Auto-strip ask if player has no cards in this suit
+    if (ask !== null && me.hand && me.hand[targetSuit] <= 0) {
+      ask = null
+    }
+    if (bid === null && ask === null) { setError('Enter at least a bid or ask'); return }
     if (bid !== null && ask !== null) {
       if (bid >= ask) { setError('Bid must be less than ask'); return }
       if (ask - bid > params.maxSpread) { setError(`Spread cannot exceed ${params.maxSpread}`); return }
     }
-    const me = players.find(p => p.id === myPlayerId)
-    if (!me) return
-    if (ask !== null && me.hand && me.hand[quoteSuit] <= 0) { setError(`You have no ${SUIT_SYMBOLS[quoteSuit]} cards to sell — remove ask or post bid-only`); return }
     if (bid !== null && me.cash < bid) { setError(`Insufficient cash to back bid of $${bid}`); return }
     // Full Market: must provide two-sided quote for suits you hold
-    if (gameMode === 'fullMarket' && me.hand && me.hand[quoteSuit] > 0) {
-      if (bid === null || ask === null) { setError(`Full Market: two-sided quote required for ${SUIT_SYMBOLS[quoteSuit]} (you hold cards)`); return }
+    if (gameMode === 'fullMarket' && me.hand && me.hand[targetSuit] > 0) {
+      if (bid === null || ask === null) { setError(`Full Market: two-sided quote required for ${SUIT_SYMBOLS[targetSuit]} (you hold cards)`); return }
     }
     setError(null)
     const currentQuotes = me?.quotes || {}
     const quoteEntry: { bid?: number; ask?: number } = {}
     if (bid !== null) quoteEntry.bid = bid
     if (ask !== null) quoteEntry.ask = ask
-    const updatedQuotes = { ...currentQuotes, [quoteSuit]: quoteEntry }
-    const isAssignedSuit = quoteSuit === myAssignedSuit
+    const updatedQuotes = { ...currentQuotes, [targetSuit]: quoteEntry }
+    const isAssignedSuit = targetSuit === myAssignedSuit
     await supabase.from('figgie_market_players')
       .update({
         quotes: updatedQuotes,
@@ -811,33 +825,38 @@ export function FiggieMarket() {
               )}
             </div>
 
-            {/* Post quote - any suit - one-sided allowed */}
+            {/* Post quote - 4 suits */}
             <div className="border-2 border-dotted border-gray-200 rounded-lg p-4">
-              <p className="text-xs text-gray-400 mb-2" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>
-                POST QUOTE (bid-only, ask-only, or both)
+              <p className="text-xs text-gray-400 mb-3" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>
+                QUOTE ALL SUITS
               </p>
-              <div className="flex gap-2 items-end">
-                <div className="flex gap-1">
-                  {SUITS.map(s => (
-                    <button key={s} onClick={() => setQuoteSuit(s)}
-                      className={`w-8 h-8 rounded flex items-center justify-center text-lg border-2 border-dotted transition-colors ${quoteSuit === s ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}
-                      style={{ color: SUIT_COLORS[s] === 'red' ? '#dc2626' : '#1f2937' }}>
-                      {SUIT_SYMBOLS[s]}
-                    </button>
-                  ))}
-                </div>
-                <div className="flex-1">
-                  <label className="text-xs text-gray-500">Bid</label>
-                  <input type="text" inputMode="numeric" value={bidInput} onChange={e => setBidInput(e.target.value)} placeholder="—"
-                    className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
-                </div>
-                <div className="flex-1">
-                  <label className="text-xs text-gray-500">Ask</label>
-                  <input type="text" inputMode="numeric" value={askInput} onChange={e => setAskInput(e.target.value)} placeholder="—"
-                    className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
-                </div>
-                <button onClick={postQuote} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>QUOTE</button>
+              <div className="space-y-2">
+                {SUITS.map(s => {
+                  const hasCards = (myPlayer.hand?.[s] ?? 0) > 0
+                  return (
+                    <div key={s} className="flex gap-2 items-center">
+                      <span className="text-lg w-6 text-center" style={{ color: SUIT_COLORS[s] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[s]}</span>
+                      <div className="flex-1">
+                        <input type="text" inputMode="numeric" value={suitInputs[s].bid}
+                          onChange={e => setSuitInputs(prev => ({ ...prev, [s]: { ...prev[s], bid: e.target.value } }))}
+                          placeholder="Bid"
+                          className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
+                      </div>
+                      <div className="flex-1">
+                        <input type="text" inputMode="numeric" value={suitInputs[s].ask}
+                          onChange={e => setSuitInputs(prev => ({ ...prev, [s]: { ...prev[s], ask: e.target.value } }))}
+                          placeholder={hasCards ? 'Ask' : '(no cards)'}
+                          disabled={!hasCards}
+                          className={`w-full border-2 border-dotted rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500 ${hasCards ? 'border-gray-300' : 'border-gray-100 bg-gray-50 text-gray-400'}`} />
+                      </div>
+                      <button onClick={() => postQuote(s)} className="px-2 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.35rem' }}>Q</button>
+                    </div>
+                  )
+                })}
               </div>
+              <button onClick={() => { SUITS.forEach(s => postQuote(s)) }} className="w-full mt-3 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>
+                QUOTE ALL
+              </button>
               {/* My active quotes */}
               {myPlayer.quotes && Object.keys(myPlayer.quotes).length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-2">

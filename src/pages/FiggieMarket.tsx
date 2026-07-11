@@ -454,42 +454,42 @@ export function FiggieMarket() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Penalty timer (s)</label>
-                  <input type="number" value={params.penaltyInterval} onChange={e => setParams(p => ({ ...p, penaltyInterval: Math.max(1, parseInt(e.target.value) || 14) }))}
+                  <input type="text" inputMode="numeric" value={params.penaltyInterval} onChange={e => setParams(p => ({ ...p, penaltyInterval: Math.max(1, parseInt(e.target.value) || 14) }))}
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
                 <div>
                   <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Penalty drain ($)</label>
-                  <input type="number" value={params.penaltyAmount} onChange={e => setParams(p => ({ ...p, penaltyAmount: Math.max(1, parseInt(e.target.value) || 2) }))}
+                  <input type="text" inputMode="numeric" value={params.penaltyAmount} onChange={e => setParams(p => ({ ...p, penaltyAmount: Math.max(1, parseInt(e.target.value) || 2) }))}
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
                 <div>
                   <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Max spread</label>
-                  <input type="number" value={params.maxSpread} onChange={e => setParams(p => ({ ...p, maxSpread: Math.max(1, parseInt(e.target.value) || 4) }))}
+                  <input type="text" inputMode="numeric" value={params.maxSpread} onChange={e => setParams(p => ({ ...p, maxSpread: Math.max(1, parseInt(e.target.value) || 4) }))}
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
                 <div>
                   <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Starting cash ($)</label>
-                  <input type="number" value={params.startingCash} onChange={e => setParams(p => ({ ...p, startingCash: Math.max(10, parseInt(e.target.value) || 100) }))}
+                  <input type="text" inputMode="numeric" value={params.startingCash} onChange={e => setParams(p => ({ ...p, startingCash: Math.max(10, parseInt(e.target.value) || 100) }))}
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
                 <div>
                   <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Round duration (s)</label>
-                  <input type="number" value={params.roundDuration} onChange={e => setParams(p => ({ ...p, roundDuration: Math.max(30, parseInt(e.target.value) || 180) }))}
+                  <input type="text" inputMode="numeric" value={params.roundDuration} onChange={e => setParams(p => ({ ...p, roundDuration: Math.max(30, parseInt(e.target.value) || 180) }))}
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
                 <div>
                   <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Goal card value ($)</label>
-                  <input type="number" value={params.goalCardValue} onChange={e => setParams(p => ({ ...p, goalCardValue: Math.max(1, parseInt(e.target.value) || 10) }))}
+                  <input type="text" inputMode="numeric" value={params.goalCardValue} onChange={e => setParams(p => ({ ...p, goalCardValue: Math.max(1, parseInt(e.target.value) || 10) }))}
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
                 <div>
                   <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Ante per player ($)</label>
-                  <input type="number" value={params.ante} onChange={e => setParams(p => ({ ...p, ante: Math.max(0, parseInt(e.target.value) || 10) }))}
+                  <input type="text" inputMode="numeric" value={params.ante} onChange={e => setParams(p => ({ ...p, ante: Math.max(0, parseInt(e.target.value) || 10) }))}
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
                 <div>
                   <label className="text-xs text-gray-500 block mb-1" style={{ fontFamily: 'Georgia, serif' }}>Total rounds</label>
-                  <input type="number" value={params.totalRounds} onChange={e => setParams(p => ({ ...p, totalRounds: Math.max(1, parseInt(e.target.value) || 5) }))}
+                  <input type="text" inputMode="numeric" value={params.totalRounds} onChange={e => setParams(p => ({ ...p, totalRounds: Math.max(1, parseInt(e.target.value) || 5) }))}
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
               </div>
@@ -616,12 +616,12 @@ export function FiggieMarket() {
                 </div>
                 <div className="flex-1">
                   <label className="text-xs text-gray-500">Bid</label>
-                  <input type="number" value={bidInput} onChange={e => setBidInput(e.target.value)} placeholder="—"
+                  <input type="text" inputMode="numeric" value={bidInput} onChange={e => setBidInput(e.target.value)} placeholder="—"
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
                 <div className="flex-1">
                   <label className="text-xs text-gray-500">Ask</label>
-                  <input type="number" value={askInput} onChange={e => setAskInput(e.target.value)} placeholder="—"
+                  <input type="text" inputMode="numeric" value={askInput} onChange={e => setAskInput(e.target.value)} placeholder="—"
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
                 <button onClick={postQuote} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>QUOTE</button>

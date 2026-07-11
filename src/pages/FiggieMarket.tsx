@@ -191,17 +191,29 @@ export function FiggieMarket() {
     if (!lobby) return
     if (lobby.phase === 'waiting') setPhase('waiting')
     else if (lobby.phase === 'trading') setPhase('trading')
-    else if (lobby.phase === 'results') setPhase('results')
+    else if (lobby.phase === 'results') {
+      setPhase('results')
+      // Fetch full trade history and fresh player data for accurate results
+      supabase.from('figgie_market_trades').select('*').eq('lobby_id', lobby.id).order('created_at', { ascending: false }).limit(200)
+        .then(({ data }) => { if (data) setTrades(data) })
+      fetchPlayers()
+    }
   }, [lobby?.phase, lobby?.round])
+
+  const endRoundCalledRef = useRef(false)
 
   useEffect(() => {
     if (phase !== 'trading' || !lobby?.round_start_time) return
+    endRoundCalledRef.current = false
     const roundMs = params.roundDuration * 1000
     timerRef.current = setInterval(() => {
       const elapsed = Date.now() - new Date(lobby.round_start_time!).getTime()
       const remaining = Math.max(0, Math.ceil((roundMs - elapsed) / 1000))
       setTimeLeft(remaining)
-      if (remaining <= 0) endRound()
+      if (remaining <= 0 && !endRoundCalledRef.current) {
+        endRoundCalledRef.current = true
+        endRound()
+      }
     }, 1000)
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [phase, lobby?.round_start_time])
@@ -401,17 +413,22 @@ export function FiggieMarket() {
 
   const endRound = useCallback(async () => {
     if (!lobby || lobby.phase !== 'trading') return
+    // Only the host (first player) should execute scoring to prevent duplication
+    if (players[0]?.id !== myPlayerId) return
     const { data: pls } = await supabase.from('figgie_market_players').select('*').eq('lobby_id', lobby.id)
     if (!pls) return
-    const pot = lobby.penalty_pot
-    const goalCounts = pls.map(p => (p.hand as Record<Suit, number>)?.[lobby.goal_suit!] || 0)
+    // Fetch fresh lobby to get accurate penalty_pot
+    const { data: freshLobby } = await supabase.from('figgie_market_lobbies').select('*').eq('id', lobby.id).single()
+    if (!freshLobby) return
+    const pot = freshLobby.penalty_pot
+    const goalCounts = pls.map(p => (p.hand as Record<Suit, number>)?.[freshLobby.goal_suit!] || 0)
     const maxGoal = Math.max(...goalCounts)
-    const winners = pls.filter(p => ((p.hand as Record<Suit, number>)?.[lobby.goal_suit!] || 0) === maxGoal)
+    const winners = pls.filter(p => ((p.hand as Record<Suit, number>)?.[freshLobby.goal_suit!] || 0) === maxGoal)
     const potPerWinner = pot / winners.length
 
     for (const p of pls) {
-      const cardValue = ((p.hand as Record<Suit, number>)?.[lobby.goal_suit!] || 0) * params.goalCardValue
-      const isWinner = ((p.hand as Record<Suit, number>)?.[lobby.goal_suit!] || 0) === maxGoal
+      const cardValue = ((p.hand as Record<Suit, number>)?.[freshLobby.goal_suit!] || 0) * params.goalCardValue
+      const isWinner = ((p.hand as Record<Suit, number>)?.[freshLobby.goal_suit!] || 0) === maxGoal
       const potShare = isWinner ? potPerWinner : 0
       const roundScore = p.cash + cardValue + potShare - params.startingCash
       await supabase.from('figgie_market_players')
@@ -419,7 +436,7 @@ export function FiggieMarket() {
         .eq('id', p.id)
     }
     await supabase.from('figgie_market_lobbies').update({ phase: 'results' }).eq('id', lobby.id)
-  }, [lobby, params])
+  }, [lobby, params, players, myPlayerId])
 
 
   return (
@@ -801,6 +818,24 @@ export function FiggieMarket() {
                     </div>
                   )
                 })}
+              </div>
+            </div>
+
+            {/* Trade Review */}
+            <div className="border-2 border-dotted border-gray-200 rounded-lg p-5">
+              <p className="text-xs text-gray-400 mb-3" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>TRADE HISTORY ({trades.length} trades)</p>
+              <div className="max-h-48 overflow-y-auto space-y-1">
+                {trades.length === 0 && <p className="text-xs text-gray-400" style={{ fontFamily: 'Georgia, serif' }}>No trades this round</p>}
+                {[...trades].reverse().map((t, i) => (
+                  <div key={i} className="flex items-center gap-2 px-2 py-1 text-xs border-b border-dotted border-gray-100" style={{ fontFamily: 'Georgia, serif' }}>
+                    <span className="text-gray-400 w-5 text-right">{i + 1}.</span>
+                    <span className="text-lg" style={{ color: SUIT_COLORS[t.suit] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[t.suit]}</span>
+                    <span className="text-gray-600">
+                      <span className="font-semibold text-green-700">{t.buyer_name}</span> bought from <span className="font-semibold text-red-700">{t.seller_name}</span>
+                    </span>
+                    <span className="ml-auto font-bold text-gray-800">${t.price}</span>
+                  </div>
+                ))}
               </div>
             </div>
 

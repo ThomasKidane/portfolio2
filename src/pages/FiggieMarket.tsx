@@ -26,8 +26,8 @@ interface LobbyData {
 }
 
 interface QuoteEntry {
-  bid: number
-  ask: number
+  bid?: number
+  ask?: number
 }
 
 interface PlayerData {
@@ -100,15 +100,55 @@ export function FiggieMarket() {
   const [bidInput, setBidInput] = useState('')
   const [askInput, setAskInput] = useState('')
   const [quoteSuit, setQuoteSuit] = useState<Suit>('S')
-  const [selectedBookSuit, setSelectedBookSuit] = useState<Suit>('S')
   const [params, setParams] = useState<GameParams>(DEFAULT_PARAMS)
   const [showRules, setShowRules] = useState(false)
+  const [prevScores, setPrevScores] = useState<Record<string, number>>({})
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const penaltyRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const myPlayer = players.find(p => p.id === myPlayerId)
   const myAssignedSuit = lobby?.suit_assignments && myPlayerId
     ? lobby.suit_assignments[myPlayerId] : null
+
+  // Persist session to localStorage so refresh doesn't kick you out
+  useEffect(() => {
+    if (lobby && myPlayerId) {
+      localStorage.setItem('figgie-market-session', JSON.stringify({ lobbyId: lobby.id, playerId: myPlayerId, playerName }))
+    }
+  }, [lobby?.id, myPlayerId, playerName])
+
+  // Restore session on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('figgie-market-session')
+    if (!saved) return
+    try {
+      const { lobbyId, playerId, playerName: savedName } = JSON.parse(saved)
+      if (lobbyId && playerId) {
+        setPlayerName(savedName || '')
+        // Re-fetch lobby and player data
+        supabase.from('figgie_market_lobbies').select('*').eq('id', lobbyId).single()
+          .then(({ data: lobbyData }) => {
+            if (!lobbyData) { localStorage.removeItem('figgie-market-session'); return }
+            setLobby(lobbyData)
+            setMyPlayerId(playerId)
+            supabase.from('figgie_market_players').select('*').eq('lobby_id', lobbyId).order('joined_at')
+              .then(({ data: playersData }) => {
+                if (playersData) setPlayers(playersData)
+              })
+            supabase.from('figgie_market_trades').select('*').eq('lobby_id', lobbyId).order('created_at', { ascending: false }).limit(50)
+              .then(({ data: tradesData }) => {
+                if (tradesData) setTrades(tradesData)
+              })
+            if (lobbyData.phase === 'waiting') setPhase('waiting')
+            else if (lobbyData.phase === 'trading') setPhase('trading')
+            else if (lobbyData.phase === 'results') setPhase('results')
+          })
+      }
+    } catch { localStorage.removeItem('figgie-market-session') }
+  }, [])
+
+  // Penalty countdown timer state
+  const [penaltyCountdown, setPenaltyCountdown] = useState<number | null>(null)
 
   useEffect(() => {
     if (!lobby?.id) return
@@ -150,9 +190,11 @@ export function FiggieMarket() {
       const me = players.find(p => p.id === myPlayerId)
       if (!me) return
       const hasAssignedQuote = me.quotes?.[myAssignedSuit] != null
-      if (hasAssignedQuote) return
+      if (hasAssignedQuote) { setPenaltyCountdown(null); return }
       const lastTime = me.last_quote_time ? new Date(me.last_quote_time).getTime() : (lobby?.round_start_time ? new Date(lobby.round_start_time).getTime() : Date.now())
       const elapsed = Date.now() - lastTime
+      const remaining = Math.max(0, Math.ceil((penaltyIntervalMs - elapsed) / 1000))
+      setPenaltyCountdown(remaining)
       if (elapsed >= penaltyIntervalMs) {
         const newDrained = me.penalty_drained + params.penaltyAmount
         const newCash = me.cash - params.penaltyAmount
@@ -163,7 +205,7 @@ export function FiggieMarket() {
           .update({ penalty_pot: (lobby?.penalty_pot || 0) + params.penaltyAmount })
           .eq('id', lobby?.id)
       }
-    }, 3000)
+    }, 1000)
     return () => { if (penaltyRef.current) clearInterval(penaltyRef.current) }
   }, [phase, myPlayerId, myAssignedSuit, players])
 
@@ -172,6 +214,15 @@ export function FiggieMarket() {
     if (!lobby?.id) return
     const { data } = await supabase.from('figgie_market_players').select('*').eq('lobby_id', lobby.id).order('joined_at')
     if (data) setPlayers(data)
+  }
+
+  const leaveGame = () => {
+    localStorage.removeItem('figgie-market-session')
+    setLobby(null)
+    setMyPlayerId(null)
+    setPlayers([])
+    setTrades([])
+    setPhase('join')
   }
 
   const createLobby = async () => {
@@ -217,6 +268,10 @@ export function FiggieMarket() {
 
   const startRound = async () => {
     if (!lobby) return
+    // Save current scores before resetting for delta display
+    const scores: Record<string, number> = {}
+    players.forEach(p => { scores[p.id] = p.total_score })
+    setPrevScores(scores)
     const { assignment, hands, goalSuit } = dealMarketHands(lobby.num_players)
     const playerIds = players.map(p => p.id)
     const suitAssignments = assignMarketSuits(playerIds, lobby.num_players)
@@ -246,19 +301,25 @@ export function FiggieMarket() {
 
   const postQuote = async () => {
     if (!myPlayerId || !lobby) return
-    const bid = parseInt(bidInput)
-    const ask = parseInt(askInput)
-    if (isNaN(bid) || isNaN(ask)) { setError('Enter valid numbers'); return }
-    if (bid < 0 || ask < 0) { setError('Prices must be non-negative'); return }
-    if (bid >= ask) { setError('Bid must be less than ask'); return }
-    if (ask - bid > params.maxSpread) { setError(`Spread cannot exceed ${params.maxSpread}`); return }
+    const bid = bidInput.trim() !== '' ? parseInt(bidInput) : null
+    const ask = askInput.trim() !== '' ? parseInt(askInput) : null
+    if (bid === null && ask === null) { setError('Enter at least a bid or ask'); return }
+    if (bid !== null && bid < 0) { setError('Bid must be non-negative'); return }
+    if (ask !== null && ask < 0) { setError('Ask must be non-negative'); return }
+    if (bid !== null && ask !== null) {
+      if (bid >= ask) { setError('Bid must be less than ask'); return }
+      if (ask - bid > params.maxSpread) { setError(`Spread cannot exceed ${params.maxSpread}`); return }
+    }
     const me = players.find(p => p.id === myPlayerId)
     if (!me) return
-    if (me.hand && me.hand[quoteSuit] <= 0) { setError(`You have no ${SUIT_SYMBOLS[quoteSuit]} cards — can only bid (buy), not ask (sell). Post a bid-only by setting ask higher than you'd accept.`); return }
-    if (me.cash < bid) { setError(`Insufficient cash to back bid of $${bid}`); return }
+    if (ask !== null && me.hand && me.hand[quoteSuit] <= 0) { setError(`You have no ${SUIT_SYMBOLS[quoteSuit]} cards to sell — remove ask or post bid-only`); return }
+    if (bid !== null && me.cash < bid) { setError(`Insufficient cash to back bid of $${bid}`); return }
     setError(null)
     const currentQuotes = me?.quotes || {}
-    const updatedQuotes = { ...currentQuotes, [quoteSuit]: { bid, ask } }
+    const quoteEntry: { bid?: number; ask?: number } = {}
+    if (bid !== null) quoteEntry.bid = bid
+    if (ask !== null) quoteEntry.ask = ask
+    const updatedQuotes = { ...currentQuotes, [quoteSuit]: quoteEntry }
     const isAssignedSuit = quoteSuit === myAssignedSuit
     await supabase.from('figgie_market_players')
       .update({
@@ -341,13 +402,20 @@ export function FiggieMarket() {
   return (
     <div className="min-h-screen bg-white">
       <div className="border-b-2 border-dotted border-blue-500 pb-6 pt-10 px-6 md:px-12">
-        <div className="max-w-5xl mx-auto">
-          <h1 style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '1.2rem', color: '#4169E1', letterSpacing: '0.05em' }}>
-            FIGGIE MARKET
-          </h1>
-          <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.9rem', color: '#666', marginTop: '0.5rem' }}>
-            Spread obligation trading game &bull; {params.penaltyInterval}s quote timer &bull; Max spread: {params.maxSpread}
-          </p>
+        <div className="max-w-5xl mx-auto flex justify-between items-center">
+          <div>
+            <h1 style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '1.2rem', color: '#4169E1', letterSpacing: '0.05em' }}>
+              FIGGIE MARKET
+            </h1>
+            <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.9rem', color: '#666', marginTop: '0.5rem' }}>
+              Spread obligation trading game &bull; {params.penaltyInterval}s quote timer &bull; Max spread: {params.maxSpread}
+            </p>
+          </div>
+          {phase !== 'join' && (
+            <button onClick={leaveGame} className="px-3 py-1.5 border-2 border-dotted border-red-300 text-red-500 hover:bg-red-50 text-xs rounded transition-colors" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>
+              LEAVE
+            </button>
+          )}
         </div>
       </div>
 
@@ -495,6 +563,22 @@ export function FiggieMarket() {
               <span className="text-xs text-gray-400" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>POT: ${lobby.penalty_pot}</span>
             </div>
 
+            {/* Penalty countdown warning */}
+            {penaltyCountdown !== null && penaltyCountdown > 0 && (
+              <div className="border-2 border-dotted border-orange-300 bg-orange-50 rounded-lg p-2 text-center">
+                <span className="text-xs text-orange-700" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>
+                  ⚠ PENALTY IN {penaltyCountdown}s — Quote your {SUIT_SYMBOLS[myAssignedSuit!]} market!
+                </span>
+              </div>
+            )}
+            {penaltyCountdown === 0 && (
+              <div className="border-2 border-dotted border-red-400 bg-red-50 rounded-lg p-2 text-center animate-pulse">
+                <span className="text-xs text-red-700" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>
+                  💸 DRAINING ${params.penaltyAmount}/interval — Quote {SUIT_SYMBOLS[myAssignedSuit!]} NOW!
+                </span>
+              </div>
+            )}
+
             {/* My hand + cash */}
             <div className="border-2 border-dotted border-blue-200 rounded-lg p-4">
               <div className="flex justify-between items-center mb-2">
@@ -515,10 +599,10 @@ export function FiggieMarket() {
               </p>
             </div>
 
-            {/* Post quote - any suit */}
+            {/* Post quote - any suit - one-sided allowed */}
             <div className="border-2 border-dotted border-gray-200 rounded-lg p-4">
               <p className="text-xs text-gray-400 mb-2" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>
-                POST QUOTE (max spread: {params.maxSpread})
+                POST QUOTE (bid-only, ask-only, or both)
               </p>
               <div className="flex gap-2 items-end">
                 <div className="flex gap-1">
@@ -532,12 +616,12 @@ export function FiggieMarket() {
                 </div>
                 <div className="flex-1">
                   <label className="text-xs text-gray-500">Bid</label>
-                  <input type="number" value={bidInput} onChange={e => setBidInput(e.target.value)} placeholder="0"
+                  <input type="number" value={bidInput} onChange={e => setBidInput(e.target.value)} placeholder="—"
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
                 <div className="flex-1">
                   <label className="text-xs text-gray-500">Ask</label>
-                  <input type="number" value={askInput} onChange={e => setAskInput(e.target.value)} placeholder="0"
+                  <input type="number" value={askInput} onChange={e => setAskInput(e.target.value)} placeholder="—"
                     className="w-full border-2 border-dotted border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500" />
                 </div>
                 <button onClick={postQuote} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>QUOTE</button>
@@ -551,7 +635,7 @@ export function FiggieMarket() {
                     return (
                       <div key={s} className="flex items-center gap-1 px-2 py-1 bg-gray-50 border-2 border-dotted border-gray-200 rounded text-xs">
                         <span style={{ color: SUIT_COLORS[s] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[s]}</span>
-                        <span className="text-gray-600">{q.bid}/{q.ask}</span>
+                        <span className="text-gray-600">{q.bid ?? '—'}/{q.ask ?? '—'}</span>
                         <button onClick={() => cancelQuote(s)} className="text-red-400 hover:text-red-600 ml-1">&times;</button>
                       </div>
                     )
@@ -560,98 +644,62 @@ export function FiggieMarket() {
               )}
             </div>
 
-            {/* MARKET OVERVIEW - Best bid/ask per suit */}
+            {/* ALL MARKETS - show all 4 suits simultaneously */}
             <div className="border-2 border-dotted border-gray-200 rounded-lg p-4">
-              <p className="text-xs text-gray-400 mb-3" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>MARKET OVERVIEW</p>
-              <div className="grid grid-cols-4 gap-2">
+              <p className="text-xs text-gray-400 mb-3" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>ALL MARKETS</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 {SUITS.map(s => {
-                  const allQuotes = players.filter(p => p.id !== myPlayerId && p.quotes?.[s])
-                  const bestBid = allQuotes.length > 0 ? Math.max(...allQuotes.map(p => p.quotes![s]!.bid)) : null
-                  const bestAsk = allQuotes.length > 0 ? Math.min(...allQuotes.map(p => p.quotes![s]!.ask)) : null
-                  const bestBidPlayer = allQuotes.find(p => p.quotes![s]!.bid === bestBid)
-                  const bestAskPlayer = allQuotes.find(p => p.quotes![s]!.ask === bestAsk)
+                  const quotesForSuit = players.filter(p => p.quotes?.[s])
+                  const bids = quotesForSuit.filter(p => p.quotes![s]!.bid != null).sort((a, b) => (b.quotes![s]!.bid || 0) - (a.quotes![s]!.bid || 0))
+                  const asks = quotesForSuit.filter(p => p.quotes![s]!.ask != null).sort((a, b) => (a.quotes![s]!.ask || 0) - (b.quotes![s]!.ask || 0))
+                  const bestBidPlayer = bids[0]
+                  const bestAskPlayer = asks[0]
+                  const bestBid = bestBidPlayer?.quotes?.[s]?.bid
+                  const bestAsk = bestAskPlayer?.quotes?.[s]?.ask
                   return (
-                    <div key={s} className="border-2 border-dotted border-gray-100 rounded p-2 text-center">
-                      <span className="text-xl block mb-1" style={{ color: SUIT_COLORS[s] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[s]}</span>
-                      <div className="space-y-1">
-                        {bestBid !== null ? (
-                          <button onClick={() => bestBidPlayer && hitBid(bestBidPlayer, s)} className="w-full px-1 py-0.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs rounded border border-red-200 transition-colors" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>
-                            SELL {bestBid}
+                    <div key={s} className="border-2 border-dotted border-gray-100 rounded-lg p-3">
+                      <div className="text-center mb-2">
+                        <span className="text-2xl" style={{ color: SUIT_COLORS[s] === 'red' ? '#dc2626' : '#1f2937' }}>{SUIT_SYMBOLS[s]}</span>
+                      </div>
+                      {/* Best bid/ask action buttons */}
+                      <div className="space-y-1 mb-2">
+                        {bestBid != null && bestBidPlayer && bestBidPlayer.id !== myPlayerId ? (
+                          <button onClick={() => hitBid(bestBidPlayer, s)} className="w-full px-1 py-1 bg-red-50 hover:bg-red-100 text-red-700 text-xs rounded border border-red-200 transition-colors" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>
+                            SELL @ {bestBid}
                           </button>
+                        ) : bestBid != null ? (
+                          <div className="w-full px-1 py-1 bg-gray-50 text-gray-400 text-xs rounded border border-gray-200 text-center" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>BID {bestBid} (you)</div>
                         ) : (
-                          <div className="text-xs text-gray-300 py-0.5">—</div>
+                          <div className="text-xs text-gray-300 py-1 text-center">no bids</div>
                         )}
-                        {bestAsk !== null ? (
-                          <button onClick={() => bestAskPlayer && liftAsk(bestAskPlayer, s)} className="w-full px-1 py-0.5 bg-green-50 hover:bg-green-100 text-green-700 text-xs rounded border border-green-200 transition-colors" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>
-                            BUY {bestAsk}
+                        {bestAsk != null && bestAskPlayer && bestAskPlayer.id !== myPlayerId ? (
+                          <button onClick={() => liftAsk(bestAskPlayer, s)} className="w-full px-1 py-1 bg-green-50 hover:bg-green-100 text-green-700 text-xs rounded border border-green-200 transition-colors" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>
+                            BUY @ {bestAsk}
                           </button>
+                        ) : bestAsk != null ? (
+                          <div className="w-full px-1 py-1 bg-gray-50 text-gray-400 text-xs rounded border border-gray-200 text-center" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>ASK {bestAsk} (you)</div>
                         ) : (
-                          <div className="text-xs text-gray-300 py-0.5">—</div>
+                          <div className="text-xs text-gray-300 py-1 text-center">no asks</div>
                         )}
+                      </div>
+                      {/* Order depth */}
+                      <div className="space-y-0.5 max-h-24 overflow-y-auto">
+                        {bids.map(p => (
+                          <div key={`bid-${p.id}`} className="flex justify-between text-xs px-1">
+                            <span className="text-gray-400 truncate max-w-[60px]">{p.name}{p.id === myPlayerId ? '*' : ''}</span>
+                            <span className="text-green-600 font-mono">{p.quotes![s]!.bid}</span>
+                          </div>
+                        ))}
+                        {asks.map(p => (
+                          <div key={`ask-${p.id}`} className="flex justify-between text-xs px-1">
+                            <span className="text-gray-400 truncate max-w-[60px]">{p.name}{p.id === myPlayerId ? '*' : ''}</span>
+                            <span className="text-red-600 font-mono">{p.quotes![s]!.ask}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   )
                 })}
-              </div>
-            </div>
-
-            {/* ORDER BOOK - Full depth per suit */}
-            <div className="border-2 border-dotted border-gray-200 rounded-lg p-4">
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-xs text-gray-400" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.45rem' }}>ORDER BOOK</p>
-                <div className="flex gap-1">
-                  {SUITS.map(s => (
-                    <button key={s} onClick={() => setSelectedBookSuit(s)}
-                      className={`w-7 h-7 rounded flex items-center justify-center text-sm border-2 border-dotted transition-colors ${selectedBookSuit === s ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}
-                      style={{ color: SUIT_COLORS[s] === 'red' ? '#dc2626' : '#1f2937' }}>
-                      {SUIT_SYMBOLS[s]}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                {/* Bids (buy orders) - sorted high to low */}
-                <div>
-                  <p className="text-xs text-green-600 mb-1 font-bold" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>BIDS (BUY)</p>
-                  <div className="space-y-1">
-                    {players.filter(p => p.quotes?.[selectedBookSuit]).sort((a, b) => (b.quotes![selectedBookSuit]!.bid) - (a.quotes![selectedBookSuit]!.bid)).map(p => (
-                      <div key={p.id} className="flex items-center justify-between px-2 py-1 bg-green-50 rounded text-xs border border-green-100">
-                        <span className="text-gray-500" style={{ fontFamily: 'Georgia, serif' }}>{p.name}{p.id === myPlayerId ? ' (you)' : ''}</span>
-                        {p.id !== myPlayerId ? (
-                          <button onClick={() => hitBid(p, selectedBookSuit)} className="font-bold text-green-700 hover:text-green-900" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>
-                            {p.quotes![selectedBookSuit]!.bid}
-                          </button>
-                        ) : (
-                          <span className="font-bold text-green-700" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>{p.quotes![selectedBookSuit]!.bid}</span>
-                        )}
-                      </div>
-                    ))}
-                    {players.filter(p => p.quotes?.[selectedBookSuit]).length === 0 && (
-                      <p className="text-xs text-gray-300 text-center py-2">No bids</p>
-                    )}
-                  </div>
-                </div>
-                {/* Asks (sell orders) - sorted low to high */}
-                <div>
-                  <p className="text-xs text-red-600 mb-1 font-bold" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>ASKS (SELL)</p>
-                  <div className="space-y-1">
-                    {players.filter(p => p.quotes?.[selectedBookSuit]).sort((a, b) => (a.quotes![selectedBookSuit]!.ask) - (b.quotes![selectedBookSuit]!.ask)).map(p => (
-                      <div key={p.id} className="flex items-center justify-between px-2 py-1 bg-red-50 rounded text-xs border border-red-100">
-                        <span className="text-gray-500" style={{ fontFamily: 'Georgia, serif' }}>{p.name}{p.id === myPlayerId ? ' (you)' : ''}</span>
-                        {p.id !== myPlayerId ? (
-                          <button onClick={() => liftAsk(p, selectedBookSuit)} className="font-bold text-red-700 hover:text-red-900" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>
-                            {p.quotes![selectedBookSuit]!.ask}
-                          </button>
-                        ) : (
-                          <span className="font-bold text-red-700" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>{p.quotes![selectedBookSuit]!.ask}</span>
-                        )}
-                      </div>
-                    ))}
-                    {players.filter(p => p.quotes?.[selectedBookSuit]).length === 0 && (
-                      <p className="text-xs text-gray-300 text-center py-2">No asks</p>
-                    )}
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -738,20 +786,29 @@ export function FiggieMarket() {
                 {lobby.round >= params.totalRounds ? 'FINAL STANDINGS' : `LEADERBOARD (${lobby.round}/${params.totalRounds} ROUNDS)`}
               </p>
               <div className="space-y-2">
-                {[...players].sort((a, b) => b.total_score - a.total_score).map((p, i) => (
-                  <div key={p.id} className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      {lobby.round >= params.totalRounds && i === 0 && <span className="text-lg">&#x1F3C6;</span>}
-                      <span className={`text-sm ${lobby.round >= params.totalRounds && i === 0 ? 'text-yellow-700 font-bold' : 'text-gray-700'}`} style={{ fontFamily: 'Georgia, serif' }}>
-                        {i + 1}. {p.name}
-                      </span>
-                      {p.id === myPlayerId && <span className="text-xs text-gray-400">(you)</span>}
+                {[...players].sort((a, b) => b.total_score - a.total_score).map((p, i) => {
+                  const prevScore = prevScores[p.id] ?? 0
+                  const roundDelta = p.total_score - prevScore
+                  return (
+                    <div key={p.id} className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        {lobby.round >= params.totalRounds && i === 0 && <span className="text-lg">&#x1F3C6;</span>}
+                        <span className={`text-sm ${lobby.round >= params.totalRounds && i === 0 ? 'text-yellow-700 font-bold' : 'text-gray-700'}`} style={{ fontFamily: 'Georgia, serif' }}>
+                          {i + 1}. {p.name}
+                        </span>
+                        {p.id === myPlayerId && <span className="text-xs text-gray-400">(you)</span>}
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className={`text-xs ${roundDelta >= 0 ? 'text-green-500' : 'text-red-500'}`} style={{ fontFamily: 'Georgia, serif' }}>
+                          {roundDelta >= 0 ? '+' : ''}{roundDelta.toFixed(0)} this round
+                        </span>
+                        <span className={`text-sm font-bold ${lobby.round >= params.totalRounds && i === 0 ? 'text-yellow-700' : 'text-gray-800'}`} style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.5rem' }}>
+                          {p.total_score >= 0 ? '+' : ''}{p.total_score.toFixed(0)}
+                        </span>
+                      </div>
                     </div>
-                    <span className={`text-sm font-bold ${lobby.round >= params.totalRounds && i === 0 ? 'text-yellow-700' : 'text-gray-800'}`} style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.5rem' }}>
-                      {p.total_score >= 0 ? '+' : ''}{p.total_score.toFixed(0)}
-                    </span>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
 

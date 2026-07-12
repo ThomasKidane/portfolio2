@@ -53,11 +53,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function fetchProfile(userId: string) {
     setLoading(true)
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
+    let data = null
+    let error = null
+
+    // Try up to 2 times in case auth token isn't propagated yet
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const result = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
+      data = result.data
+      error = result.error
+      if (!error || error.code === 'PGRST116') break
+      await new Promise(r => setTimeout(r, 500))
+    }
 
     if (!error && data) {
       setProfile(data as Profile)
@@ -90,7 +100,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setProfile(null)
       }
     } else {
-      setProfile(null)
+      // Unknown error fetching profile - keep cached profile if available
+      const cached = sessionStorage.getItem('auth-profile')
+      if (cached) {
+        try { setProfile(JSON.parse(cached)) } catch { setProfile(null) }
+      } else {
+        setProfile(null)
+      }
     }
     setLoading(false)
   }

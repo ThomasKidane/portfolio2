@@ -32,7 +32,7 @@ export default function App() {
   return (
     <AuthProvider>
       <div className={`min-h-screen bg-white ${isBlogPost ? 'blog-post-container' : ''}`}>
-        {!isBlogPost && !isQuantPage && !isToolPage && !isAuthPage && <Navigation />}
+        {!isBlogPost && !isToolPage && !isAuthPage && <Navigation />}
         <main>
           <Routes>
             <Route path="/" element={<Home />} />

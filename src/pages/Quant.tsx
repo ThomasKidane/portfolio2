@@ -58,6 +58,8 @@ export function Quant() {
   const [playlistFilter, setPlaylistFilter] = useState('')
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [showSolution, setShowSolution] = useState<string | null>(null)
+  const [userAnswers, setUserAnswers] = useState<Record<string, string>>({})
+  const [submittedAnswers, setSubmittedAnswers] = useState<Set<string>>(new Set())
   const [quantableQuestions, setQuantableQuestions] = useState<QuantableQuestion[]>(() => {
     try {
       const cached = sessionStorage.getItem('quantable-cache')
@@ -469,15 +471,56 @@ export function Quant() {
                         View on Quantable →
                       </a>
 
+                      {/* Answer input */}
+                      <div className="p-3 bg-blue-50/50 rounded-lg border-2 border-dotted border-blue-200">
+                        <p className="text-xs text-blue-600 mb-2" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>YOUR ANSWER</p>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={userAnswers[q.id] || ''}
+                            onChange={e => setUserAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
+                            placeholder="Type your answer..."
+                            disabled={submittedAnswers.has(q.id)}
+                            className={`flex-1 border-2 border-dotted rounded px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 ${submittedAnswers.has(q.id) ? 'border-green-300 bg-green-50' : 'border-gray-300'}`}
+                            style={{ fontFamily: 'Georgia, serif' }}
+                            onKeyDown={e => { if (e.key === 'Enter' && userAnswers[q.id]?.trim()) setSubmittedAnswers(prev => new Set(prev).add(q.id)) }}
+                          />
+                          {!submittedAnswers.has(q.id) ? (
+                            <button
+                              onClick={() => { if (userAnswers[q.id]?.trim()) setSubmittedAnswers(prev => new Set(prev).add(q.id)) }}
+                              disabled={!userAnswers[q.id]?.trim()}
+                              className="px-3 py-1.5 bg-green-600 hover:bg-green-700 disabled:bg-gray-300 text-white text-xs rounded transition-colors"
+                              style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}
+                            >
+                              SUBMIT
+                            </button>
+                          ) : (
+                            <span className="px-3 py-1.5 text-xs text-green-700 flex items-center" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}>
+                              ✓ LOCKED
+                            </span>
+                          )}
+                        </div>
+                        {submittedAnswers.has(q.id) && (
+                          <p className="text-xs text-green-700 mt-2" style={{ fontFamily: 'Georgia, serif' }}>
+                            Answer submitted! Reveal the solution below to check.
+                          </p>
+                        )}
+                      </div>
+
                       {q.solution && (
                         <div className="mt-4">
                           <button
                             onClick={() => setShowSolution(isSolutionShown ? null : q.id)}
-                            className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
+                            disabled={!submittedAnswers.has(q.id)}
+                            className={`px-3 py-1.5 text-white text-xs rounded transition-colors ${submittedAnswers.has(q.id) ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-300 cursor-not-allowed'}`}
                             style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.5rem' }}
+                            title={!submittedAnswers.has(q.id) ? 'Submit your answer first' : ''}
                           >
                             {isSolutionShown ? 'HIDE SOLUTION' : 'SHOW SOLUTION'}
                           </button>
+                          {!submittedAnswers.has(q.id) && (
+                            <span className="ml-2 text-xs text-gray-400" style={{ fontFamily: 'Georgia, serif' }}>Submit your answer first</span>
+                          )}
 
                           {isSolutionShown && (
                             <div className="mt-3 p-4 bg-gray-50 rounded-lg border-2 border-dotted border-blue-200">

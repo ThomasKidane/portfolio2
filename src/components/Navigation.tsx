@@ -67,6 +67,36 @@ export function Navigation() {
                 </Link>
               ))}
 
+              {/* Quant - visible when logged in */}
+              {user && (
+                <Link
+                  to="/quant"
+                  className={cn(
+                    'pixel-title text-xs transition-colors duration-200',
+                    location.pathname === '/quant'
+                      ? 'text-primary'
+                      : 'text-gray-600 hover:text-primary'
+                  )}
+                >
+                  QUANT
+                </Link>
+              )}
+
+              {/* Admin link - visible for admins */}
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className={cn(
+                    'pixel-title text-xs transition-colors duration-200',
+                    location.pathname === '/admin'
+                      ? 'text-primary'
+                      : 'text-blue-600 hover:text-primary'
+                  )}
+                >
+                  ADMIN
+                </Link>
+              )}
+
               {/* User Menu */}
               {user ? (
                 <div className="relative">
@@ -79,16 +109,6 @@ export function Navigation() {
                   </button>
                   {userMenuOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-white border-2 border-dotted border-gray-200 rounded-lg shadow-lg py-1 z-50">
-                      {isAdmin && (
-                        <Link
-                          to="/admin"
-                          onClick={() => setUserMenuOpen(false)}
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition-colors"
-                          style={{ fontFamily: 'Georgia, serif' }}
-                        >
-                          Admin Panel
-                        </Link>
-                      )}
                       <button
                         onClick={() => { signOut(); setUserMenuOpen(false) }}
                         className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
@@ -148,6 +168,19 @@ export function Navigation() {
               ))}
               {user ? (
                 <>
+                  <Link
+                    to="/quant"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={cn(
+                      'block px-3 py-2 text-base font-medium rounded-md transition-colors',
+                      location.pathname === '/quant'
+                        ? 'bg-blue-50 text-primary'
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-primary'
+                    )}
+                    style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.75rem' }}
+                  >
+                    QUANT
+                  </Link>
                   {isAdmin && (
                     <Link
                       to="/admin"

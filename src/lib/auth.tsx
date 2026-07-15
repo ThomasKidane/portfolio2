@@ -33,26 +33,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      if (session?.user) fetchProfile(session.user.id)
-      else setLoading(false)
-    })
+    let mounted = true
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-      if (session?.user) fetchProfile(session.user.id)
+    const initializeAuth = async () => {
+      const { data: { session: currentSession } } = await supabase.auth.getSession()
+      if (!mounted) return
+      setSession(currentSession)
+      if (currentSession?.user) await fetchProfile(currentSession.user.id)
+      if (mounted) setLoading(false)
+    }
+
+    initializeAuth()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      if (!mounted) return
+      setSession(nextSession)
+      if (nextSession?.user) {
+        // Token refreshes and tab focus changes must not unmount the current page.
+        void fetchProfile(nextSession.user.id)
+      }
       else {
         setProfile(null)
+        sessionStorage.removeItem('auth-profile')
         setLoading(false)
       }
     })
 
-    return () => subscription.unsubscribe()
+    return () => {
+      mounted = false
+      subscription.unsubscribe()
+    }
   }, [])
 
   async function fetchProfile(userId: string) {
-    setLoading(true)
     let data = null
     let error = null
 
@@ -108,7 +121,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setProfile(null)
       }
     }
-    setLoading(false)
   }
 
   async function signInWithEmail(email: string, password: string) {

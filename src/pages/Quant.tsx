@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import questionsData from '../data/quant-questions.json'
 import prompts from '../data/quant-prompts.json'
@@ -34,6 +34,8 @@ interface Playlist {
   questions: string[]
 }
 
+type QuantTab = 'quantguide' | 'quantable'
+
 const quantGuideQuestions: QuantGuideQuestion[] = questionsData.questions
 const questionPrompts: Record<string, string> = prompts
 
@@ -49,15 +51,41 @@ const allCompanies = [...new Set(quantGuideQuestions.flatMap(q => q.companies))]
 const allTags = [...new Set(quantGuideQuestions.flatMap(q => q.tags))].sort()
 
 export function Quant() {
-  const [activeTab, setActiveTab] = useState<'quantguide' | 'quantable'>('quantguide')
-  const [search, setSearch] = useState('')
+  const [activeTab, setActiveTab] = useState<QuantTab>(() =>
+    sessionStorage.getItem('quant-active-tab') === 'quantable' ? 'quantable' : 'quantguide'
+  )
+  const [searches, setSearches] = useState<Record<QuantTab, string>>(() => {
+    try {
+      const saved = sessionStorage.getItem('quant-searches')
+      return saved ? JSON.parse(saved) : { quantguide: '', quantable: '' }
+    } catch { return { quantguide: '', quantable: '' } }
+  })
+  const search = searches[activeTab]
+  const setSearch = (value: string) =>
+    setSearches(previous => ({ ...previous, [activeTab]: value }))
   const [topicFilter, setTopicFilter] = useState('')
   const [companyFilter, setCompanyFilter] = useState('')
   const [tagFilter, setTagFilter] = useState('')
   const [difficultyFilter, setDifficultyFilter] = useState('')
   const [playlistFilter, setPlaylistFilter] = useState('')
-  const [expandedId, setExpandedId] = useState<string | null>(null)
-  const [showSolution, setShowSolution] = useState<string | null>(null)
+  const [expandedIds, setExpandedIds] = useState<Record<QuantTab, string | null>>(() => {
+    try {
+      const saved = sessionStorage.getItem('quant-expanded-ids')
+      return saved ? JSON.parse(saved) : { quantguide: null, quantable: null }
+    } catch { return { quantguide: null, quantable: null } }
+  })
+  const [shownSolutions, setShownSolutions] = useState<Record<QuantTab, string | null>>(() => {
+    try {
+      const saved = sessionStorage.getItem('quant-shown-solutions')
+      return saved ? JSON.parse(saved) : { quantguide: null, quantable: null }
+    } catch { return { quantguide: null, quantable: null } }
+  })
+  const expandedId = expandedIds[activeTab]
+  const showSolution = shownSolutions[activeTab]
+  const setExpandedId = (id: string | null) =>
+    setExpandedIds(previous => ({ ...previous, [activeTab]: id }))
+  const setShowSolution = (id: string | null) =>
+    setShownSolutions(previous => ({ ...previous, [activeTab]: id }))
   const [userAnswers, setUserAnswers] = useState<Record<string, string>>({})
   const [submittedAnswers, setSubmittedAnswers] = useState<Set<string>>(new Set())
   const [quantableQuestions, setQuantableQuestions] = useState<QuantableQuestion[]>(() => {
@@ -73,12 +101,38 @@ export function Quant() {
     } catch { return [] }
   })
   const [quantableLoading, setQuantableLoading] = useState(false)
+  const scrollPositions = useRef<Record<QuantTab, number>>({ quantguide: 0, quantable: 0 })
   const [solvedSet, setSolvedSet] = useState<Set<string>>(() => {
     try {
       const saved = localStorage.getItem('quant-solved')
       return saved ? new Set(JSON.parse(saved)) : new Set()
     } catch { return new Set() }
   })
+
+  useEffect(() => {
+    sessionStorage.setItem('quant-active-tab', activeTab)
+  }, [activeTab])
+
+  useEffect(() => {
+    sessionStorage.setItem('quant-searches', JSON.stringify(searches))
+  }, [searches])
+
+  useEffect(() => {
+    sessionStorage.setItem('quant-expanded-ids', JSON.stringify(expandedIds))
+  }, [expandedIds])
+
+  useEffect(() => {
+    sessionStorage.setItem('quant-shown-solutions', JSON.stringify(shownSolutions))
+  }, [shownSolutions])
+
+  const switchTab = (nextTab: QuantTab) => {
+    if (nextTab === activeTab) return
+    scrollPositions.current[activeTab] = window.scrollY
+    setActiveTab(nextTab)
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: scrollPositions.current[nextTab], behavior: 'auto' })
+    })
+  }
 
   useEffect(() => {
     if (activeTab === 'quantable' && quantableQuestions.length === 0 && !quantableLoading) {
@@ -151,7 +205,7 @@ export function Quant() {
       <div className="max-w-5xl mx-auto px-6 md:px-12 pt-6">
         <div className="flex gap-1 border-b-2 border-dotted border-gray-200">
           <button
-            onClick={() => { setActiveTab('quantguide'); setExpandedId(null); setShowSolution(null) }}
+            onClick={() => switchTab('quantguide')}
             className={`px-4 py-2 text-xs transition-colors border-b-2 -mb-[2px] ${
               activeTab === 'quantguide'
                 ? 'border-blue-500 text-blue-700'
@@ -162,7 +216,7 @@ export function Quant() {
             QUANTGUIDE ({quantGuideQuestions.length})
           </button>
           <button
-            onClick={() => { setActiveTab('quantable'); setExpandedId(null); setShowSolution(null) }}
+            onClick={() => switchTab('quantable')}
             className={`px-4 py-2 text-xs transition-colors border-b-2 -mb-[2px] ${
               activeTab === 'quantable'
                 ? 'border-blue-500 text-blue-700'

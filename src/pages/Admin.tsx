@@ -20,6 +20,17 @@ interface SiteSetting {
   updated_at: string
 }
 
+interface VisitRecord {
+  user_id: string
+  visited_at: string
+}
+
+interface UserActivity {
+  totalVisits: number
+  monthlyVisits: number
+  lastVisit: string | null
+}
+
 type Tab = 'users' | 'visibility' | 'analytics'
 
 export function Admin() {
@@ -33,13 +44,19 @@ export function Admin() {
   })
   const [loading, setLoading] = useState(false)
   const [stats, setStats] = useState({ total: 0, admins: 0, banned: 0 })
+  const [activity, setActivity] = useState<Record<string, UserActivity>>({})
+  const [error, setError] = useState<string | null>(null)
 
   const fetchData = useCallback(async () => {
     if (users.length === 0) setLoading(true)
-    const [usersRes, settingsRes] = await Promise.all([
+    setError(null)
+    const [usersRes, settingsRes, visitsRes] = await Promise.all([
       supabase.from('profiles').select('*').order('created_at', { ascending: false }),
       supabase.from('site_settings').select('*').order('page_key'),
+      supabase.from('user_visits').select('user_id, visited_at').order('visited_at', { ascending: false }),
     ])
+    const requestError = usersRes.error || settingsRes.error || visitsRes.error
+    if (requestError) setError(requestError.message)
     if (usersRes.data) {
       setUsers(usersRes.data as Profile[])
       sessionStorage.setItem('admin-users', JSON.stringify(usersRes.data))
@@ -52,6 +69,20 @@ export function Admin() {
     if (settingsRes.data) {
       setSettings(settingsRes.data as SiteSetting[])
       sessionStorage.setItem('admin-settings', JSON.stringify(settingsRes.data))
+    }
+    if (visitsRes.data) {
+      const monthStart = new Date()
+      monthStart.setDate(1)
+      monthStart.setHours(0, 0, 0, 0)
+      const nextActivity: Record<string, UserActivity> = {}
+      for (const visit of visitsRes.data as VisitRecord[]) {
+        const current = nextActivity[visit.user_id] || { totalVisits: 0, monthlyVisits: 0, lastVisit: null }
+        current.totalVisits += 1
+        if (new Date(visit.visited_at) >= monthStart) current.monthlyVisits += 1
+        if (!current.lastVisit) current.lastVisit = visit.visited_at
+        nextActivity[visit.user_id] = current
+      }
+      setActivity(nextActivity)
     }
     setLoading(false)
   }, [])
@@ -139,6 +170,11 @@ export function Admin() {
 
       {/* Content */}
       <div className="max-w-5xl mx-auto px-6 md:px-12 py-6">
+        {error && (
+          <div className="mb-4 p-3 border-2 border-dotted border-red-300 bg-red-50 rounded text-sm text-red-700" style={{ fontFamily: 'Georgia, serif' }}>
+            Could not load admin data: {error}
+          </div>
+        )}
         {loading ? (
           <p className="text-gray-400 text-center py-12" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.6rem' }}>
             LOADING...
@@ -146,8 +182,8 @@ export function Admin() {
         ) : (
           <>
             {tab === 'visibility' && <VisibilityTab settings={settings} onToggle={toggleVisibility} />}
-            {tab === 'users' && <UsersTab users={users} currentUserId={profile?.id || ''} onToggleBan={toggleBan} onToggleRole={toggleRole} />}
-            {tab === 'analytics' && <AnalyticsTab stats={stats} users={users} />}
+            {tab === 'users' && <UsersTab users={users} activity={activity} currentUserId={profile?.id || ''} onToggleBan={toggleBan} onToggleRole={toggleRole} />}
+            {tab === 'analytics' && <AnalyticsTab stats={stats} users={users} activity={activity} />}
           </>
         )}
       </div>
@@ -200,25 +236,46 @@ function VisibilityTab({ settings, onToggle }: { settings: SiteSetting[]; onTogg
   )
 }
 
-function UsersTab({ users, currentUserId, onToggleBan, onToggleRole }: {
+function UsersTab({ users, activity, currentUserId, onToggleBan, onToggleRole }: {
   users: Profile[]
+  activity: Record<string, UserActivity>
   currentUserId: string
   onToggleBan: (u: Profile) => void
   onToggleRole: (u: Profile) => void
 }) {
+  const [search, setSearch] = useState('')
+  const normalizedSearch = search.trim().toLowerCase()
+  const filteredUsers = users.filter(user =>
+    !normalizedSearch ||
+    user.email.toLowerCase().includes(normalizedSearch) ||
+    (user.display_name || '').toLowerCase().includes(normalizedSearch) ||
+    user.role.includes(normalizedSearch)
+  )
+
   return (
     <div className="space-y-2">
       <p className="text-sm text-gray-500 mb-4" style={{ fontFamily: 'Georgia, serif' }}>
         Manage registered users. You cannot change your own role.
       </p>
-      {users.map(u => (
+      <input
+        type="search"
+        value={search}
+        onChange={event => setSearch(event.target.value)}
+        placeholder="Search by name, email, or role..."
+        className="w-full mb-4 border-2 border-dotted border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+        style={{ fontFamily: 'Georgia, serif' }}
+      />
+      {filteredUsers.map(u => {
+        const userActivity = activity[u.id] || { totalVisits: 0, monthlyVisits: 0, lastVisit: null }
+        return (
         <div
           key={u.id}
-          className={`flex items-center justify-between p-4 border-2 border-dotted rounded-lg ${
+          className={`p-4 border-2 border-dotted rounded-lg ${
             u.banned ? 'border-red-200 bg-red-50/50' : 'border-gray-200'
           }`}
         >
-          <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-800 truncate" style={{ fontFamily: 'Georgia, serif' }}>
                 {u.display_name || u.email}
@@ -242,57 +299,84 @@ function UsersTab({ users, currentUserId, onToggleBan, onToggleRole }: {
             <p className="text-xs text-gray-400 mt-0.5" style={{ fontFamily: 'Georgia, serif' }}>
               {u.email} &bull; Joined {new Date(u.created_at).toLocaleDateString()}
             </p>
+            </div>
+
+            {u.id !== currentUserId && (
+              <div className="flex gap-2">
+                <button
+                  onClick={() => onToggleRole(u)}
+                  className="px-2 py-1 text-xs border-2 border-dotted border-gray-200 rounded hover:border-blue-400 transition-colors"
+                  style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}
+                >
+                  {u.role === 'admin' ? 'DEMOTE' : 'PROMOTE'}
+                </button>
+                <button
+                  onClick={() => onToggleBan(u)}
+                  className={`px-2 py-1 text-xs border-2 border-dotted rounded transition-colors ${
+                    u.banned
+                      ? 'border-green-200 text-green-700 hover:border-green-400'
+                      : 'border-red-200 text-red-700 hover:border-red-400'
+                  }`}
+                  style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}
+                >
+                  {u.banned ? 'UNBAN' : 'BAN'}
+                </button>
+              </div>
+            )}
           </div>
 
-          {u.id !== currentUserId && (
-            <div className="flex gap-2 ml-4">
-              <button
-                onClick={() => onToggleRole(u)}
-                className="px-2 py-1 text-xs border-2 border-dotted border-gray-200 rounded hover:border-blue-400 transition-colors"
-                style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}
-              >
-                {u.role === 'admin' ? 'DEMOTE' : 'PROMOTE'}
-              </button>
-              <button
-                onClick={() => onToggleBan(u)}
-                className={`px-2 py-1 text-xs border-2 border-dotted rounded transition-colors ${
-                  u.banned
-                    ? 'border-green-200 text-green-700 hover:border-green-400'
-                    : 'border-red-200 text-red-700 hover:border-red-400'
-                }`}
-                style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.4rem' }}
-              >
-                {u.banned ? 'UNBAN' : 'BAN'}
-              </button>
-            </div>
-          )}
+          <div className="grid grid-cols-3 gap-3 mt-3 pt-3 border-t border-dotted border-gray-200">
+            <UserStat label="THIS MONTH" value={userActivity.monthlyVisits} />
+            <UserStat label="TOTAL VISITS" value={userActivity.totalVisits} />
+            <UserStat
+              label="LAST VISIT"
+              value={userActivity.lastVisit ? new Date(userActivity.lastVisit).toLocaleDateString() : 'Never'}
+            />
+          </div>
         </div>
-      ))}
-      {users.length === 0 && (
+      )})}
+      {filteredUsers.length === 0 && (
         <p className="text-center text-gray-400 py-8" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.55rem' }}>
-          NO USERS YET
+          NO USERS FOUND
         </p>
       )}
     </div>
   )
 }
 
-function AnalyticsTab({ stats, users }: { stats: { total: number; admins: number; banned: number }; users: Profile[] }) {
+function UserStat({ label, value }: { label: string; value: number | string }) {
+  return (
+    <div>
+      <p className="text-sm font-bold text-gray-700" style={{ fontFamily: 'Georgia, serif' }}>{value}</p>
+      <p className="text-gray-400 mt-0.5" style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '0.32rem' }}>{label}</p>
+    </div>
+  )
+}
+
+function AnalyticsTab({ stats, users, activity }: {
+  stats: { total: number; admins: number; banned: number }
+  users: Profile[]
+  activity: Record<string, UserActivity>
+}) {
   const recentUsers = users.slice(0, 5)
   const now = new Date()
   const thisWeek = users.filter(u => {
     const d = new Date(u.created_at)
     return (now.getTime() - d.getTime()) < 7 * 24 * 60 * 60 * 1000
   }).length
+  const totalMonthlyVisits = Object.values(activity).reduce((sum, user) => sum + user.monthlyVisits, 0)
+  const monthlyActiveUsers = Object.values(activity).filter(user => user.monthlyVisits > 0).length
 
   return (
     <div className="space-y-6">
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <StatCard label="TOTAL USERS" value={stats.total} />
         <StatCard label="ADMINS" value={stats.admins} />
         <StatCard label="BANNED" value={stats.banned} />
         <StatCard label="THIS WEEK" value={thisWeek} />
+        <StatCard label="MONTHLY VISITS" value={totalMonthlyVisits} />
+        <StatCard label="ACTIVE USERS" value={monthlyActiveUsers} />
       </div>
 
       {/* Recent Signups */}

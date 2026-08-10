@@ -103,7 +103,6 @@ function DissolvingStage() {
         <circle cx="222" cy="238" r="14" />
         <path d="M222 252v50M222 263l-28 22M222 263l29 20" />
         <path d="M158 424v-25M188 424v-38M218 424v-20M248 424v-33" />
-        <text x="177" y="152" textAnchor="middle">VISIBLE OUTPUT</text>
       </g>
 
       <g id="dissolving-transition">
@@ -116,7 +115,6 @@ function DissolvingStage() {
           <circle cx="407" cy="183" r="2" /><circle cx="423" cy="258" r="3" /><circle cx="401" cy="399" r="2" />
         </g>
         <path className="essay-accent" d="M319 270h101M403 258l17 12-17 12" />
-        <text x="360" y="454" textAnchor="middle">FACADE REMOVED</text>
       </g>
 
       <g id="revealed-machinery">
@@ -130,7 +128,6 @@ function DissolvingStage() {
           <path className="essay-accent" d="M486 230h45M486 289h45M509 250v20" />
           <circle cx="509" cy="230" r="4" />
           <circle cx="509" cy="289" r="4" />
-          <text x="509" y="204" textAnchor="middle">GATES</text>
         </g>
 
         <g id="large-gear" className="essay-accent">
@@ -150,18 +147,14 @@ function DissolvingStage() {
           <circle cx="791" cy="171" r="17" />
           <path d="M755 116v38M791 116v38M738 171h70M755 188v84M791 188v122" />
           <path className="essay-fill" d="M744 272h22l-4 45h-14zM779 310h24l-4 52h-16z" />
-          <text x="773" y="382" textAnchor="middle">COUNTERWEIGHT</text>
         </g>
 
         <path d="M544 230h29M685 235h22M544 289h91M635 289l35 17M743 306h36" />
         <path d="M472 370h216M472 378h216M489 362v24M531 362v24M573 362v24M615 362v24M657 362v24" />
         <circle cx="489" cy="374" r="4" /><circle cx="573" cy="374" r="4" /><circle cx="657" cy="374" r="4" />
-        <text x="580" y="407" textAnchor="middle">DEPENDENCIES • REVIEW • RISK • COST</text>
       </g>
 
       <path className="essay-accent" d="M432 98h406" />
-      <text x="635" y="84" textAnchor="middle">THE MACHINERY WAS ALWAYS HERE</text>
-      <text x="450" y="510" textAnchor="middle">AI AUTOMATED THE SURFACE—NOT THE SYSTEM UNDERNEATH IT</text>
     </svg>
   )
 }
@@ -182,7 +175,6 @@ function DivergingPaths() {
         <circle cx="450" cy="353" r="19" />
         <path d="M450 372v61M450 386l-34 28M450 386l34 28M437 433l-17 38M463 433l17 38" />
         <path className="essay-accent" d="M401 334l-25-21M499 334l25-21M376 313h12M512 313h12" />
-        <text x="450" y="529" textAnchor="middle">CHOOSE THE WORK, NOT THE POSTER</text>
       </g>
 
       <g id="established-system">
@@ -197,8 +189,6 @@ function DivergingPaths() {
         <rect x="119" y="228" width="49" height="43" />
         <rect x="224" y="235" width="44" height="36" />
         <rect x="316" y="224" width="37" height="47" />
-        <text x="223" y="35" textAnchor="middle">ESTABLISHED SYSTEM</text>
-        <text x="223" y="293" textAnchor="middle">ALIGNMENT • JUDGMENT • OPERATIONS • RISK</text>
       </g>
 
       <g id="frontier-laboratory">
@@ -211,8 +201,6 @@ function DivergingPaths() {
         <circle className="essay-accent" cx="812" cy="48" r="3" />
         <circle className="essay-accent" cx="764" cy="41" r="3" />
         <path d="M640 270h226M648 279h210" strokeDasharray="5 6" />
-        <text x="756" y="24" textAnchor="middle">FRONTIER LAB</text>
-        <text x="756" y="301" textAnchor="middle">PRIMITIVES • RESEARCH • UNCERTAINTY</text>
       </g>
 
       <g id="route-markers">
@@ -222,8 +210,6 @@ function DivergingPaths() {
         <circle className="essay-fill-light" cx="635" cy="316" r="10" />
         <path className="essay-accent" d="M337 344h-67M563 344h72" />
         <path d="M270 306v20M635 306v20" />
-        <text x="238" y="360" textAnchor="middle">BROAD • STRUCTURED</text>
-        <text x="671" y="360" textAnchor="middle">NARROW • STEEP</text>
       </g>
 
       <path d="M450 502v-18M442 492l8-8 8 8" />

@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import conversationSvg from '../assets/essay-conversation.svg?raw'
+import frontStageSvg from '../assets/essay-front-stage.svg?raw'
 
 const sections = [
   { id: 'front-stage', number: '01', label: 'The front stage' },
@@ -9,59 +11,32 @@ const sections = [
   { id: 'what-to-do', number: '05', label: 'What to do' },
 ]
 
+function RawSvgIllustration({ markup, label }: { markup: string; label: string }) {
+  return (
+    <div
+      className="essay-raw-svg"
+      role="img"
+      aria-label={label}
+      dangerouslySetInnerHTML={{ __html: markup }}
+    />
+  )
+}
+
 function StageFromAudience() {
   return (
-    <svg viewBox="0 0 900 520" role="img" aria-labelledby="stage-audience-title stage-audience-description">
-      <title id="stage-audience-title">The front stage of software engineering</title>
-      <desc id="stage-audience-description">
-        A programmer sits at a terminal under a spotlight on a carefully arranged theatre stage while an audience watches.
-      </desc>
-      <defs>
-        <linearGradient id="front-light" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#4169E1" stopOpacity=".2" />
-          <stop offset="1" stopColor="#4169E1" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path className="essay-fill-light" d="M280 36h340l104 372H176z" fill="url(#front-light)" stroke="none" />
-      <path d="M44 54v354M856 54v354M44 54h812M44 408h812" />
-      <path d="M44 54c80 62 130 100 218 114M856 54c-80 62-130 100-218 114" />
-      <path d="M44 54c62 12 108 20 160 23M856 54c-62 12-108 20-160 23" strokeDasharray="7 8" />
-      <path d="M330 352h240M372 352l-18 56M528 352l18 56" />
-      <rect x="394" y="264" width="112" height="72" rx="3" />
-      <path className="essay-accent" d="M412 287h34M412 300h68M412 313h51" />
-      <circle cx="450" cy="205" r="25" />
-      <path d="M450 230v76M450 250l-47 36M450 252l52 32M434 306l-32 46M468 306l34 46" />
-      <path d="M242 408v-34M276 408v-48M310 408v-27M590 408v-27M624 408v-48M658 408v-34" />
-      <path d="M140 470q34-55 68 0M234 470q34-55 68 0M328 470q34-55 68 0M422 470q34-55 68 0M516 470q34-55 68 0M610 470q34-55 68 0M704 470q34-55 68 0" />
-      <text x="450" y="113" textAnchor="middle">THE WORK EVERYONE CAN SEE</text>
-      <text x="450" y="445" textAnchor="middle">CODE • CRAFT • OUTPUT</text>
-    </svg>
+    <RawSvgIllustration
+      markup={frontStageSvg}
+      label="The front stage of software engineering, where a programmer sits at a terminal under a spotlight while an audience watches."
+    />
   )
 }
 
 function StageFromWings() {
   return (
-    <svg viewBox="0 0 900 520" role="img" aria-labelledby="stage-wings-title stage-wings-description">
-      <title id="stage-wings-title">A conversation in the wings</title>
-      <desc id="stage-wings-description">
-        Two engineers speak beside the stage while a programmer continues performing at a terminal in the background.
-      </desc>
-      <path d="M92 48v404M92 48h716M808 48v404M92 452h716" />
-      <path className="essay-fill" d="M92 48h182v404H92zM626 48h182v404H626z" />
-      <path d="M274 48c-9 78-8 147 0 213s9 128 0 191M626 48c9 78 8 147 0 213s-9 128 0 191" />
-      <path d="M494 329h124M522 329l-14 42M590 329l14 42" />
-      <rect x="534" y="273" width="60" height="43" rx="2" />
-      <circle cx="564" cy="238" r="17" />
-      <path d="M564 255v52M564 269l-27 20M564 269l29 20" />
-      <circle cx="278" cy="244" r="25" />
-      <path d="M278 269v103M278 292l-54 34M278 293l43 27M260 372l-28 55M296 372l32 55" />
-      <circle cx="401" cy="224" r="27" />
-      <path d="M401 251v121M401 278l-48 34M401 278l48 23M384 372l-20 55M418 372l24 55" />
-      <path className="essay-accent" d="M313 193q42-38 82 0M322 187l-9 6 10 1M386 187l9 6-10 1" />
-      <text x="352" y="148" textAnchor="middle">“WHAT ARE THEY</text>
-      <text x="352" y="166" textAnchor="middle">TRYING TO PROTECT?”</text>
-      <text x="566" y="400" textAnchor="middle">THE VISIBLE WORK CONTINUES</text>
-    </svg>
+    <RawSvgIllustration
+      markup={conversationSvg}
+      label="A private conversation in the theatre wings between two engineers, with the visible stage performance continuing in the background."
+    />
   )
 }
 
@@ -207,24 +182,20 @@ export function InvisibleEngineeringBlogPost() {
 
     revealElements.forEach(element => revealObserver?.observe(element))
 
-    const sectionObserver = new IntersectionObserver(
-      entries => {
-        const visible = entries
-          .filter(entry => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
-        if (visible) setActiveSection(visible.target.id)
-      },
-      { threshold: [0.2, 0.45, 0.7], rootMargin: '-18% 0px -55% 0px' },
-    )
-
-    sections.forEach(section => {
-      const element = document.getElementById(section.id)
-      if (element) sectionObserver.observe(element)
-    })
-
     const handleScroll = () => {
       const available = document.documentElement.scrollHeight - window.innerHeight
       setScrollProgress(available > 0 ? Math.min(100, (window.scrollY / available) * 100) : 0)
+
+      const readingLine = window.scrollY + window.innerHeight * 0.32
+      let currentSection = sections[0].id
+      for (const section of sections) {
+        const element = document.getElementById(section.id)
+        if (element && element.offsetTop <= readingLine) currentSection = section.id
+      }
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 8) {
+        currentSection = sections[sections.length - 1].id
+      }
+      setActiveSection(currentSection)
     }
 
     handleScroll()
@@ -232,10 +203,17 @@ export function InvisibleEngineeringBlogPost() {
 
     return () => {
       revealObserver?.disconnect()
-      sectionObserver.disconnect()
       window.removeEventListener('scroll', handleScroll)
     }
   }, [])
+
+  const scrollToSection = (sectionId: string) => {
+    setActiveSection(sectionId)
+    document.getElementById(sectionId)?.scrollIntoView({
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      block: 'start',
+    })
+  }
 
   return (
     <div className="invisible-engineering-page">
@@ -343,6 +321,7 @@ export function InvisibleEngineeringBlogPost() {
           color: var(--essay-muted);
         }
         .essay-nav a {
+          position: relative;
           display: grid;
           grid-template-columns: 24px 1fr;
           gap: 8px;
@@ -352,9 +331,30 @@ export function InvisibleEngineeringBlogPost() {
           font-size: 9px;
           line-height: 1.45;
           color: #9297a1;
-          transition: color 160ms ease;
+          transform: translateX(0);
+          transition: color 220ms ease, transform 220ms ease;
         }
-        .essay-nav a[aria-current='true'] { color: var(--essay-accent); }
+        .essay-nav a::before {
+          content: '';
+          position: absolute;
+          left: -14px;
+          top: 50%;
+          width: 7px;
+          height: 1px;
+          background: var(--essay-accent);
+          opacity: 0;
+          transform: scaleX(0);
+          transform-origin: right;
+          transition: opacity 220ms ease, transform 220ms ease;
+        }
+        .essay-nav a[aria-current='true'] {
+          color: var(--essay-accent);
+          transform: translateX(4px);
+        }
+        .essay-nav a[aria-current='true']::before {
+          opacity: 1;
+          transform: scaleX(1);
+        }
         .essay-section {
           scroll-margin-top: 36px;
           padding: 0 0 clamp(120px, 17vw, 210px);
@@ -422,6 +422,7 @@ export function InvisibleEngineeringBlogPost() {
             linear-gradient(90deg, rgba(32,36,44,.035) 1px, transparent 1px);
           background-size: 24px 24px;
         }
+        .essay-raw-svg { width: 100%; }
         .essay-diagram svg {
           display: block;
           width: 100%;
@@ -529,6 +530,10 @@ export function InvisibleEngineeringBlogPost() {
                 key={section.id}
                 href={`#${section.id}`}
                 aria-current={activeSection === section.id ? 'true' : undefined}
+                onClick={event => {
+                  event.preventDefault()
+                  scrollToSection(section.id)
+                }}
               >
                 <span>{section.number}</span><span>{section.label}</span>
               </a>

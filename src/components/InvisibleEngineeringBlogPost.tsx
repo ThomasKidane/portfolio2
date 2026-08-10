@@ -578,7 +578,7 @@ export function InvisibleEngineeringBlogPost() {
       <header className="essay-topbar">
         <div className="essay-topbar-inner">
           <Link to="/blog" className="essay-back">← WRITINGS</Link>
-          <span className="essay-date">AUGUST 2026 · 8 MIN READ</span>
+          <span className="essay-date">AUGUST 2026 · 5 MIN READ</span>
         </div>
       </header>
 
@@ -587,7 +587,7 @@ export function InvisibleEngineeringBlogPost() {
           <p className="essay-kicker">FIELD NOTES / SOFTWARE ENGINEERING</p>
           <h1 className="essay-title">THE JOB BEHIND THE JOB</h1>
           <p className="essay-dek">
-            I thought software engineering was about writing software. Then I learned what established companies actually pay engineers to do—and what AI made impossible to ignore.
+            I went into software engineering because I wanted to write software. Then I started working, and AI made the mismatch hard to ignore.
           </p>
           <p className="essay-meta">
             <span>THOMAS KIDANE</span><span aria-hidden="true">•</span><span>AUGUST 2026</span>
@@ -616,23 +616,23 @@ export function InvisibleEngineeringBlogPost() {
             <section id="front-stage" className="essay-section" aria-labelledby="front-stage-heading">
               <header className="essay-section-header reveal" data-reveal>
                 <p className="essay-section-number">01 — THE FRONT STAGE</p>
-                <h2 id="front-stage-heading">THE JOB ON THE POSTER</h2>
+                <h2 id="front-stage-heading">THE JOB I EXPECTED</h2>
               </header>
               <div className="essay-copy">
                 <p className="reveal" data-reveal>
-                  Before my first internship, I had a clean picture of software engineering. You found a hard problem, thought carefully, and wrote the code that made the machine do something it could not do before.
+                  Before my first internship, my idea of software engineering was embarrassingly simple. Someone gives you a problem. You think about it, write some code, and make the computer solve it.
                 </p>
                 <p className="reveal" data-reveal>
-                  That was the version on every recruiting page: an engineer at a terminal, building. It was also the version school prepared me for. The assignments had boundaries. The interviews had inputs and outputs. If you were clever enough, the answer eventually turned green.
+                  Everything I had done pointed in that direction. Classes gave me assignments with clear boundaries. Interviews gave me inputs and expected outputs. The feedback loop was simple: run the tests, get all green, move on.
                 </p>
-                <Illustration caption="Figure 01 — The job as advertised: the terminal is center stage." >
+                <Illustration caption="Figure 01 — The job I thought I had." >
                   <StageFromAudience />
                 </Illustration>
                 <p className="reveal" data-reveal>
-                  So I arrived ready to prove that I could write good code. I assumed the code would be the work, and everything around it would be administration.
+                  I arrived ready to prove that I could write good code. Meetings, design documents, and review comments looked like things I had to clear away before getting back to the real work.
                 </p>
                 <p className="essay-pull reveal" data-reveal>
-                  I had confused the visible part of the job with the valuable part.
+                  I thought anything that wasn't coding was overhead. I had it backwards.
                 </p>
               </div>
             </section>
@@ -640,24 +640,24 @@ export function InvisibleEngineeringBlogPost() {
             <section id="conversation" className="essay-section" aria-labelledby="conversation-heading">
               <header className="essay-section-header reveal" data-reveal>
                 <p className="essay-section-number">02 — THE CONVERSATION</p>
-                <h2 id="conversation-heading">THE REVIEW THAT WOULDN’T MOVE</h2>
+                <h2 id="conversation-heading">THE REVIEW THAT STALLED</h2>
               </header>
               <div className="essay-copy">
                 <p className="reveal" data-reveal>
-                  I was trying to get my first code reviews approved. It was going badly, in the specific way that feels like a technical problem but isn’t.
+                  One of my first code reviews would not get approved. Every new comment looked technical, so I kept answering it with more code. The review still went nowhere.
                 </p>
                 <p className="reveal" data-reveal>A senior engineer pulled me aside.</p>
-                <Illustration caption="Figure 02 — The useful conversation happens outside the light." >
+                <Illustration caption="Figure 02 — The useful conversation happened offstage." >
                   <StageFromWings />
                 </Illustration>
                 <p className="reveal" data-reveal>
-                  He talked to me about influence without power. I needed to understand what the other person’s objective actually was. He—a senior engineer at a large company, with a title that said he built software—told me that he was in the business of <strong>risk management</strong>.
+                  He explained influence without authority. As an individual contributor, I could not order anyone to approve my work. I had to understand what they were responsible for and what could go wrong for them if they said yes.
                 </p>
                 <p className="reveal" data-reveal>
-                  If I understood that was the job, he said, I could go far.
+                  The sentence I remember is this: he was in the business of <strong>risk management</strong>. His job was to remove ways a project could fail. Mine was too. I had been treating those concerns as obstacles between me and an approval.
                 </p>
                 <p className="essay-pull reveal" data-reveal>
-                  It hit me like a ton of bricks. Not because the job was somewhat different from what I expected. Because that was the entire job.
+                  That conversation embarrassed me a little. I had been trying to win a coding contest nobody else was holding.
                 </p>
               </div>
             </section>
@@ -665,84 +665,81 @@ export function InvisibleEngineeringBlogPost() {
             <section id="back-stage" className="essay-section" aria-labelledby="back-stage-heading">
               <header className="essay-section-header reveal" data-reveal>
                 <p className="essay-section-number">03 — THE BACK STAGE</p>
-                <h2 id="back-stage-heading">WHAT THE COMPANY IS BUYING</h2>
+                <h2 id="back-stage-heading">WHAT THE COMPANY PAYS FOR</h2>
               </header>
               <div className="essay-copy">
-                <p className="reveal" data-reveal>Here is what the job actually is at an established company.</p>
+                <p className="reveal" data-reveal>At an established company, code is one of the outputs. A lot has to happen before anyone wants the output.</p>
                 <p className="reveal" data-reveal>
-                  You get stakeholder agreement. You write designs that won’t box the company in two years from now. You make decisions that don’t create liabilities—technical, organizational, or financial. You figure out who needs to approve what, and why they would hesitate. You make sure the thing you are building connects to something the business cares about.
+                  You find the people affected by a change and get them to agree on what should happen. You write a design that the next project will not have to undo. You learn who can block the work, what they are worried about, and whether the project is worth doing in the first place.
                 </p>
-                <Illustration caption="Figure 03 — Code is the small, legible surface of a much larger system." >
+                <Illustration caption="Figure 03 — Code is the visible part of a larger organization." >
                   <BackStageCrossSection />
                 </Illustration>
                 <p className="reveal" data-reveal>
-                  Writing the code is the last, smallest, easiest part. Sometimes it barely happens.
-                </p>
-                <p className="reveal" data-reveal>
-                  This is not a complaint. It is a description. The engineering is real—it is just that the engineering that matters is mostly judgment, and judgment is invisible from the outside. It does not show up in a repository. It is not what anyone put on the poster.
+                  By the time those questions have answers, writing the code can be the shortest part of the project. Some weeks it barely happens. The engineering is still there, but much of it lives in decisions that never reach the repository.
                 </p>
               </div>
             </section>
 
             <section id="ai-changed" className="essay-section" aria-labelledby="ai-changed-heading">
               <header className="essay-section-header reveal" data-reveal>
-                <p className="essay-section-number">04 — WHAT AI CHANGED</p>
-                <h2 id="ai-changed-heading">THE CURTAIN CAME DOWN</h2>
+                <p className="essay-section-number">04 — AI</p>
+                <h2 id="ai-changed-heading">WHAT GOT FASTER</h2>
               </header>
               <div className="essay-copy">
-                <p className="reveal" data-reveal>Seven years ago, the hard part was making the software do the thing.</p>
+                <p className="reveal" data-reveal>I expected AI to expand the fun part of my job. I would write software faster, build more ambitious projects, and spend more time on difficult technical problems.</p>
                 <p className="reveal" data-reveal>
-                  That part is now close to free. Not entirely. But the boilerplate, the glue, the first draft of a well-specified function, the translation of a clear intent into working code—those went from the bulk of the work to something closer to a formality.
+                  It does make code faster. A first draft of an ordinary function is nearly free. I can turn a clear idea into a working prototype in an afternoon.
                 </p>
-                <Illustration caption="Figure 04 — Automation removes the set and exposes the machinery." >
+                <Illustration caption="Figure 04 — The stage disappears while the machinery remains." >
                   <DissolvingStage />
                 </Illustration>
                 <p className="reveal" data-reveal>
-                  The usual framing is that AI is coming for engineers. I think that is the wrong reading. What happened is narrower and stranger:
+                  At work, that saved time does not turn into a larger pile of code. It turns into more proposals to evaluate, more generated changes to inspect, and more decisions about what belongs in the system.
                 </p>
                 <p className="essay-pull reveal" data-reveal>
-                  AI removed the part of the job that was always the visible part.
+                  The practical result is that I do more reviews.
                 </p>
                 <p className="reveal" data-reveal>
-                  The front stage—the code, the craft, the thing everyone trained for and interviewed on—got automated first. What remains is the back stage, which was always where the value was and which almost nobody prepared you for. The curtain came down. The machinery is sitting there in full view.
+                  This was deflating. Classes and interviews spent years measuring the part that became cheap first. Some days I feel less like the engineer from the recruiting poster and more like a product manager with commit access.
                 </p>
               </div>
             </section>
 
             <section id="what-to-do" className="essay-section" aria-labelledby="what-to-do-heading">
               <header className="essay-section-header reveal" data-reveal>
-                <p className="essay-section-number">05 — WHAT TO DO ABOUT IT</p>
-                <h2 id="what-to-do-heading">READ THE ORGANIZATION</h2>
+                <p className="essay-section-number">05 — WHAT TO DO</p>
+                <h2 id="what-to-do-heading">READ THE ROOM</h2>
               </header>
               <div className="essay-copy">
-                <p className="reveal" data-reveal>If you are about to start an internship in this field, here is what I would tell you.</p>
+                <p className="reveal" data-reveal>If you are starting an internship, figure out how the organization decides that you are useful.</p>
                 <p className="reveal" data-reveal>
-                  <strong>Figure out the objective—the real one.</strong> Not what the job description says. What does your manager actually care about? What are the stakeholders protecting? Everything else follows from getting this right.
+                  Ask what your manager is measured on. Ask what would make a stakeholder reject your project. Pay attention when two reasonable people disagree, because the disagreement usually reveals a constraint nobody wrote down for you.
                 </p>
                 <p className="reveal" data-reveal>
-                  Three ways to find out, all of which amount to reading artifacts for intent instead of instruction:
+                  A few things helped me:
                 </p>
                 <ol className="reveal" data-reveal>
                   <li>
-                    <strong>Read previously approved code reviews.</strong> What got through is a map of what the organization actually accepts. The pattern is the answer.
+                    Start with code reviews that were already approved. Compare the first version with the version that merged. That difference shows what the team actually accepts.
                   </li>
                   <li>
-                    <strong>Read the guidelines and ask why they exist.</strong> Every guideline is there because something went wrong once. The rule is a fossil of a past failure. Find the fear underneath it and you will know what the organization is protecting.
+                    When a guideline seems strange, ask how it got there. There is usually an old outage, migration, or argument behind it. The story is more useful than memorizing the rule.
                   </li>
                   <li>
-                    <strong>Ask how your work ties back to the problem statement—and to the bottom line.</strong> Nobody will ask you to do this explicitly. Everyone is evaluating you on it.
+                    Trace your task back to the problem statement and the bottom line. If you cannot explain that connection, you are coding blind.
                   </li>
                 </ol>
                 <p className="reveal" data-reveal>
-                  Expect that you will not be solving LeetCode problems. Past the interview, the skill that got you in stops being the skill that matters. This surprises almost everyone.
+                  Past the interview, you probably will not spend much time solving LeetCode problems. The skill that got you through the door stops being the main thing people judge.
                 </p>
-                <Illustration caption="Figure 05 — The work still branches; be precise about which branch you want." >
+                <Illustration caption="Figure 05 — Two different engineering careers." >
                   <DivergingPaths />
                 </Illustration>
                 <p className="reveal" data-reveal>
-                  And if the job you actually wanted was the one on the poster—building the primitives rather than using them, the hard technical core, the thing I thought I was signing up for—it still exists. It just moved. It is at the frontier labs now, and the door there is narrower than the one you just walked through.
+                  The job of building foundational technology still exists, but fewer people are paid to do it. Much of that work now sits inside research teams and frontier labs, often under an AI researcher title. The path is steeper than the one into ordinary software engineering, so preparing for it takes more than getting better at interviews.
                 </p>
-                <p className="essay-pull reveal" data-reveal>If that is the job you want, start preparing to jump.</p>
+                <p className="essay-pull reveal" data-reveal>If that is the job you want, start preparing for the jump now.</p>
               </div>
             </section>
 

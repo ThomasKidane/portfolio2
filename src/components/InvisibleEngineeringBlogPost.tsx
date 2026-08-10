@@ -86,61 +86,147 @@ function DissolvingStage() {
     <svg viewBox="0 0 900 540" role="img" aria-labelledby="dissolving-title dissolving-description">
       <title id="dissolving-title">The stage dissolves</title>
       <desc id="dissolving-description">
-        The visible curtain and set fade into dotted fragments, revealing gears, pulleys, counterweights, and backstage machinery.
+        A polished theatre stage fragments from left to right, revealing the organized gears, pulleys, counterweights, rails, and approval gates behind it.
       </desc>
-      <path d="M72 60h756v410H72z" />
-      <g opacity=".28" strokeDasharray="8 9">
-        <path d="M72 60c94 72 150 130 220 190v220H72z" />
-        <path d="M828 60c-94 72-150 130-220 190v220h220z" />
-        <path d="M294 326h190M326 326l-15 48M451 326l15 48" />
-        <rect x="350" y="264" width="84" height="52" />
+      <path d="M42 52h816v420H42zM42 116h816M42 424h816" />
+      <path d="M62 70h776M62 98h776" strokeDasharray="4 7" opacity=".45" />
+
+      <g id="dissolving-front-stage">
+        <path className="essay-fill" d="M62 116h238v308H62z" />
+        <path d="M62 116h238v308H62z" />
+        <path d="M62 116c66 42 112 90 142 144v164H62zM300 116c-48 43-79 90-96 144" />
+        <path d="M82 116v308M103 116v308M124 116v308" opacity=".45" />
+        <path className="essay-fill-light" d="M158 128h78l43 228H116z" />
+        <path d="M177 330h89M190 330l-9 48M252 330l9 48" />
+        <rect x="194" y="278" width="55" height="40" rx="2" />
+        <path className="essay-accent" d="M203 290h17M203 298h36M203 306h27" />
+        <circle cx="222" cy="238" r="14" />
+        <path d="M222 252v50M222 263l-28 22M222 263l29 20" />
+        <path d="M158 424v-25M188 424v-38M218 424v-20M248 424v-33" />
+        <text x="177" y="152" textAnchor="middle">VISIBLE OUTPUT</text>
       </g>
-      <g className="essay-accent">
-        <circle cx="565" cy="195" r="58" />
-        <circle cx="565" cy="195" r="17" />
-        <path d="M565 118v31M565 241v31M488 195h31M611 195h31M511 141l22 22M597 227l22 22M619 141l-22 22M533 227l-22 22" />
-        <circle cx="681" cy="293" r="42" />
-        <circle cx="681" cy="293" r="12" />
-        <path d="M681 235v22M681 329v22M623 293h22M717 293h22M640 252l16 16M706 318l16 16M722 252l-16 16M656 318l-16 16" />
+
+      <g id="dissolving-transition">
+        <path d="M300 116v308" strokeDasharray="5 7" opacity=".35" />
+        <path d="M318 132l20 15-17 18zM350 171l25 8-14 21zM309 220l19 10-16 14zM375 238l23 17-25 7zM323 296l27 12-19 20zM385 337l20 8-16 18zM344 382l24 17-27 8z" opacity=".55" />
+        <g className="essay-fade-particles" stroke="none">
+          <circle cx="319" cy="179" r="3" /><circle cx="347" cy="135" r="2" /><circle cx="382" cy="154" r="3" />
+          <circle cx="342" cy="242" r="2" /><circle cx="394" cy="211" r="4" /><circle cx="365" cy="285" r="3" />
+          <circle cx="312" cy="346" r="4" /><circle cx="374" cy="372" r="2" /><circle cx="410" cy="318" r="3" />
+          <circle cx="407" cy="183" r="2" /><circle cx="423" cy="258" r="3" /><circle cx="401" cy="399" r="2" />
+        </g>
+        <path className="essay-accent" d="M319 270h101M403 258l17 12-17 12" />
+        <text x="360" y="454" textAnchor="middle">FACADE REMOVED</text>
       </g>
-      <path d="M530 60v70M565 60v58M600 60v70M735 60v118M724 178h22l-5 81h-12z" />
-      <path d="M765 60v250M752 310h26v66h-26z" />
-      <path d="M565 253l84 19M599 231l50 42M374 155h82v82h-82zM390 171h50v50h-50z" />
-      <path d="M414 60v95M72 412h756" />
-      <path d="M134 412v-55M163 412v-82M192 412v-37M708 412v-50M737 412v-91" />
-      <g className="essay-fade-particles" stroke="none">
-        <circle cx="256" cy="170" r="3" /><circle cx="277" cy="192" r="2" /><circle cx="239" cy="215" r="4" />
-        <circle cx="312" cy="188" r="3" /><circle cx="283" cy="250" r="2" /><circle cx="329" cy="231" r="4" />
-        <circle cx="218" cy="275" r="2" /><circle cx="305" cy="289" r="3" /><circle cx="263" cy="324" r="4" />
+
+      <g id="revealed-machinery">
+        <path className="essay-fill-light" d="M432 116h406v308H432z" />
+        <path d="M432 116h406v308H432zM456 144h358v248H456z" />
+        <path d="M456 184h358M456 344h358M512 144v248M705 144v248" strokeDasharray="4 6" opacity=".4" />
+
+        <g id="approval-gates">
+          <rect x="474" y="211" width="70" height="39" rx="3" />
+          <rect x="474" y="270" width="70" height="39" rx="3" />
+          <path className="essay-accent" d="M486 230h45M486 289h45M509 250v20" />
+          <circle cx="509" cy="230" r="4" />
+          <circle cx="509" cy="289" r="4" />
+          <text x="509" y="204" textAnchor="middle">GATES</text>
+        </g>
+
+        <g id="large-gear" className="essay-accent">
+          <circle cx="629" cy="235" r="56" />
+          <circle cx="629" cy="235" r="19" />
+          <path d="M629 162v30M629 278v30M556 235h30M672 235h30M578 184l21 21M659 265l21 21M680 184l-21 21M599 265l-21 21" />
+        </g>
+        <g id="small-gear">
+          <circle cx="706" cy="306" r="37" />
+          <circle cx="706" cy="306" r="12" />
+          <path d="M706 257v19M706 336v19M657 306h19M736 306h19M672 272l14 14M726 326l14 14M740 272l-14 14M686 326l-14 14" />
+        </g>
+        <path className="essay-accent" d="M672 270l12 12M663 279l12 12" />
+
+        <g id="pulley-system">
+          <circle cx="755" cy="171" r="17" />
+          <circle cx="791" cy="171" r="17" />
+          <path d="M755 116v38M791 116v38M738 171h70M755 188v84M791 188v122" />
+          <path className="essay-fill" d="M744 272h22l-4 45h-14zM779 310h24l-4 52h-16z" />
+          <text x="773" y="382" textAnchor="middle">COUNTERWEIGHT</text>
+        </g>
+
+        <path d="M544 230h29M685 235h22M544 289h91M635 289l35 17M743 306h36" />
+        <path d="M472 370h216M472 378h216M489 362v24M531 362v24M573 362v24M615 362v24M657 362v24" />
+        <circle cx="489" cy="374" r="4" /><circle cx="573" cy="374" r="4" /><circle cx="657" cy="374" r="4" />
+        <text x="580" y="407" textAnchor="middle">DEPENDENCIES • REVIEW • RISK • COST</text>
       </g>
-      <text x="218" y="112" textAnchor="middle">THE FRONT STAGE</text>
-      <text x="635" y="452" textAnchor="middle">THE MACHINERY WAS ALWAYS HERE</text>
+
+      <path className="essay-accent" d="M432 98h406" />
+      <text x="635" y="84" textAnchor="middle">THE MACHINERY WAS ALWAYS HERE</text>
+      <text x="450" y="510" textAnchor="middle">AI AUTOMATED THE SURFACE—NOT THE SYSTEM UNDERNEATH IT</text>
     </svg>
   )
 }
 
 function DivergingPaths() {
   return (
-    <svg viewBox="0 0 900 520" role="img" aria-labelledby="paths-title paths-description">
+    <svg viewBox="0 0 900 560" role="img" aria-labelledby="paths-title paths-description">
       <title id="paths-title">Two paths through software engineering</title>
       <desc id="paths-description">
-        A figure stands where two paths diverge: one leads to an established company stage and the other to a smaller frontier laboratory.
+        An engineer deliberately chooses between a broad route into an established organizational system and a narrower route toward a frontier research laboratory.
       </desc>
-      <path d="M450 472V356M450 356C380 298 288 254 138 220M450 356c70-58 162-102 312-136" />
-      <path d="M425 472V367M475 472V367M138 203v34M762 203v34" strokeDasharray="7 7" />
-      <circle cx="450" cy="314" r="24" />
-      <path d="M450 338v72M450 355l-42 32M450 355l42 32M433 410l-23 50M467 410l23 50" />
-      <path className="essay-fill" d="M88 104h256v116H88z" />
-      <path d="M88 220V104h256v116M112 104V70h208v34M134 220v-76h62v76M236 220v-76h84" />
-      <path className="essay-accent" d="M122 92h188" />
-      <text x="216" y="52" textAnchor="middle">ESTABLISHED SYSTEM</text>
-      <text x="216" y="132" textAnchor="middle">JUDGMENT • ALIGNMENT • RISK</text>
-      <path className="essay-fill-light" d="M674 142h158v78H674z" />
-      <path d="M674 220v-78h158v78M697 142l21-39h71l21 39M711 220v-42h36M768 220v-42h40" />
-      <path className="essay-accent" d="M750 103V66M738 77l12-11 12 11" />
-      <text x="753" y="45" textAnchor="middle">FRONTIER</text>
-      <text x="753" y="245" textAnchor="middle">PRIMITIVES • RESEARCH • NARROW DOOR</text>
-      <text x="450" y="505" textAnchor="middle">CHOOSE THE JOB, NOT THE POSTER</text>
+      <path d="M42 470h816M42 478h816" />
+      <path d="M450 474V389C383 332 297 302 156 270M450 389c73-64 168-92 303-119" />
+      <path d="M420 474v-73C356 354 270 330 149 300M480 474v-73c69-54 159-78 280-101" strokeDasharray="6 7" opacity=".55" />
+
+      <g id="decision-point">
+        <circle className="essay-fill-light" cx="450" cy="389" r="54" />
+        <circle cx="450" cy="353" r="19" />
+        <path d="M450 372v61M450 386l-34 28M450 386l34 28M437 433l-17 38M463 433l17 38" />
+        <path className="essay-accent" d="M401 334l-25-21M499 334l25-21M376 313h12M512 313h12" />
+        <text x="450" y="529" textAnchor="middle">CHOOSE THE WORK, NOT THE POSTER</text>
+      </g>
+
+      <g id="established-system">
+        <path className="essay-fill" d="M58 78h330v193H58z" />
+        <path d="M58 271V78h330v193M82 78V52h282v26M103 271V119h82v152M210 271V119h72v152M307 271V119h57v152" />
+        <path d="M103 153h82M103 201h82M210 166h72M210 220h72M307 148h57M307 196h57" />
+        <circle cx="132" cy="136" r="7" /><circle cx="159" cy="136" r="7" />
+        <circle cx="232" cy="147" r="7" /><circle cx="260" cy="147" r="7" />
+        <circle cx="328" cy="132" r="7" /><circle cx="348" cy="132" r="7" />
+        <path d="M139 136h13M166 136l66 11M239 147h14M267 147l61-15M132 143v58M232 154v66M328 139v57" strokeDasharray="3 5" />
+        <path className="essay-accent" d="M87 97h272M132 201h100M232 220h96" />
+        <rect x="119" y="228" width="49" height="43" />
+        <rect x="224" y="235" width="44" height="36" />
+        <rect x="316" y="224" width="37" height="47" />
+        <text x="223" y="35" textAnchor="middle">ESTABLISHED SYSTEM</text>
+        <text x="223" y="293" textAnchor="middle">ALIGNMENT • JUDGMENT • OPERATIONS • RISK</text>
+      </g>
+
+      <g id="frontier-laboratory">
+        <path className="essay-fill-light" d="M661 159h190v111H661z" />
+        <path d="M661 270V159h190v111M680 159l28-45h94l31 45M683 270v-69h54v69M760 270v-69h68" />
+        <path d="M697 201h25M697 213h25M775 213h37M775 225h25" />
+        <circle cx="782" cy="184" r="12" />
+        <path d="M782 172v-34M770 145l12-12 12 12M737 236h23M749 236v-27M749 209l20-17" />
+        <path className="essay-accent" d="M782 133V76M770 88l12-12 12 12M782 76l30-28M782 76l-18-35" />
+        <circle className="essay-accent" cx="812" cy="48" r="3" />
+        <circle className="essay-accent" cx="764" cy="41" r="3" />
+        <path d="M640 270h226M648 279h210" strokeDasharray="5 6" />
+        <text x="756" y="24" textAnchor="middle">FRONTIER LAB</text>
+        <text x="756" y="301" textAnchor="middle">PRIMITIVES • RESEARCH • UNCERTAINTY</text>
+      </g>
+
+      <g id="route-markers">
+        <circle className="essay-fill-light" cx="337" cy="344" r="10" />
+        <circle className="essay-fill-light" cx="270" cy="316" r="10" />
+        <circle className="essay-fill-light" cx="563" cy="344" r="10" />
+        <circle className="essay-fill-light" cx="635" cy="316" r="10" />
+        <path className="essay-accent" d="M337 344h-67M563 344h72" />
+        <path d="M270 306v20M635 306v20" />
+        <text x="238" y="360" textAnchor="middle">BROAD • STRUCTURED</text>
+        <text x="671" y="360" textAnchor="middle">NARROW • STEEP</text>
+      </g>
+
+      <path d="M450 502v-18M442 492l8-8 8 8" />
     </svg>
   )
 }

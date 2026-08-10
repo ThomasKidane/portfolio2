@@ -673,7 +673,7 @@ export function InvisibleEngineeringBlogPost() {
                 <h2 id="back-stage-heading">WHAT THE COMPANY IS BUYING</h2>
               </header>
               <div className="essay-copy">
-                <p className="reveal" data-reveal>Here is what the job actually is at an established company.</p>
+                <p className="reveal" data-reveal>Here is what the job is like at an established company.</p>
                 <p className="reveal" data-reveal>
                   You get stakeholder agreement. You write designs that won’t box the company in two years from now. You make decisions that don’t create liabilities, technical, organizational, or financial. You figure out who needs to approve what, and why they would hesitate. You make sure the thing you are building connects to something the business cares about.
                 </p>

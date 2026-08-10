@@ -3,12 +3,20 @@ import { Link } from 'react-router-dom'
 export function WhatsNewSection() {
   const updates = [
     {
+      date: 'Aug 2026',
+      type: 'ESSAY',
+      title: 'The Job Behind the Job',
+      description: 'What software engineering values after code stops being the hardest part',
+      link: '/blog/the-job-behind-the-job',
+      highlight: true
+    },
+    {
       date: 'Dec 2025',
       type: 'BLOG POST',
       title: 'Guided Newton-Raphson Inversion',
       description: 'Real-time image editing via gradient-based latent space optimization in diffusion models',
       link: '/blog/guided-newton-raphson-inversion',
-      highlight: true
+      highlight: false
     },
     {
       date: 'Dec 2025',

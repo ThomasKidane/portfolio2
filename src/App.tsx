@@ -12,6 +12,7 @@ import { RunaheadBlogPost } from './components/RunaheadBlogPost'
 import { IntersectionsBlogPost } from './components/IntersectionsBlogPost'
 import GNRIBlogPost from './components/GNRIBlogPost'
 import AudioSeparationBlogPost from './components/AudioSeparationBlogPost'
+import { InvisibleEngineeringBlogPost } from './components/InvisibleEngineeringBlogPost'
 import { Quant } from './pages/Quant'
 import { Figgie } from './pages/Figgie'
 import { FiggieGame } from './pages/FiggieGame'
@@ -24,8 +25,8 @@ export default function App() {
   const isBlogPost = location.pathname.startsWith('/blog/runahead') || 
                      location.pathname.startsWith('/blog/the-intersections') ||
                      location.pathname.startsWith('/blog/guided-newton') ||
-                     location.pathname.startsWith('/blog/audio-source-separation')
-  const isQuantPage = location.pathname.startsWith('/quant')
+                     location.pathname.startsWith('/blog/audio-source-separation') ||
+                     location.pathname.startsWith('/blog/the-job-behind-the-job')
   const isToolPage = location.pathname.startsWith('/figgie')
   const isAuthPage = location.pathname === '/login' || location.pathname === '/admin'
 
@@ -45,6 +46,7 @@ export default function App() {
             <Route path="/blog/the-intersections" element={<ProtectedRoute pageKey="blog"><IntersectionsBlogPost /></ProtectedRoute>} />
             <Route path="/blog/guided-newton-raphson-inversion" element={<ProtectedRoute pageKey="blog"><GNRIBlogPost /></ProtectedRoute>} />
             <Route path="/blog/audio-source-separation" element={<ProtectedRoute pageKey="blog"><AudioSeparationBlogPost /></ProtectedRoute>} />
+            <Route path="/blog/the-job-behind-the-job" element={<ProtectedRoute pageKey="blog"><InvisibleEngineeringBlogPost /></ProtectedRoute>} />
             <Route path="/projects" element={<ProtectedRoute pageKey="projects"><Projects /></ProtectedRoute>} />
             <Route path="/quant" element={<ProtectedRoute pageKey="quant"><Quant /></ProtectedRoute>} />
             <Route path="/figgie" element={<ProtectedRoute pageKey="figgie"><Figgie /></ProtectedRoute>} />

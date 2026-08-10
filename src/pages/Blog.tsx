@@ -33,7 +33,57 @@ export function Blog() {
             FEATURED POST
           </h2>
           
-          <Link to="/blog/runahead-execution" className="block group">
+          <Link to="/blog/the-job-behind-the-job" className="block group">
+            <article className="border-2 border-blue-500 bg-white p-8 hover:bg-blue-50 transition-colors">
+              <div className="flex justify-between items-start gap-6 mb-4">
+                <h3
+                  style={{
+                    fontFamily: '"JetBrains Mono", monospace',
+                    fontSize: '1.5rem',
+                    fontWeight: '600',
+                    color: '#1a1a1a',
+                    lineHeight: '1.3'
+                  }}
+                >
+                  The Job Behind the Job
+                </h3>
+                <span
+                  style={{
+                    fontFamily: '"JetBrains Mono", monospace',
+                    fontSize: '0.75rem',
+                    color: '#666',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  Aug 2026
+                </span>
+              </div>
+              <p
+                style={{
+                  fontFamily: 'Georgia, serif',
+                  fontSize: '1rem',
+                  lineHeight: '1.7',
+                  color: '#333',
+                  marginBottom: '1rem'
+                }}
+              >
+                Software engineering was never only about writing software. A field note on risk, judgment,
+                the invisible work inside established companies, and what AI exposed when it automated the front stage.
+              </p>
+              <div className="flex items-center gap-4">
+                <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: '0.75rem', color: '#4169E1' }}>
+                  Read more →
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  <span className="px-2 py-1 bg-blue-100 text-xs font-mono text-blue-700 rounded">Engineering</span>
+                  <span className="px-2 py-1 bg-blue-100 text-xs font-mono text-blue-700 rounded">AI</span>
+                  <span className="px-2 py-1 bg-blue-100 text-xs font-mono text-blue-700 rounded">Careers</span>
+                </div>
+              </div>
+            </article>
+          </Link>
+
+          <Link to="/blog/runahead-execution" className="block group mt-8">
             <article className="border-2 border-blue-500 bg-white p-8 hover:bg-blue-50 transition-colors">
               <div className="flex justify-between items-start mb-4">
                 <h3 

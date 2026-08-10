@@ -5,9 +5,9 @@ import frontStageSvg from '../assets/essay-front-stage.svg?raw'
 
 const sections = [
   { id: 'front-stage', number: '01', label: 'The front stage' },
-  { id: 'conversation', number: '02', label: 'The conversation' },
+  { id: 'conversation', number: '02', label: 'Enlightenment' },
   { id: 'back-stage', number: '03', label: 'The back stage' },
-  { id: 'ai-changed', number: '04', label: 'What AI changed' },
+  { id: 'ai-changed', number: '04', label: 'AI' },
   { id: 'what-to-do', number: '05', label: 'What to do' },
 ]
 
@@ -623,8 +623,8 @@ export function InvisibleEngineeringBlogPost() {
                   Before my first internship, I had a messed up view of software engineering. I find a problem, and write code to make the computer solve it. 
                 </p>
                 <p className="reveal" data-reveal>
-                  Was that the job? I atleast had thought, that was what all the preparation implied. Classes, assignments, and interviews 
-                  gave me this illusion. Get all green!
+                  Was that really the job? That’s what I thought. All my preparation, from classes to assignments and interviews, gave me that impression. Just do everything right and get all green!
+             
                 </p>
                 <Illustration caption="Figure 01 — A man in front of the terminal." >
                   <StageFromAudience />
@@ -645,7 +645,7 @@ export function InvisibleEngineeringBlogPost() {
               </header>
               <div className="essay-copy">
                 <p className="reveal" data-reveal>
-                  I was trying to get my first code review approved. It was going horribly, and it was a techinal problem(why couldn't it?).
+                  I was trying to get my first code review approved. It was going horribly, and it wasn't a techinal problem(why couldn't it?).
                 </p>
                 <p className="reveal" data-reveal>A senior engineer pulled me aside.</p>
                 <Illustration caption="Figure 02 — A backstage conversation" >
@@ -675,7 +675,7 @@ export function InvisibleEngineeringBlogPost() {
               <div className="essay-copy">
                 <p className="reveal" data-reveal>Here is what the job actually is at an established company.</p>
                 <p className="reveal" data-reveal>
-                  You get stakeholder agreement. You write designs that won’t box the company in two years from now. You make decisions that don’t create liabilities—technical, organizational, or financial. You figure out who needs to approve what, and why they would hesitate. You make sure the thing you are building connects to something the business cares about.
+                  You get stakeholder agreement. You write designs that won’t box the company in two years from now. You make decisions that don’t create liabilities, technical, organizational, or financial. You figure out who needs to approve what, and why they would hesitate. You make sure the thing you are building connects to something the business cares about.
                 </p>
                 <Illustration caption="Figure 03 - Code is the small, visible part of a much larger software organization." >
                   <BackStageCrossSection />
@@ -729,7 +729,7 @@ export function InvisibleEngineeringBlogPost() {
                     <strong>Read previously approved code reviews.</strong> It lets you understand what is acceptable.
                   </li>
                   <li>
-                    <strong>Read the guidelines and question it exists</strong> Guidelines are gradually developed, and understanding the reasoning behind them is more useful than simply following instructions.
+                    <strong>Read the guidelines and question it existence</strong> Guidelines are gradually developed, and understanding the reasoning behind them is more useful than simply following instructions.
                   </li>
                   <li>
                     <strong>Ask how your work ties back to the problem statement and to the bottom line.</strong> If you don't understand this, your well on your way to getting fired.

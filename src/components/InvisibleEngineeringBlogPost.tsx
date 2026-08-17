@@ -578,7 +578,7 @@ export function InvisibleEngineeringBlogPost() {
       <header className="essay-topbar">
         <div className="essay-topbar-inner">
           <Link to="/blog" className="essay-back">← WRITINGS</Link>
-          <span className="essay-date">AUGUST 2026 · 8 MIN READ</span>
+          <span className="essay-date">AUGUST 2026 · 5 MIN READ</span>
         </div>
       </header>
 
@@ -587,7 +587,7 @@ export function InvisibleEngineeringBlogPost() {
           <p className="essay-kicker">FIELD NOTES / SOFTWARE ENGINEERING</p>
           <h1 className="essay-title">THE JOB BEHIND THE JOB</h1>
           <p className="essay-dek">
-            I thought software engineering was about writing software. Suffices to say with AI, that isn't what the job is about. 
+            I thought software engineering was about writing software. Suffice it to say, AI has changed what the job is about.
           </p>
           <p className="essay-meta">
             <span>THOMAS KIDANE</span><span aria-hidden="true">•</span><span>AUGUST 2026</span>
@@ -616,17 +616,16 @@ export function InvisibleEngineeringBlogPost() {
             <section id="front-stage" className="essay-section" aria-labelledby="front-stage-heading">
               <header className="essay-section-header reveal" data-reveal>
                 <p className="essay-section-number">01 — THE FRONT STAGE</p>
-                <h2 id="front-stage-heading">THE PERCEPTION OF THE JOB</h2>
+                <h2 id="front-stage-heading">THE PERCEPTION OF THE JOB (GOFFMAN'S DRAMATURGICAL ANALYSIS)</h2>
               </header>
               <div className="essay-copy">
                 <p className="reveal" data-reveal>
-                  Before my first internship, I had a messed up view of software engineering. I find a problem, and write code to make the computer solve it. 
+                  Before my first internship, I had a messed-up view of software engineering. I would find a problem and write code to make the computer solve it.
                 </p>
                 <p className="reveal" data-reveal>
-                  Was that really the job? That’s what I thought. All my preparation, from classes to assignments and interviews, gave me that impression. Just do everything right and get all green!
-             
+                  Was that really the job? That’s what I thought. All my preparation, from classes and assignments to interviews, gave me that impression. Just do everything right and get all green!
                 </p>
-                <Illustration caption="Figure 01 — A man in front of the terminal." >
+                <Illustration caption="Figure 01 — A man at a terminal." >
                   <StageFromAudience />
                 </Illustration>
                 <p className="reveal" data-reveal>
@@ -645,24 +644,23 @@ export function InvisibleEngineeringBlogPost() {
               </header>
               <div className="essay-copy">
                 <p className="reveal" data-reveal>
-                  I was trying to get my first code review approved. It was going horribly, and it wasn't a techinal problem(why couldn't it?).
+                  I was trying to get my first code review approved. It was going horribly, and the problem wasn't technical. I couldn't understand why.
                 </p>
                 <p className="reveal" data-reveal>A senior engineer pulled me aside.</p>
                 <Illustration caption="Figure 02 — A backstage conversation" >
                   <StageFromWings />
                 </Illustration>
                 <p className="reveal" data-reveal>
-                  He talked to me about influence without power. Pointing out my status as an individual contributor(IC), he shared with me the ways 
-                  of the IC. I needed to understand what other people's objective were.
-
-                  Through the conversation, I learned that he was in the business of <strong>risk management</strong>. By extension, 
-                  a bulk if not all of my responsibilites were to derisk different projects. I hadn't understood that that was what I being payed to do.
+                  He talked to me about influence without power. Pointing out that I was an individual contributor (IC), he explained the role to me. I needed to understand what other people's objectives were.
                 </p>
                 <p className="reveal" data-reveal>
-                  If I understood that was the job, he said, I could go far.
+                  Through that conversation, I learned that he was in the business of <strong>risk management</strong>. By extension, the bulk, if not all, of my responsibilities involved de-risking projects by making sure they wouldn't break existing, valuable infrastructure. I hadn't understood that this was what I was being paid to do.
+                </p>
+                <p className="reveal" data-reveal>
+                  If I understood that this was the job, he said, I could go far.
                 </p>
                 <p className="essay-pull reveal" data-reveal>
-                  It hit me like a ton of bricks. Because my misunderstandings had been fixed.
+                  It hit me like a ton of bricks because I finally understood what I had gotten wrong.
                 </p>
               </div>
             </section>
@@ -675,75 +673,75 @@ export function InvisibleEngineeringBlogPost() {
               <div className="essay-copy">
                 <p className="reveal" data-reveal>Here is what the job is like at an established company.</p>
                 <p className="reveal" data-reveal>
-                  You get stakeholder agreement. You write designs that won’t box the company in two years from now. You make decisions that don’t create liabilities, technical, organizational, or financial. You figure out who needs to approve what, and why they would hesitate. You make sure the thing you are building connects to something the business cares about.
+                  You get stakeholder agreement. You write designs that won’t box the company in two years down the road. You make decisions that don’t create technical, organizational, or financial liabilities. You figure out who needs to approve what and why they would hesitate. You make sure the thing you are building connects to something the business cares about.
                 </p>
-                <Illustration caption="Figure 03 - Code is the small, visible part of a much larger software organization." >
+                <Illustration caption="Figure 03 — Code is the small, visible part of a much larger software organization." >
                   <BackStageCrossSection />
                 </Illustration>
                 <p className="reveal" data-reveal>
-                  Writing the code is the last, smallest, easiest part. Sometimes it barely happens.
+                  Writing the code is the last, smallest, and easiest part. Sometimes it barely happens.
                 </p>
               </div>
             </section>
 
             <section id="ai-changed" className="essay-section" aria-labelledby="ai-changed-heading">
               <header className="essay-section-header reveal" data-reveal>
-                <p className="essay-section-number">04 - AI</p>
-                <h2 id="ai-changed-heading">NO CURTAINS</h2>
+                <p className="essay-section-number">04 — AI</p>
+                <h2 id="ai-changed-heading">NO CURTAINS (THE BACK STAGE)</h2>
               </header>
               <div className="essay-copy">
                 <p className="reveal" data-reveal>Seven years ago, the hard part was making the software do the thing.</p>
                 <p className="reveal" data-reveal>
-                  That part is now free.
+                  That part is now close to free.
                 </p>
-                <Illustration caption="Figure 04 - Transition of Responsibilites" >
+                <Illustration caption="Figure 04 — Transition of Responsibilities" >
                   <DissolvingStage />
                 </Illustration>
                 <p className="reveal" data-reveal>
-                  I thought AI would make me faster, develop more interesting and sophistacted projects. Tackle harder challenges. Unfortunately that isn't valuable :(
+                  I thought AI would make me faster, help me develop more interesting and sophisticated projects, and let me tackle harder challenges. Unfortunately, those things aren't necessarily valuable :(
                 </p>
                 <p className="essay-pull reveal" data-reveal>
                   AI pushed me to do more reviews.
                 </p>
                 <p className="reveal" data-reveal>
-                  The thing I do in classes, the stuff I get interviewed on is useless. I am a glorified product manager.
+                  What I do in class and what I am interviewed on feel useless. I am a glorified product manager.
                 </p>
               </div>
             </section>
 
             <section id="what-to-do" className="essay-section" aria-labelledby="what-to-do-heading">
               <header className="essay-section-header reveal" data-reveal>
-                <p className="essay-section-number">05 - WHAT TO DO</p>
-                <h2 id="what-to-do-heading">READ IN BETWEEN THE LINES</h2>
+                <p className="essay-section-number">05 — WHAT TO DO</p>
+                <h2 id="what-to-do-heading">READ BETWEEN THE LINES</h2>
               </header>
               <div className="essay-copy">
-                <p className="reveal" data-reveal>If you are about to start an internship in this field, here is some wisdom</p>
+                <p className="reveal" data-reveal>If you are about to start an internship in this field, here is what I wish I had known.</p>
                 <p className="reveal" data-reveal>
-                  <strong>Figure out, what your value is</strong> What does your manager actually care about? What gets stakeholders ticking?
+                  <strong>Figure out what your value is.</strong> What does your manager actually care about? What makes stakeholders tick?
                 </p>
                 <p className="reveal" data-reveal>
                   Here are some useful ways:
                 </p>
                 <ol className="reveal" data-reveal>
                   <li>
-                    <strong>Read previously approved code reviews.</strong> It lets you understand what is acceptable.
+                    <strong>Read previously approved code reviews.</strong> They let you understand what is acceptable.
                   </li>
                   <li>
-                    <strong>Read the guidelines and question it existence</strong> Guidelines are gradually developed, and understanding the reasoning behind them is more useful than simply following instructions.
+                    <strong>Read the guidelines and question why they exist.</strong> Guidelines develop gradually, and understanding the reasoning behind them is more useful than simply following instructions.
                   </li>
                   <li>
-                    <strong>Ask how your work ties back to the problem statement and to the bottom line.</strong> If you don't understand this, your well on your way to getting fired.
+                    <strong>Ask how your work ties back to the problem statement and to the bottom line.</strong> If you don't understand this, you're well on your way to getting fired.
                   </li>
                 </ol>
                 <p className="reveal" data-reveal>
-                  Past the interview, you won't be doing leetcode. 
+                  Past the interview, you won't be doing LeetCode.
                 </p>
-                <Illustration caption="Figure 05 - Branch" >
+                <Illustration caption="Figure 05 — Branch" >
                   <DivergingPaths />
                 </Illustration>
                 <p className="reveal" data-reveal>
-                  The old SWE of building foundational technologies and primitves have moved to the frontier labs, under the job title of AI researcher.
-                  If you want to make technical contributions, you better starting your parachute, because the cliff is steep.
+                  The kind of software engineering I imagined, building foundational technologies and primitives, is increasingly concentrated in frontier labs, often under the title of AI researcher.
+                  If you want to make those technical contributions, you had better start packing your parachute; the cliff is steep.
                 </p>
                 <p className="essay-pull reveal" data-reveal>If that is the job you want, start preparing to jump.</p>
               </div>

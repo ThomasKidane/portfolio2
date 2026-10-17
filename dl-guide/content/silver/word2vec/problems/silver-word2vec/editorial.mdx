@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+L=-\log\sigma(u_o^\top v_c)-\sum_{j=1}^K\log\sigma(-u_{n_j}^\top v_c)
+\end{aligned}
+$$
+
+Here v-c is the center embedding, u-o a positive context embedding, u-n the K sampled negative context embeddings, and sigma the sigmoid. This is skip-gram negative sampling, not full-vocabulary softmax.
+
 learn text8 skip-gram embeddings and evaluate held-out word analogies without training on evaluation pairs. learn text8 skip-gram embeddings and evaluate held-out word analogies without training on evaluation pairs
 
 Read [Efficient Estimation of Word Representations in Vector Space](https://arxiv.org/abs/1301.3781) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

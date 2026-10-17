@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+L(N,D)=L_\infty+AN^{-\alpha}+BD^{-\beta},\\ e_{\mathrm{rel}}=\frac{\lvert\hat L-L_{\mathrm{obs}}\rvert}{\lvert L_{\mathrm{obs}}\rvert}
+\end{aligned}
+$$
+
+Here N is parameter count, D training-token count, L-infinity the fitted floor, A/B positive amplitudes, and alpha/beta positive exponents. Hat-L is a held-out prediction and L-obs a nonzero observation; this empirical fit is not a universal law.
+
 fit held-out loss versus parameters data and compute; aim for loss prediction within five percent on unseen runs. fit held-out loss versus parameters data and compute; aim for loss prediction within five percent on unseen runs
 
 Read [Scaling Laws for Neural Language Models](https://arxiv.org/abs/2001.08361) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

@@ -16,7 +16,13 @@ prerequisites: ["platinum-sparse-autoencoders"]
 
 ## Mechanism and equations
 
-`Rotate each feature pair by position*frequency; compare original, NTK-scaled and YaRN-adjusted frequency schedules.`
+$$
+\begin{aligned}
+\begin{bmatrix}x'_{2j}\\x'_{2j+1}\end{bmatrix}=\begin{bmatrix}\cos(m\theta_j)&-\sin(m\theta_j)\\\sin(m\theta_j)&\cos(m\theta_j)\end{bmatrix}\begin{bmatrix}x_{2j}\\x_{2j+1}\end{bmatrix},\\ \theta_j=b^{-2j/d},\quad j=0,\ldots,d/2-1
+\end{aligned}
+$$
+
+Here x is a query/key vector, m token position, j feature-pair index, d even rotary width, and b the frequency base. This is standard RoPE; NTK-aware scaling and YaRN alter the frequency/position schedule and require separately documented choices, not a universal replacement formula.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+q=\operatorname{clip}\!\left(\operatorname{round}(x/s)+z,q_{\min},q_{\max}\right),\\ \hat x=s(q-z)
+\end{aligned}
+$$
+
+Here x is a real value, s a positive scale, z an integer zero point, q-min/q-max integer limits, and hat-x dequantized reconstruction. Declare per-tensor or per-channel scale and the rounding convention.
+
 implement calibrated integer quantization and a documented four-bit extension; audit scale zero-point error and memory. implement calibrated integer quantization and a documented four-bit extension; audit scale zero-point error and memory
 
 Read [LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale](https://arxiv.org/abs/2208.07339) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

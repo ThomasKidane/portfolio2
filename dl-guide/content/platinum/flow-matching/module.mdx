@@ -16,7 +16,13 @@ prerequisites: ["platinum-mamba"]
 
 ## Mechanism and equations
 
-`x_t=(1-t)*noise+t*data; L=E[norm(v_theta(x_t,t)-(data-noise))^2] for the straight-line path.`
+$$
+\begin{aligned}
+x_t=(1-t)x_0+tx_1,\quad t\sim\mathcal U(0,1),\\ L=\mathbb E\lVert v_\theta(x_t,t)-(x_1-x_0)\rVert_2^2
+\end{aligned}
+$$
+
+Here x-zero is noise, x-one data drawn under a declared coupling, and v-theta the learned velocity. This conditional flow-matching loss uses a straight-line interpolation; generation integrates the velocity from time zero to one.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

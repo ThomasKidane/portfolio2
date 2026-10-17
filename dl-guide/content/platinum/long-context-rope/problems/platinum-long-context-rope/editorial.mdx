@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+\begin{bmatrix}x'_{2j}\\x'_{2j+1}\end{bmatrix}=\begin{bmatrix}\cos(m\theta_j)&-\sin(m\theta_j)\\\sin(m\theta_j)&\cos(m\theta_j)\end{bmatrix}\begin{bmatrix}x_{2j}\\x_{2j+1}\end{bmatrix},\\ \theta_j=b^{-2j/d},\quad j=0,\ldots,d/2-1
+\end{aligned}
+$$
+
+Here x is a query/key vector, m token position, j feature-pair index, d even rotary width, and b the frequency base. This is standard RoPE; NTK-aware scaling and YaRN alter the frequency/position schedule and require separately documented choices, not a universal replacement formula.
+
 compare unscaled NTK-aware and YaRN rotary frequencies on long-context retrieval and short-context retention. compare unscaled NTK-aware and YaRN rotary frequencies on long-context retrieval and short-context retention
 
 Read [YaRN: Efficient Context Window Extension of Large Language Models](https://arxiv.org/abs/2309.00071) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

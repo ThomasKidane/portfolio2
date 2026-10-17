@@ -8,7 +8,15 @@ status: draft
 
 ## The mechanism
 
-fit separable blobs with the online mistake-driven linear update. For a mistaken predicted class p and true class t, add learning_rate*x to W[t] and subtract it from W[p]; update biases with the same signs. Correct examples cause no update. The reference makes eight deterministic passes over at most 128 training examples (at most 1024 updates). A separable training fixture validates the update, not generalization on overlapping blobs.
+$$
+\begin{aligned}
+\hat y=\arg\max_k(w_k^\top x+b_k),\quad \hat y\ne y:\\ w_y\leftarrow w_y+\eta x,\quad b_y\leftarrow b_y+\eta,\\ w_{\hat y}\leftarrow w_{\hat y}-\eta x,\quad b_{\hat y}\leftarrow b_{\hat y}-\eta
+\end{aligned}
+$$
+
+Here x is an input, y its true class, and the predicted class maximizes the linear score; w and b are class weights and biases, and eta is the learning rate. Update only on mistakes.
+
+fit separable blobs with the online mistake-driven linear update. Apply the mistake-driven weight and bias updates shown above to the true and predicted classes with opposite signs. Correct examples cause no update. The reference makes eight deterministic passes over at most 128 training examples (at most 1024 updates). A separable training fixture validates the update, not generalization on overlapping blobs.
 
 Read [The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain](https://doi.org/10.1037/h0042519) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.
 

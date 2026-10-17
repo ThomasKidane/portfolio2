@@ -16,7 +16,13 @@ prerequisites: ["silver-dqn"]
 
 ## Mechanism and equations
 
-`grad J=E[sum_t grad log pi(a_t|s_t)*(return_t-baseline(s_t))].`
+$$
+\begin{aligned}
+\nabla_\theta J=\mathbb E\!\left[\sum_t\nabla_\theta\log\pi_\theta(a_t\mid s_t)(G_t-b(s_t))\right],\\ G_t=\sum_{k=t}^{T-1}\gamma^{k-t}r_k
+\end{aligned}
+$$
+
+Here pi is the policy, s/a states/actions, G reward-to-go, b an action-independent baseline, r reward, and T episode length. This objective uses undiscounted episodic returns when gamma equals one; a start-state discounted objective additionally weights each time term by gamma to the power t. Do not backpropagate through the sampled advantage in the policy update.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+e_{ti}=v_a^\top\tanh(W_ss_{t-1}+W_hh_i+b_a),\\ \alpha_{ti}=\frac{\exp(e_{ti})}{\sum_j\exp(e_{tj})},\quad c_t=\sum_i\alpha_{ti}h_i
+\end{aligned}
+$$
+
+Here s is decoder state, h encoder states, W/v/b learned attention parameters, e alignment scores, alpha source-position probabilities, and c the context vector. Normalize over allowed source positions only.
+
 translate deterministic generated date strings with encoder-decoder additive attention; aspirational exact match 0.95. translate deterministic generated date strings with encoder-decoder additive attention; aspirational exact match 0.95
 
 Read [Neural Machine Translation by Jointly Learning to Align and Translate](https://arxiv.org/abs/1409.0473) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

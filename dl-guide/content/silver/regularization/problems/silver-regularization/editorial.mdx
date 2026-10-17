@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+L_{\mathrm{total}}=L_{\mathrm{data}}+\frac\lambda2\lVert w\rVert_2^2,\\ w_{t+1}=(1-\eta\lambda)w_t-\eta u_t
+\end{aligned}
+$$
+
+Here w is the weight vector, lambda the penalty/decay coefficient, eta the learning rate, and u the optimizer's data-gradient update direction. The first line is coupled L2 regularization; the second is decoupled decay. They agree for plain SGD but generally not adaptive optimizers.
+
 compare dropout and decoupled decay on a fixed 5000-example CIFAR-10 training subset. compare dropout and decoupled decay on a fixed 5000-example CIFAR-10 training subset
 
 Read [Dropout: A Simple Way to Prevent Neural Networks from Overfitting](https://jmlr.org/papers/v15/srivastava14a.html) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

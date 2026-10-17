@@ -16,7 +16,13 @@ prerequisites: ["platinum-knowledge-distillation"]
 
 ## Mechanism and equations
 
-`z=ReLU(W_enc*(x-b_dec)+b_enc); L=norm(W_dec*z+b_dec-x)^2+lambda*norm(z,1).`
+$$
+\begin{aligned}
+z=\operatorname{ReLU}(W_e(x-b_d)+b_e),\quad\hat x=W_dz+b_d,\\ L=\lVert\hat x-x\rVert_2^2+\lambda\lVert z\rVert_1
+\end{aligned}
+$$
+
+Here x is a frozen-model activation, z sparse features, W-e/W-d encoder/decoder matrices, b biases, and lambda the sparsity penalty. Average over samples and constrain decoder column norms to prevent trivial rescaling of the L1 penalty.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+C\approx\kappa ND,\\ (N^*,D^*)=\arg\min_{N,D>0}\left[L_\infty+AN^{-\alpha}+BD^{-\beta}\right]\quad\text{subject to }\kappa ND\le C_0
+\end{aligned}
+$$
+
+Here N is parameters, D training tokens, kappa an architecture-dependent compute factor, C-zero a fixed budget, and the other constants fit loss observations. This approximate training-compute model does not replace measured hardware time or prescribe universal optimal counts.
+
 allocate tokens and parameters across fixed-compute runs and fit a compute-optimal frontier. allocate tokens and parameters across fixed-compute runs and fit a compute-optimal frontier
 
 Read [Training Compute-Optimal Large Language Models](https://arxiv.org/abs/2203.15556) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

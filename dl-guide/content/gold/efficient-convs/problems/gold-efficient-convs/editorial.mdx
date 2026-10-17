@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+C_{\mathrm{dense}}=HWk^2C_{\mathrm{in}}C_{\mathrm{out}},\\ C_{\mathrm{sep}}=HW(k^2C_{\mathrm{in}}+C_{\mathrm{in}}C_{\mathrm{out}})
+\end{aligned}
+$$
+
+Here H/W are output height/width, k kernel side, and C-in/C-out channel counts. C counts multiply-accumulates, excluding biases and nonlinearities, for a dense convolution versus depthwise then pointwise convolution with depth multiplier one.
+
 compare depthwise separable convolutions and compound scaling on CIFAR-100 with explicit FLOP accounting. compare depthwise separable convolutions and compound scaling on CIFAR-100 with explicit FLOP accounting
 
 Read [MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications](https://arxiv.org/abs/1704.04861) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

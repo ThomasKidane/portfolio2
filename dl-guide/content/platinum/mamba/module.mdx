@@ -16,7 +16,13 @@ prerequisites: ["platinum-grpo"]
 
 ## Mechanism and equations
 
-`state_t=A_t*state_prev+B_t*x_t; y_t=C_t*state_t; selective coefficients depend on inputs.`
+$$
+\begin{aligned}
+h_t=\bar A_t h_{t-1}+\bar B_t x_t,\quad y_t=C_t h_t+Dx_t,\\ \bar A_t=\exp(\Delta_t A),\quad\bar B_t=\left(\int_0^{\Delta_t}\exp(sA)\,ds\right)B_t
+\end{aligned}
+$$
+
+Here h is state, x input, y output, A the continuous state matrix, D a skip coefficient, and Delta/B/C input-dependent selective parameters. Bars denote zero-order-hold discretization; the expression describes the selective state-space core, not the full Mamba block.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

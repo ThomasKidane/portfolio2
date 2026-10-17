@@ -16,7 +16,13 @@ prerequisites: ["bronze-initialization"]
 
 ## Mechanism and equations
 
-`h_next=tanh(conv(h,W)+b); pooled(i,j)=mean of the local 2x2 region.`
+$$
+\begin{aligned}
+h'=\tanh(W*h+b),\\ p_{ij}=\frac14\sum_{a=0}^{1}\sum_{b=0}^{1}h'_{2i+a,2j+b}
+\end{aligned}
+$$
+
+Here h is an input feature map, W is a convolution kernel, the star denotes convolution, b in the first line is a bias, and a and b in the sum are spatial offsets. The second line is stride-two average pooling, the teaching adaptation rather than every historical LeNet detail.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

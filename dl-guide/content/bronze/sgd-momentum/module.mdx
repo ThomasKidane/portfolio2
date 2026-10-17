@@ -16,7 +16,13 @@ prerequisites: ["bronze-mlp-backprop"]
 
 ## Mechanism and equations
 
-`v_t=beta*v_(t-1)+grad L(w_t); w_(t+1)=w_t-eta*v_t.`
+$$
+\begin{aligned}
+g_t=\nabla L(w_t),\quad v_t=\beta v_{t-1}+g_t,\\ w_{t+1}=w_t-\eta v_t
+\end{aligned}
+$$
+
+Here L is the loss, w the weights, g the gradient, v the velocity initialized to zero, beta the momentum coefficient, and eta the learning rate. This convention does not multiply the new gradient by one minus beta.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

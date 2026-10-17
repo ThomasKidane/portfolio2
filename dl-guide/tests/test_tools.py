@@ -61,6 +61,29 @@ def test_yaml_problem_and_mdx_module_discovery(guide):
     assert (root / "dlguide/dlguide/checks/toy-linear.py").is_file()
 
 
+def test_advanced_reading_module_needs_no_problem_or_notebook(guide):
+    root, problem = guide
+    (root / "content/catalog.json").unlink()
+    (root / "content/problems.json").write_text(json.dumps([problem]))
+    folder = root / "content/advanced/causal-interventions"
+    folder.mkdir(parents=True)
+    (folder / "module.mdx").write_text(
+        "---\nid: advanced-causal-interventions\ntitle: Causal Interventions\n"
+        "division: advanced\nkind: research\norder: 1\nproblems: []\n"
+        "prerequisites: []\n---\n# Causal Interventions\n\nResearch exploration.\n"
+    )
+    catalog = tables(root)
+    research = catalog["modules"][0]
+    assert research["division"] == "advanced"
+    assert research["kind"] == "research"
+    assert research["problems"] == []
+    assert "# Causal Interventions" in research["module_source"]
+    paths = notebooks(root)
+    assert len(paths) == 1  # Only the existing problem gets a notebook.
+    assert not (root / "notebooks/advanced").exists()
+    assert validate(root) == []
+
+
 def test_notebook_ref_must_be_pinned(guide):
     root, problem = guide
     cfg = config(root)

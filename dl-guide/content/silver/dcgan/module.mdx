@@ -16,7 +16,13 @@ prerequisites: ["silver-vae"]
 
 ## Mechanism and equations
 
-`min_G max_D E log D(x)+E log(1-D(G(z))); stable training often uses non-saturating -log D(G(z)).`
+$$
+\begin{aligned}
+\min_G\max_D\ \mathbb E_{x\sim p_{\mathrm{data}}}\log D(x)+\mathbb E_{z\sim p_z}\log(1-D(G(z))),\\ L_G^{\mathrm{NS}}=-\mathbb E_{z\sim p_z}\log D(G(z))
+\end{aligned}
+$$
+
+Here G generates from noise z, D estimates real-data probability, and x is a real sample. The second line is the non-saturating generator loss used instead of minimizing the saturating minimax term; this alone does not specify the DCGAN architecture.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

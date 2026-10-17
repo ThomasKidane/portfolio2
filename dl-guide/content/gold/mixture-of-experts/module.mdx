@@ -16,7 +16,13 @@ prerequisites: ["gold-gcn-gat"]
 
 ## Mechanism and equations
 
-`y=sum_e gate_e(x)*expert_e(x), with top-1 routing and explicit capacity; record auxiliary load balancing.`
+$$
+\begin{aligned}
+p(x)=\operatorname{softmax}(g(x)),\quad e^*=\arg\max_e p_e(x),\\ y=p_{e^*}(x)f_{e^*}(x),\quad L_{\mathrm{aux}}=E\sum_{e=1}^E f_e^{\mathrm{load}}\bar p_e
+\end{aligned}
+$$
+
+Here g is router logits, f-e expert networks, E expert count, load-f the batch fraction assigned to an expert, and bar-p its mean routing probability. This is a Switch-style top-one convention; specify capacity and overflow handling separately and weight the auxiliary loss explicitly.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

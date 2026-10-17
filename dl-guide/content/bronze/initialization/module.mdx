@@ -16,7 +16,13 @@ prerequisites: ["bronze-sgd-momentum"]
 
 ## Mechanism and equations
 
-`Var(W)=2/(fan_in+fan_out); uniform bound=sqrt(6/(fan_in+fan_out)).`
+$$
+\begin{aligned}
+\operatorname{Var}(W_{ij})=\frac{2}{n_{\mathrm{in}}+n_{\mathrm{out}}},\\ W_{ij}\sim\mathcal U(-a,a),\quad a=\sqrt{\frac{6}{n_{\mathrm{in}}+n_{\mathrm{out}}}}
+\end{aligned}
+$$
+
+Here W is a weight matrix, n-in and n-out are fan-in and fan-out, and a is the Glorot uniform half-width. Biases start at zero; variance preservation is an approximation, not a guarantee for deep sigmoid networks.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

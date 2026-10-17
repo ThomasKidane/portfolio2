@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+h_1=\operatorname{ReLU}(W_1*x+b_1),\quad h_2=\operatorname{ReLU}(W_2*h_1+b_2),\\ R_2=1+(3-1)+(3-1)=5
+\end{aligned}
+$$
+
+Here both W kernels are three by three, the star is convolution, b are biases, and R is receptive-field side length. With unit stride and dilation and no intervening pooling, two such layers see five by five inputs while retaining an intermediate nonlinearity.
+
 stack 3x3 convolution blocks and minimize parameters at fixed CIFAR-10 quality. stack 3x3 convolution blocks and minimize parameters at fixed CIFAR-10 quality
 
 Read [Very Deep Convolutional Networks for Large-Scale Image Recognition](https://arxiv.org/abs/1409.1556) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

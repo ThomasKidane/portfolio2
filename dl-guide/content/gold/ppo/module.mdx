@@ -16,7 +16,13 @@ prerequisites: ["gold-efficient-convs"]
 
 ## Mechanism and equations
 
-`L_clip=E[min(ratio*A,clip(ratio,1-epsilon,1+epsilon)*A)].`
+$$
+\begin{aligned}
+r_t(\theta)=\frac{\pi_\theta(a_t\mid s_t)}{\pi_{\mathrm{old}}(a_t\mid s_t)},\\ J_{\mathrm{clip}}=\mathbb E_t\min\!\left(r_t\hat A_t,\operatorname{clip}(r_t,1-\epsilon,1+\epsilon)\hat A_t\right)
+\end{aligned}
+$$
+
+Here pi is the policy, old denotes the sampling policy, s/a states/actions, A-hat a fixed advantage estimate, and epsilon the clipping width. Maximize this surrogate or minimize its negative; value and entropy terms are separate.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

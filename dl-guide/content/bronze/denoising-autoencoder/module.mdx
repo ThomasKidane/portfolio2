@@ -16,7 +16,13 @@ prerequisites: ["bronze-neural-language-model"]
 
 ## Mechanism and equations
 
-`x_corrupt=m*x; z=tanh(W_enc*x_corrupt+b); L=mean((sigmoid(W_dec*z+c)-x)^2).`
+$$
+\begin{aligned}
+\tilde x=m\odot x,\quad z=\tanh(W_e\tilde x+b_e),\\ \hat x=\sigma(W_dz+b_d),\quad L=\frac1d\lVert\hat x-x\rVert_2^2
+\end{aligned}
+$$
+
+Here x is a clean d-pixel image, m a sampled binary keep mask, z the bottleneck, W and b encoder/decoder parameters, and sigma the sigmoid. Average this reconstruction loss over the batch; digit labels are unused.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

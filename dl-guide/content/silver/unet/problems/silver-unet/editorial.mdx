@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+d_\ell=f_\ell([\operatorname{up}(d_{\ell+1});e_\ell]),\\ \mathrm{IoU}=\frac{\lvert P\cap T\rvert}{\lvert P\cup T\rvert}
+\end{aligned}
+$$
+
+Here d and e are decoder and encoder features at aligned resolution, up is upsampling, brackets concatenate channels, and f is a convolution block. P and T are predicted and true foreground pixel sets; declare an empty-union convention when reporting IoU.
+
 segment generated geometric shapes with aligned encoder-decoder skip features and report intersection over union. segment generated geometric shapes with aligned encoder-decoder skip features and report intersection over union
 
 Read [U-Net: Convolutional Networks for Biomedical Image Segmentation](https://arxiv.org/abs/1505.04597) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

@@ -16,7 +16,13 @@ prerequisites: ["platinum-kv-cache"]
 
 ## Mechanism and equations
 
-`Compute approximately proportional to N*D; minimize fitted L(N,D) subject to the same measured compute cap.`
+$$
+\begin{aligned}
+C\approx\kappa ND,\\ (N^*,D^*)=\arg\min_{N,D>0}\left[L_\infty+AN^{-\alpha}+BD^{-\beta}\right]\quad\text{subject to }\kappa ND\le C_0
+\end{aligned}
+$$
+
+Here N is parameters, D training tokens, kappa an architecture-dependent compute factor, C-zero a fixed budget, and the other constants fit loss observations. This approximate training-compute model does not replace measured hardware time or prescribe universal optimal counts.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

@@ -16,7 +16,13 @@ prerequisites: ["silver-seq2seq-attention"]
 
 ## Mechanism and equations
 
-`negative_ELBO=E_q[-log p(x|z)]+KL(q(z|x)||p(z)); z=mu+sigma*epsilon.`
+$$
+\begin{aligned}
+-\mathrm{ELBO}=\mathbb E_{q_\phi(z\mid x)}[-\log p_\theta(x\mid z)]+D_{\mathrm{KL}}(q_\phi(z\mid x)\Vert p(z)),\\ z=\mu_\phi(x)+\sigma_\phi(x)\odot\varepsilon,\quad\varepsilon\sim\mathcal N(0,I)
+\end{aligned}
+$$
+
+Here x is data, z a latent, q the encoder posterior, p the prior/decoder, theta and phi their parameters, and mu/sigma the diagonal Gaussian mean/standard deviation. KL is relative entropy; reconstruction loss must match the decoder likelihood.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

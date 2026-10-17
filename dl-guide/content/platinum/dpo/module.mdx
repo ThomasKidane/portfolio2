@@ -16,7 +16,13 @@ prerequisites: ["platinum-chinchilla"]
 
 ## Mechanism and equations
 
-`L=-log sigmoid(beta*((log pi_chosen-log ref_chosen)-(log pi_rejected-log ref_rejected))).`
+$$
+\begin{aligned}
+L_{\mathrm{DPO}}=-\mathbb E\log\sigma\!\left(\beta\left[\log\frac{\pi_\theta(y_w\mid x)}{\pi_{\mathrm{ref}}(y_w\mid x)}-\log\frac{\pi_\theta(y_l\mid x)}{\pi_{\mathrm{ref}}(y_l\mid x)}\right]\right)
+\end{aligned}
+$$
+
+Here x is a prompt, y-w/y-l preferred/rejected completions, pi-theta the trained policy, pi-ref a frozen reference, beta positive preference scale, and sigma sigmoid. Sequence log probabilities sum completion-token log probabilities under the same conditioning.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

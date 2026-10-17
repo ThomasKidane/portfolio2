@@ -16,7 +16,13 @@ prerequisites: ["gold-clip"]
 
 ## Mechanism and equations
 
-`x_t=sqrt(alpha_bar_t)*x_0+sqrt(1-alpha_bar_t)*epsilon; L=mean((epsilon_model-epsilon)^2).`
+$$
+\begin{aligned}
+\alpha_t=1-\beta_t,\quad\bar\alpha_t=\prod_{s=1}^t\alpha_s,\\ x_t=\sqrt{\bar\alpha_t}x_0+\sqrt{1-\bar\alpha_t}\varepsilon,\\ L_{\mathrm{simple}}=\mathbb E_{x_0,t,\varepsilon}\lVert\varepsilon_\theta(x_t,t)-\varepsilon\rVert_2^2
+\end{aligned}
+$$
+
+Here beta is the noise variance schedule, x-zero clean data, epsilon standard Gaussian noise, t a sampled diffusion step, and epsilon-theta the noise predictor. The simplified noise loss omits the original variational weighting.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

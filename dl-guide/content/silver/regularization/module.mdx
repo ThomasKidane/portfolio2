@@ -16,7 +16,13 @@ prerequisites: ["silver-alexnet"]
 
 ## Mechanism and equations
 
-`L_total=L_data+lambda*norm(w)^2; decoupled decay instead applies w:=(1-eta*lambda)*w separately.`
+$$
+\begin{aligned}
+L_{\mathrm{total}}=L_{\mathrm{data}}+\frac\lambda2\lVert w\rVert_2^2,\\ w_{t+1}=(1-\eta\lambda)w_t-\eta u_t
+\end{aligned}
+$$
+
+Here w is the weight vector, lambda the penalty/decay coefficient, eta the learning rate, and u the optimizer's data-gradient update direction. The first line is coupled L2 regularization; the second is decoupled decay. They agree for plain SGD but generally not adaptive optimizers.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

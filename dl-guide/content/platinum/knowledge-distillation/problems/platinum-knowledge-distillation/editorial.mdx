@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+p_T=\operatorname{softmax}(z_T/T),\quad p_S=\operatorname{softmax}(z_S/T),\\ L=(1-\lambda)\operatorname{CE}(z_S,y)+\lambda T^2D_{\mathrm{KL}}(p_T\Vert p_S)
+\end{aligned}
+$$
+
+Here z-T/z-S are teacher/student logits, T positive temperature, y labels, and lambda the mixture weight. CE uses untempered student logits; freeze the teacher and average both losses consistently.
+
 compress a frozen teacher using temperature-scaled KL and a small student parameter cap. compress a frozen teacher using temperature-scaled KL and a small student parameter cap
 
 Read [Distilling the Knowledge in a Neural Network](https://arxiv.org/abs/1503.02531) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

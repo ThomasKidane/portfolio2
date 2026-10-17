@@ -16,7 +16,13 @@ prerequisites: ["gold-scaling-laws"]
 
 ## Mechanism and equations
 
-`Dense cost=H*W*k^2*C_in*C_out; depthwise-plus-pointwise cost=H*W*(k^2*C_in+C_in*C_out).`
+$$
+\begin{aligned}
+C_{\mathrm{dense}}=HWk^2C_{\mathrm{in}}C_{\mathrm{out}},\\ C_{\mathrm{sep}}=HW(k^2C_{\mathrm{in}}+C_{\mathrm{in}}C_{\mathrm{out}})
+\end{aligned}
+$$
+
+Here H/W are output height/width, k kernel side, and C-in/C-out channel counts. C counts multiply-accumulates, excluding biases and nonlinearities, for a dense convolution versus depthwise then pointwise convolution with depth multiplier one.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

@@ -16,7 +16,13 @@ prerequisites: ["silver-unet"]
 
 ## Mechanism and equations
 
-`target=r+gamma*(1-terminal)*max_a Q_target(s_next,a); L=(Q(s,a)-target)^2.`
+$$
+\begin{aligned}
+y=r+\gamma(1-d)\max_{a'}Q_{\bar\theta}(s',a'),\\ L(\theta)=\mathbb E[(Q_\theta(s,a)-\operatorname{stopgrad}(y))^2]
+\end{aligned}
+$$
+
+Here s/a/r/s-prime are replay transitions, d indicates a true terminal state, gamma discounts rewards, theta is the online network, and bar-theta the delayed target network. Time-limit truncation is not automatically terminal.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

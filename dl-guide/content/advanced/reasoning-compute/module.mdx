@@ -1,0 +1,117 @@
+---
+id: "advanced-reasoning-compute-module"
+title: "Reasoning and inference-time compute"
+division: "advanced"
+module: "reasoning-compute"
+kind: "research"
+status: "draft"
+year: 2025
+prerequisites: ["gold-transformer-module", "platinum-kv-cache-module"]
+problems: []
+description: "Compare sequential reasoning and independent sampling under explicit budgets without equating traces with mechanisms."
+order: 5
+---
+
+# Reasoning and inference-time compute
+
+**Research exploration — not a calibrated problem.**
+
+Research selection checked on **2026-10-17**; this is a curated reading route, not an exhaustive or newest-paper claim.
+
+## Research question and objectives
+
+More generated tokens can mean additional search, redundant explanation, or an answer drifting away from a correct solution.
+This module asks when extra inference computation helps and what a fair comparison must hold constant.
+Distinguish sequential reasoning, independent sampling, verifier selection, and majority voting.
+Learn why a correct final answer and a faithful account of its causes are different evaluation targets.
+The [KV-cache lesson](../../platinum/kv-cache/module.mdx) explains why token count is not identical to wall-clock cost.
+
+## Notation and resource accounting
+
+Let a policy generate candidate $y$ for question $x$, with verifiable correctness $V(x,y)\in\{0,1\}$.
+A run uses $k$ candidates of lengths $T_i$ and may spend additional compute on verification.
+A transparent token-based budget proxy is
+
+$$
+B_{\mathrm{tokens}}=\sum_{i=1}^{k} T_i+T_{\mathrm{verifier}}.
+$$
+
+Report prompt tokens and cached versus uncached execution separately; this proxy is not an exact FLOP estimate.
+Define observed solve rate on a fixed question set independently of how much text the model produces.
+With independent candidate success probability $p$, oracle selection would succeed with probability
+
+$$
+P(\text{at least one correct in }k)=1-(1-p)^k.
+$$
+
+This is an idealized independence calculation, not a guaranteed performance law for correlated model samples.
+A deployed system also needs a selector; oracle correctness cannot be used as though it were a free inference-time tool.
+
+## Reading route
+
+The 2025 s1 paper studies supervised reasoning data and budget forcing, including interventions that prolong or stop generation.
+Its findings depend on a particular trained model and data recipe; appending a word to an arbitrary model is not a faithful reproduction.
+DeepSeek-R1 studies reinforcement learning and a multi-stage pipeline, with a distinct R1-Zero setting.
+Do not collapse those systems into one pure-RL method or claim this exercise recreates their training.
+Reasoning Models Don't Always Say What They Think tests whether models acknowledge experimentally supplied hints in their reasoning.
+Its unfaithfulness findings concern tested models and hint conditions, not a proof that every reasoning trace is useless.
+
+## Intervention protocol
+
+1. Generate 24 fresh bounded arithmetic questions with exact rational or integer answers; freeze the generator seed.
+2. Use eight questions for prompt development and 16 for the final comparison, with disjoint operand combinations.
+3. Compare a short-answer condition, a reasoning-prompt condition, and four independent short-answer samples.
+4. Set a shared total generation budget per question and record early stopping and truncated responses.
+5. Parse answers with a strict documented rule and score malformed outputs separately.
+6. Report oracle coverage and a feasible selector, such as majority agreement, as separate quantities.
+7. Log every candidate length, latency, and answer, including incorrect long responses.
+8. Inspect results by predeclared difficulty groups rather than concluding that longer outputs cause better answers.
+
+Length is endogenous: harder questions may cause both longer generation and more mistakes.
+A causal claim about extra compute needs a budget intervention, not a correlation between length and correctness.
+If your model supports no explicit thinking delimiter, do not imitate the s1 mechanism by editing undocumented internal tokens.
+Use ordinary documented generation caps and label the experiment as a budget comparison, not budget-forcing reproduction.
+
+## Faithfulness extension and controls
+
+For eight additional benign questions, supply a correct hint, an incorrect hint, or an irrelevant hint in matched templates.
+Randomize assignment and compare both final answers and whether the response acknowledges using the hint.
+Measure answer changes separately from verbal acknowledgement; neither alone reveals the entire internal mechanism.
+Use generated questions so the experiment does not require publishing private chain-of-thought or sensitive data.
+A model can fail to acknowledge a hint even when its final answer changes, but this alone does not prove deliberate deception.
+Compare token budgets, temperature, and stopping rules consistently across hint conditions.
+Keep hint trials separate from the primary performance comparison to avoid silently changing the task distribution.
+
+## Bounded manual CPU/Colab exploration
+
+Use a small documented local model; on CPU cap outputs at 64 tokens and sample four final questions first as a feasibility check.
+For a Colab reasoning-model extension, use a compatible small distilled checkpoint only if its license and memory requirements fit.
+A distilled checkpoint is not the original R1 training experiment, and its behavior need not match the full model.
+Stop at 10,000 generated tokens or 20 minutes, record the incomplete design, and avoid paid services by default.
+An exact arithmetic verifier can run on CPU without model training or an external judge.
+Do not execute generated code; arithmetic answer parsing is sufficient for this exploration.
+If the tiny model is at chance, report the limitation instead of interpreting a noisy scaling curve.
+
+## Established findings and open hypotheses
+
+**Established in cited experiments:** extra test-time compute can improve performance for selected systems, while trace faithfulness can remain incomplete.
+**Open hypothesis:** allocating a fixed budget across samples outperforms one long generation for your chosen question distribution.
+No finite toy run establishes a universal reasoning-scaling law or a model's human-like deliberative process.
+The relevant output is a qualified comparison, not a claim that verbosity is reasoning.
+
+## Research deliverable
+
+Report accuracy, oracle coverage, selector performance, invalid-answer rate, generated tokens, and wall time separately.
+Include a matched example where additional tokens hurt or fail to help; if none appears, state the sample size rather than inventing one.
+Document which comparison was truly budget-matched and which was only approximately matched.
+Continue to [verifiable rewards and RL limitations](../verifiable-rewards/module.mdx).
+
+## Primary references and verification
+
+- [s1: Simple test-time scaling](https://arxiv.org/abs/2501.19393) — 2025; primary page/title checked 2026-10-17.
+- [DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning](https://arxiv.org/abs/2501.12948) — 2025; primary page/title checked 2026-10-17.
+- [Reasoning Models Don't Always Say What They Think](https://arxiv.org/abs/2505.05410) — 2025; primary page/title checked 2026-10-17.
+
+Years denote first preprint/publication, except the explicitly identified 2026 conference counterpoint. Live HTTP checks are available through `python3 tools/seed_research.py --verify-urls`; reachability does not validate a scientific claim.
+
+All instructional prose and project designs here are independently authored; no paper results or benchmark measurements are fabricated.

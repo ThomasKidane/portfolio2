@@ -22,7 +22,7 @@ export interface Problem {
 export interface Module {
   id: string; title: string; division: string; description: string;
   source: string; path: string; problems: string[]; prerequisites: string[];
-  year?: number; contest: boolean; duration: string; raw: Data;
+  year?: number; contest: boolean; research: boolean; duration: string; raw: Data;
 }
 export interface Division { id: string; title: string; description: string; color: string }
 const input = record(generated);
@@ -53,13 +53,13 @@ export const modules: Module[] = moduleInput.map((value, index) => {
     description: text(m.description ?? m.summary), source: text(m.source ?? m.source_path), path: text(m.path),
     problems: strings(m.problems), prerequisites: strings(m.prerequisites ?? m.dependencies ?? m.requires),
     year: Number.isFinite(year) && year > 1900 && year < 2200 ? year : undefined,
-    contest: !!m.contest, duration: text(contest.duration ?? contest.time_limit ?? m.duration ?? m.time_limit), raw: m,
+    research: m.kind === 'research', contest: !!m.contest, duration: text(contest.duration ?? contest.time_limit ?? m.duration ?? m.time_limit), raw: m,
   };
 });
 const colors = ['#4169E1', '#6888ED', '#3454B4', '#809AEB', '#5069B8'];
-const divisionOrder = ['bronze', 'silver', 'gold', 'platinum'];
+const divisionOrder = ['bronze', 'silver', 'gold', 'platinum', 'advanced'];
 const rank = (id: string) => divisionOrder.includes(id.toLowerCase()) ? divisionOrder.indexOf(id.toLowerCase()) : divisionOrder.length;
-modules.sort((a,b) => rank(a.division) - rank(b.division) || Number(a.contest) - Number(b.contest));
+modules.sort((a,b) => rank(a.division) - rank(b.division) || Number(a.contest) - Number(b.contest) || Number(a.raw.order ?? 0) - Number(b.raw.order ?? 0));
 const divisionConfig = config.divisions;
 const divisionRows = Array.isArray(divisionConfig) ? divisionConfig : Object.entries(record(divisionConfig)).map(([id, value]) => ({ id, ...(typeof value === 'string' ? { title: value } : record(value)) }));
 const found = new Map<string, Data>();

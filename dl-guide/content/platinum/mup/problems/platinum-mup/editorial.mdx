@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+\operatorname{RMS}(\Delta h^{(n)})=\Theta(1)\quad\text{as }n\to\infty\quad\text{(illustrative target)}
+\end{aligned}
+$$
+
+Here n is width and Delta-h a feature change after an optimizer step; RMS is root-mean-square magnitude and Theta-one means nonvanishing, bounded scale with width. This is an illustrative maximal-update scaling target, not the full muP prescription: initialization, learning rates, readout scaling, parameter roles, and optimizer must be specified together.
+
 transfer learning rates from narrow to wide models with width-dependent maximal-update scaling. transfer learning rates from narrow to wide models with width-dependent maximal-update scaling
 
 Read [Tensor Programs V: Tuning Large Neural Networks via Zero-Shot Hyperparameter Transfer](https://arxiv.org/abs/2203.03466) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

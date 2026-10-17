@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+\alpha_t=1-\beta_t,\quad\bar\alpha_t=\prod_{s=1}^t\alpha_s,\\ x_t=\sqrt{\bar\alpha_t}x_0+\sqrt{1-\bar\alpha_t}\varepsilon,\\ L_{\mathrm{simple}}=\mathbb E_{x_0,t,\varepsilon}\lVert\varepsilon_\theta(x_t,t)-\varepsilon\rVert_2^2
+\end{aligned}
+$$
+
+Here beta is the noise variance schedule, x-zero clean data, epsilon standard Gaussian noise, t a sampled diffusion step, and epsilon-theta the noise predictor. The simplified noise loss omits the original variational weighting.
+
 implement forward noise schedules and epsilon prediction on MNIST with a CIFAR extension. implement forward noise schedules and epsilon prediction on MNIST with a CIFAR extension
 
 Read [Denoising Diffusion Probabilistic Models](https://arxiv.org/abs/2006.11239) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

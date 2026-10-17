@@ -16,7 +16,13 @@ prerequisites: []
 
 ## Mechanism and equations
 
-`w_true := w_true + eta*x; w_pred := w_pred - eta*x on mistakes only.`
+$$
+\begin{aligned}
+\hat y=\arg\max_k(w_k^\top x+b_k),\quad \hat y\ne y:\\ w_y\leftarrow w_y+\eta x,\quad b_y\leftarrow b_y+\eta,\\ w_{\hat y}\leftarrow w_{\hat y}-\eta x,\quad b_{\hat y}\leftarrow b_{\hat y}-\eta
+\end{aligned}
+$$
+
+Here x is an input, y its true class, and the predicted class maximizes the linear score; w and b are class weights and biases, and eta is the learning rate. Update only on mistakes.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

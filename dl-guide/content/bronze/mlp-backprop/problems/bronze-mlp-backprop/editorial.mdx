@@ -8,7 +8,15 @@ status: draft
 
 ## The mechanism
 
-derive NumPy cross-entropy gradients for XOR and a three-arm spiral extension. For H=tanh(XW1+b1), Z=HW2+b2, subtract the rowwise maximum before log-sum-exp. Cross-entropy gives dZ=(softmax(Z)-one_hot(y))/N, dW2=H.T@dZ and dH=(dZ@W2.T)*(1-H**2). Then dW1=X.T@dH; bias gradients sum over examples. The NumPy reference central-difference-checks one element of each parameter tensor with epsilon 1e-5, trains 160 minibatches, and exports weights into a torch module. XOR needs a nonlinear hidden layer. Three-arm spirals require a separate generated split, not an assertion that the XOR score transfers.
+$$
+\begin{aligned}
+H=\tanh(XW_1+b_1),\quad Z=HW_2+b_2,\\ G_Z=\frac{\operatorname{softmax}(Z)-Y}{N},\quad G_{W_2}=H^\top G_Z,\\ G_H=(G_ZW_2^\top)\odot(1-H^2),\quad G_{W_1}=X^\top G_H
+\end{aligned}
+$$
+
+Here X holds N input rows, Y is one-hot labels, H is the hidden activation, Z is logits, W and b are weights and biases, and G denotes a loss gradient. Softmax is rowwise; products and squares inside the tanh derivative are elementwise. Bias gradients sum rows.
+
+derive NumPy cross-entropy gradients for XOR and a three-arm spiral extension. Use the forward activations and cross-entropy gradients shown above. Subtract the rowwise maximum before log-sum-exp; bias gradients sum over examples. The NumPy reference central-difference-checks one element of each parameter tensor with epsilon 1e-5, trains 160 minibatches, and exports weights into a torch module. XOR needs a nonlinear hidden layer. Three-arm spirals require a separate generated split, not an assertion that the XOR score transfers.
 
 Read [Learning representations by back-propagating errors](https://doi.org/10.1038/323533a0) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.
 

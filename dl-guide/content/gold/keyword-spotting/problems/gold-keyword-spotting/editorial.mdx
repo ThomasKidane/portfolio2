@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+S_{ft}=\operatorname{STFT}(x)_{ft},\quad F_{mt}=\log\!\left(\epsilon+\sum_f B_{mf}\lvert S_{ft}\rvert^2\right)
+\end{aligned}
+$$
+
+Here x is the waveform, S its short-time Fourier transform, B the mel filterbank, F log-mel features, f frequency bin, m mel band, t frame, and epsilon a positive floor. Declare window, hop, and training-only feature normalization.
+
 classify Speech Commands with a log-mel CNN using speaker-disjoint published splits. classify Speech Commands with a log-mel CNN using speaker-disjoint published splits
 
 Read [Speech Commands: A Dataset for Limited-Vocabulary Speech Recognition](https://arxiv.org/abs/1804.03209) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

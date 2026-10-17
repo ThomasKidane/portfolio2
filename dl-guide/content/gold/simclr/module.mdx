@@ -16,7 +16,13 @@ prerequisites: ["gold-vit"]
 
 ## Mechanism and equations
 
-`L_i=-log exp(sim(z_i,z_pos)/tau)/sum_j exp(sim(z_i,z_j)/tau), excluding self.`
+$$
+\begin{aligned}
+\ell_i=-\log\frac{\exp(\operatorname{sim}(z_i,z_{j(i)})/\tau)}{\sum_{k\ne i}^{2B}\exp(\operatorname{sim}(z_i,z_k)/\tau)}
+\end{aligned}
+$$
+
+Here z are projected embeddings of two views of each of B images, j(i) indexes the paired view, sim is cosine similarity, and tau positive temperature. Exclude self but include the positive in the denominator; average over both views.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

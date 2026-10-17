@@ -16,7 +16,13 @@ prerequisites: ["platinum-dpo"]
 
 ## Mechanism and equations
 
-`A_i=(reward_i-mean_group)/(std_group+epsilon); apply a clipped policy-ratio objective with documented reference regularization.`
+$$
+\begin{aligned}
+\hat A_i=\frac{R_i-\bar R}{s_R+\delta},\quad r_{it}=\frac{\pi_\theta(o_{it}\mid x,o_{i,1:t-1})}{\pi_{\mathrm{old}}(o_{it}\mid x,o_{i,1:t-1})},\\ J=\mathbb E\frac1G\sum_{i=1}^G\frac1{T_i}\sum_{t=1}^{T_i}\left[\min(r_{it}\hat A_i,\operatorname{clip}(r_{it},1-\epsilon,1+\epsilon)\hat A_i)-\beta k_{it}\right],\\ u_{it}=\frac{\pi_{\mathrm{ref}}(o_{it}\mid x,o_{i,1:t-1})}{\pi_\theta(o_{it}\mid x,o_{i,1:t-1})},\quad k_{it}=u_{it}-\log u_{it}-1
+\end{aligned}
+$$
+
+Here G completions o share prompt x, R are rewards, bar-R/s-R group mean/standard deviation, delta a stabilizer, T-i completion lengths, epsilon clip width, and beta reference-penalty weight. Maximize J with fixed advantages; old is the sampling policy and ref a frozen reference. The shown sampled KL surrogate and length averaging specify one convention, not every GRPO variant.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

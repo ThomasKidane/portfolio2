@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+\operatorname{RMSNorm}(x)=g\odot\frac{x}{\sqrt{\frac1d\sum_{i=1}^d x_i^2+\epsilon}},\\ \operatorname{SwiGLU}(x)=[\operatorname{swish}(xW_g)\odot(xW_v)]W_o,\\ \operatorname{swish}(u)=u\sigma(u)
+\end{aligned}
+$$
+
+Here d is feature width, g learned gain, epsilon a stabilizer, W-g/W-v/W-o gate/value/output projections, and sigma sigmoid. RMS normalization does not subtract a mean; the SwiGLU expression uses row-vector inputs and omits biases.
+
 combine RoPE RMSNorm SwiGLU and grouped-query attention with shape and parameter audits. combine RoPE RMSNorm SwiGLU and grouped-query attention with shape and parameter audits
 
 Read [Llama 2: Open Foundation and Fine-Tuned Chat Models](https://arxiv.org/abs/2307.09288) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

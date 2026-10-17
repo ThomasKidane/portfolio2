@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+h_t=\bar A_t h_{t-1}+\bar B_t x_t,\quad y_t=C_t h_t+Dx_t,\\ \bar A_t=\exp(\Delta_t A),\quad\bar B_t=\left(\int_0^{\Delta_t}\exp(sA)\,ds\right)B_t
+\end{aligned}
+$$
+
+Here h is state, x input, y output, A the continuous state matrix, D a skip coefficient, and Delta/B/C input-dependent selective parameters. Bars denote zero-order-hold discretization; the expression describes the selective state-space core, not the full Mamba block.
+
 compare S4-style recurrence and input-dependent selective state spaces on variable-length copying. compare S4-style recurrence and input-dependent selective state spaces on variable-length copying
 
 Read [Mamba: Linear-Time Sequence Modeling with Selective State Spaces](https://arxiv.org/abs/2312.00752) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

@@ -16,7 +16,13 @@ prerequisites: ["gold-gpt2"]
 
 ## Mechanism and equations
 
-`L_MLM=-sum_masked log p(original_token|corrupted_bidirectional_context).`
+$$
+\begin{aligned}
+L_{\mathrm{MLM}}=-\sum_{i\in\mathcal M}\log p_\theta(x_i\mid\tilde x)
+\end{aligned}
+$$
+
+Here x is the original token sequence, tilde-x its corrupted bidirectional input, M the selected prediction positions, and theta the model parameters. This is the masked-language objective only, not the full original BERT pretraining system.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

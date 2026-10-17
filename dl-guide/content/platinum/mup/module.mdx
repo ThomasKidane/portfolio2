@@ -16,7 +16,13 @@ prerequisites: ["platinum-muon"]
 
 ## Mechanism and equations
 
-`Choose width-dependent initialization, learning-rate multipliers and output scaling so feature updates remain order-one as width grows.`
+$$
+\begin{aligned}
+\operatorname{RMS}(\Delta h^{(n)})=\Theta(1)\quad\text{as }n\to\infty\quad\text{(illustrative target)}
+\end{aligned}
+$$
+
+Here n is width and Delta-h a feature change after an optimizer step; RMS is root-mean-square magnitude and Theta-one means nonvanishing, bounded scale with width. This is an illustrative maximal-update scaling target, not the full muP prescription: initialization, learning rates, readout scaling, parameter roles, and optimizer must be specified together.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

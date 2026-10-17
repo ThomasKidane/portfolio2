@@ -1,0 +1,119 @@
+---
+id: "advanced-causal-circuits-module"
+title: "Circuits, activation patching, and causal interventions"
+division: "advanced"
+module: "causal-circuits"
+kind: "research"
+status: "draft"
+year: 2023
+prerequisites: ["gold-transformer-module"]
+problems: []
+description: "Localize behavior with matched counterfactuals, exact patches, and falsifiable circuit claims."
+order: 1
+---
+
+# Circuits, activation patching, and causal interventions
+
+**Research exploration — not a calibrated problem.**
+
+Research selection checked on **2026-10-17**; this is a curated reading route, not an exhaustive or newest-paper claim.
+
+## Research question and objectives
+
+A component can correlate with an answer without being used to produce it.
+This reading asks what evidence a controlled activation replacement actually supplies.
+By the end, distinguish localization, necessity, sufficiency, and a complete circuit explanation.
+Design matched clean/counterfactual prompts and defend the output statistic before looking at a heatmap.
+Use the [Transformer lesson](../../gold/transformer/module.mdx) to review residual streams and causal masks.
+
+## Notation and estimand
+
+Let $f$ be a frozen autoregressive model and $h_{\ell,t}(x)$ its residual activation at layer $\ell$, position $t$.
+Let $a$ and $b$ be single-token candidate answers, with logits $z_a$ and $z_b$.
+The clean prompt $x$ favors $a$; a counterfactual $x'$ changes the relevant fact while preserving the template.
+Define the score $m(x)=z_a(x)-z_b(x)$ at the answer position, using the same candidates for every run.
+A restoration experiment replaces one activation in the counterfactual run with its clean counterpart:
+
+$$
+x'_{\mathrm{patch}}:\quad h_{\ell,t}(x')\leftarrow h_{\ell,t}(x),\qquad
+\Delta_{\ell,t}=m(x'_{\mathrm{patch}})-m(x').
+$$
+
+The arrow describes an intervention on a forward computation, not an edit to model weights.
+It also does not assert that a token has a unique semantic representation at that site.
+A useful descriptive normalization divides $\Delta$ by $m(x)-m(x')$ only when that denominator is well separated from zero.
+Always retain raw scores: normalization can explode or reverse the visual interpretation when the clean effect is tiny.
+
+## Read the evidence, not just the picture
+
+The 2023 best-practices paper studies how corruption choice and score choice change localization results.
+Its recommendations are empirical guidance in studied settings, not a theorem guaranteeing faithful discovery.
+The 2024 guide separates component localization from testing interactions between components.
+Read their discussions of logit differences, counterfactual replacement, and misleading interpretations first.
+A bright patching cell says an injected value affects this measured contrast under this background computation.
+It does not establish a human-level concept, exclusivity of the pathway, or sufficiency on other tasks.
+
+## Intervention protocol
+
+1. Write 12 development prompt pairs with matched syntax; inspect tokenization and answer-token IDs.
+2. Freeze a second set of 12 pairs with new names or entities before selecting sites.
+3. Run clean and counterfactual baselines in evaluation mode with gradients disabled.
+4. Cache activations from the clean run and patch the counterfactual residual stream at one site per run.
+5. Verify that the hook writes only the declared layer, position, and batch element.
+6. Compare coarse residual patches first; investigate individual head or MLP outputs only afterward.
+7. Reverse the intervention by replacing a clean activation with its counterfactual counterpart.
+8. Evaluate selected sites on the frozen pairs without changing the score or corruption procedure.
+
+The forward restoration and reverse damage experiments answer related but different questions.
+Restoration need not equal damage because downstream nonlinearities and backup paths differ across backgrounds.
+For a multi-token answer, predeclare a sequence log-probability contrast rather than silently reading one token.
+Do not align positions merely by character index when the tokenizer produces different sequence lengths.
+
+## Controls and failure modes
+
+- Identity patch: copy a site's activation from the same input; logits should agree within numerical tolerance.
+- Unrelated donor: patch a matched-format prompt with an irrelevant changed fact.
+- Wrong-position control: test a nearby position selected before examining its effect.
+- Corruption control: compare two semantic counterfactual constructions; Gaussian noise is not automatically realistic.
+- Implementation control: disable every hook and confirm the original logits return.
+- Multiplicity control: report the entire scanned grid and the selection rule, not only the brightest cell.
+
+Zero ablation can create an activation the model would never naturally encounter.
+Counterfactual donors reduce that risk but can still carry multiple changed variables.
+A failed lesion does not prove irrelevance: another component may compensate.
+A successful lesion can break general computation rather than specifically remove the hypothesized mechanism.
+
+## Bounded manual CPU/Colab exploration
+
+Use a locally available GPT-2-small-size checkpoint, or a smaller transformer whose hooks you can audit.
+Record its exact revision, tokenizer revision, license, dtype, and library versions before downloading weights.
+Keep prompts below 48 tokens; scan at most six layers and four positions on the development pairs.
+CPU users may reduce to four development pairs and two sites, explicitly recording the reduced scope.
+An optional Colab GPU changes runtime, not the evidential meaning of the experiment.
+Estimate memory from the cache and stop if it exceeds 1 GB; cache only the activations you need.
+No training, broad benchmark run, or claimed paper-level reproduction is required.
+If the model does not solve the clean task, report that failure rather than engineering a flattering heatmap.
+
+## Established findings and open hypotheses
+
+**Established in the cited experiments:** patching outcomes depend on metric, corruption, and intervention granularity.
+**Open hypothesis for your run:** the selected site mediates the entity contrast across held-out templates.
+Testing that hypothesis requires new templates and targeted interaction tests, not a more compelling feature name.
+A circuit claim should name its task distribution and the fraction of behavior it fails to explain.
+
+## Research deliverable
+
+Write a one-page claim–evidence–alternative-explanation note, with raw per-pair scores and a hook audit.
+Include one negative control that worked and one result that weakened your preferred explanation.
+Report uncertainty across prompt pairs; repeated deterministic forwards of one prompt are not independent evidence.
+There is no pass score or calibrated performance target for this exploration.
+Continue to [feature attribution and superposition](../feature-attribution/module.mdx) to change the intervention basis.
+
+## Primary references and verification
+
+- [Towards Best Practices of Activation Patching in Language Models: Metrics and Methods](https://arxiv.org/abs/2309.16042) — 2023; primary page/title checked 2026-10-17.
+- [How to use and interpret activation patching](https://arxiv.org/abs/2404.15255) — 2024; primary page/title checked 2026-10-17.
+
+Years denote first preprint/publication, except the explicitly identified 2026 conference counterpoint. Live HTTP checks are available through `python3 tools/seed_research.py --verify-urls`; reachability does not validate a scientific claim.
+
+All instructional prose and project designs here are independently authored; no paper results or benchmark measurements are fabricated.

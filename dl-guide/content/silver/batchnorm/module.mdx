@@ -16,7 +16,13 @@ prerequisites: ["silver-regularization"]
 
 ## Mechanism and equations
 
-`y=gamma*(x-mean_batch)/sqrt(var_batch+epsilon)+beta; inference uses running statistics.`
+$$
+\begin{aligned}
+\mu_B=\frac1m\sum_i x_i,\quad \sigma_B^2=\frac1m\sum_i(x_i-\mu_B)^2,\\ y_i=\gamma\frac{x_i-\mu_B}{\sqrt{\sigma_B^2+\epsilon}}+\beta
+\end{aligned}
+$$
+
+Here m counts values in a normalized channel, mu and sigma-squared are batch statistics, gamma and beta learned affine parameters, and epsilon a numerical stabilizer. Convolutional statistics include spatial positions; evaluation uses running statistics.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

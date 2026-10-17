@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+\tilde A=A+I,\quad\tilde D_{ii}=\sum_j\tilde A_{ij},\\ H'=\sigma(\tilde D^{-1/2}\tilde A\tilde D^{-1/2}HW),\\ h_i^{\mathrm{GAT}}=\sigma\!\left(\sum_{j\in\mathcal N(i)\cup\{i\}}\alpha_{ij}Wh_j\right)
+\end{aligned}
+$$
+
+Here A is adjacency, I self-loops, D node degree, H node features, W a learned projection, and sigma an activation. GAT instead uses learned edge scores alpha normalized by softmax over each node's allowed neighbors; the last line is a single head.
+
 implement normalized graph convolution and attention on Cora; aspirational node accuracy 0.81 on a declared split. implement normalized graph convolution and attention on Cora; aspirational node accuracy 0.81 on a declared split
 
 Read [Semi-Supervised Classification with Graph Convolutional Networks](https://arxiv.org/abs/1609.02907) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

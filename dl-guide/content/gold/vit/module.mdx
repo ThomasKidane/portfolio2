@@ -16,7 +16,13 @@ prerequisites: ["gold-bert"]
 
 ## Mechanism and equations
 
-`z_0=concat(class_token,flattened_patches*W_patch)+position_embeddings.`
+$$
+\begin{aligned}
+z_0=[x_{\mathrm{cls}};x_p^1E;\ldots;x_p^NE]+E_{\mathrm{pos}}
+\end{aligned}
+$$
+
+Here x-p are flattened image patches, E the patch projection, x-cls a learned class token, N patch count, and E-pos position embeddings including the class position. Brackets concatenate along the sequence axis.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

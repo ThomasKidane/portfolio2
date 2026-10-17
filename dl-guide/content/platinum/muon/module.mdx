@@ -16,7 +16,13 @@ prerequisites: ["platinum-discrete-diffusion-lm"]
 
 ## Mechanism and equations
 
-`momentum=beta*momentum+gradient; update approximately orthogonalizes matrix momentum by Newton-Schulz iterations.`
+$$
+\begin{aligned}
+M_t=\beta M_{t-1}+G_t,\quad M_t=U\Sigma V^\top,\\ O_t=UV^\top,\quad W_{t+1}=W_t-\eta O_t
+\end{aligned}
+$$
+
+Here W is a matrix weight, G its gradient, M momentum, beta its coefficient, and eta the step size. U/Sigma/V denote a compact SVD; O is the ideal polar-factor direction. Practical Muon approximates this with finite Newton-Schulz iterations and may use Nesterov, shape scaling, and separate vector-parameter updates; this is a simplified core, not an exact implementation prescription.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

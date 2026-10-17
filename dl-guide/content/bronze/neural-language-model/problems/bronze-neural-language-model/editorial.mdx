@@ -8,7 +8,15 @@ status: draft
 
 ## The mechanism
 
-learn fixed-context embeddings and predict the next TinyShakespeare character; compare bits per character with a smoothed n-gram. Concatenate learned embeddings of a fixed context, apply a tanh hidden layer, and project to next-character logits. The 2003 paper models words; this tractable character-level TinyShakespeare adaptation intentionally reports bits per character, not the original word perplexity. For shifted sequence labels use only the final next-token target; do not train the final-token predictor against every intermediate label. Cross-entropy is measured in nats, so divide its token mean by log(2). Build smoothed bigram counts only from training context-final-character and next-character pairs. The 64-step reference returns baseline probabilities in extras; evaluate both on identical held-out characters. Vocabulary size is public metadata and may be passed in data; validation labels are read only after fitting to report model and bigram bpc, never to update weights or counts.
+$$
+\begin{aligned}
+e=\operatorname{concat}(E[c_1],\ldots,E[c_k]),\\ p(c_{k+1}\mid c_{1:k})=\operatorname{softmax}(W_o\tanh(W_he+b_h)+b_o),\\ \mathrm{bpc}=\frac{-\frac1N\sum_{i=1}^N\log p(c_i\mid\mathrm{context}_i)}{\log 2}
+\end{aligned}
+$$
+
+Here c are characters, E is the embedding table, k the fixed context length, W and b learned projections and biases, and N the number of evaluated targets. Natural-log cross-entropy is converted to bits per character; the original paper used words.
+
+learn fixed-context embeddings and predict the next TinyShakespeare character; compare bits per character with a smoothed n-gram. Concatenate learned embeddings of a fixed context, apply a tanh hidden layer, and project to next-character logits. The 2003 paper models words; this tractable character-level TinyShakespeare adaptation intentionally reports bits per character, not the original word perplexity. For shifted sequence labels use only the final next-token target; do not train the final-token predictor against every intermediate label. Convert mean natural-log cross-entropy to bits per character using the equation above. Build smoothed bigram counts only from training context-final-character and next-character pairs. The 64-step reference returns baseline probabilities in extras; evaluate both on identical held-out characters. Vocabulary size is public metadata and may be passed in data; validation labels are read only after fitting to report model and bigram bpc, never to update weights or counts.
 
 Read [A Neural Probabilistic Language Model](https://www.jmlr.org/papers/v3/bengio03a.html) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.
 

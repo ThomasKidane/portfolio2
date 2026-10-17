@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+h=f_\phi(x),\quad z=Wh+b,\\ \nabla_\phi L=0\quad\text{during frozen-backbone training}
+\end{aligned}
+$$
+
+Here f is the pretrained backbone with parameters phi, x an input, h its features, z class logits, and W/b the new head. The zero gradient is an explicit freeze, not a mathematical property of the composition; fine-tuning unfreezes selected backbone parameters.
+
 fit a small licensed image subset with frozen and fine-tuned pretrained ResNet-18; document weight provenance. fit a small licensed image subset with frozen and fine-tuned pretrained ResNet-18; document weight provenance
 
 Read [How transferable are features in deep neural networks?](https://arxiv.org/abs/1411.1792) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

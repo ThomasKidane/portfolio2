@@ -16,7 +16,13 @@ prerequisites: ["platinum-classifier-free-guidance"]
 
 ## Mechanism and equations
 
-`q(x_t|x_prev)=Categorical(x_prev*Q_t); absorbing masks remain masked until denoising.`
+$$
+\begin{aligned}
+q(x_t\mid x_{t-1})=\operatorname{Cat}(x_{t-1}Q_t),\\ q(x_t\mid x_0)=\operatorname{Cat}(x_0\bar Q_t),\quad\bar Q_t=Q_1\cdots Q_t,\\ (Q_t)_{mm}=1
+\end{aligned}
+$$
+
+Here x is a row one-hot token, Q a row-stochastic transition matrix, Cat a categorical distribution, and m an absorbing mask state. Once masked the forward process stays masked; a learned reverse process reconstructs tokens.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

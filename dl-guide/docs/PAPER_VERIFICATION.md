@@ -82,3 +82,24 @@ Method: HTTP GET with redirects, 20-second timeout, and a 256-byte response read
 ## Calibration is separate
 
 All 54 generated model entries remain draft and uncalibrated. URL verification and CPU contract tests are not GPU calibration or original-paper benchmark reproduction.
+
+## Advanced research references — checked 2026-10-17
+
+Evidence appended after authoring the eight Advanced modules. References were discovered with current-year web searches and read through primary pages. An independent `python3 tools/seed_research.py --verify-urls` run at 2026-10-17T08:26:08Z performed redirected HTTP GETs (30-second timeout, up to 3 MB per response), normalized HTML/text, and checked each full paper title. All 14 returned HTTP 200 with a matching title; resolved URLs were unchanged. This records reachability and title identity, not independent validation of scientific conclusions. Selection is researched as of this date, not a claim of exhaustive or arbitrarily newest coverage. Instructional prose and projects are original.
+
+- [Towards Best Practices of Activation Patching in Language Models: Metrics and Methods](https://arxiv.org/abs/2309.16042) — 2023; HTTP 200; title matched.
+- [How to use and interpret activation patching](https://arxiv.org/abs/2404.15255) — 2024; HTTP 200; title matched.
+- [Toy Models of Superposition](https://transformer-circuits.pub/2022/toy_model/index.html) — 2022; HTTP 200; title matched; primary research report.
+- [Scaling and evaluating sparse autoencoders](https://arxiv.org/abs/2406.04093) — 2024; HTTP 200; title matched.
+- [SAEs Are Good for Steering – If You Select the Right Features](https://arxiv.org/abs/2505.20063) — 2025; HTTP 200; title matched.
+- [Circuit Tracing: Revealing Computational Graphs in Language Models](https://transformer-circuits.pub/2025/attribution-graphs/methods.html) — 2025; HTTP 200; title matched; primary methods report.
+- [Towards Long-Horizon Interpretability: Efficient and Faithful Multi-Token Attribution for Reasoning LLMs](https://arxiv.org/abs/2602.01914) — 2026; HTTP 200; title matched; FlashTrace, a token-attribution method distinguished from internal feature circuit tracing.
+- [Steering Llama 2 via Contrastive Activation Addition](https://arxiv.org/abs/2312.06681) — first preprint 2023, later revisions; HTTP 200; title matched.
+- [s1: Simple test-time scaling](https://arxiv.org/abs/2501.19393) — 2025; HTTP 200; title matched.
+- [DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning](https://arxiv.org/abs/2501.12948) — 2025; HTTP 200; title matched.
+- [Reasoning Models Don't Always Say What They Think](https://arxiv.org/abs/2505.05410) — 2025; HTTP 200; title matched after punctuation normalization.
+- [Does Reinforcement Learning Really Incentivize Reasoning Capacity in LLMs Beyond the Base Model?](https://arxiv.org/abs/2504.13837) — 2025; HTTP 200; title matched. Its conclusions are presented as setting-dependent evidence, not an impossibility theorem.
+- [Reinforcement Learning with Verifiable Rewards Implicitly Incentivizes Correct Reasoning in Base LLMs](https://proceedings.iclr.cc/paper_files/paper/2026/hash/517f9b9c227b9dd51dba4560f37165ed-Abstract-Conference.html) — ICLR 2026 venue year; HTTP 200; title matched. Included as a counterpoint with different reasoning-sensitive measurements, not silent consensus.
+- [AntiLeakBench: Preventing Data Contamination by Automatically Constructing Benchmarks with Updated Real-World Knowledge](https://aclanthology.org/2025.acl-long.901/) — ACL 2025; HTTP 200; title matched.
+
+All eight Advanced entries remain draft research readings with bounded manual projects, empty problem lists, and no generated notebooks, fake grades, or fabricated benchmark results. Each distinguishes established observations in cited settings from hypotheses to test locally.

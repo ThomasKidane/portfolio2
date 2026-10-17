@@ -16,7 +16,13 @@ prerequisites: ["silver-adam"]
 
 ## Mechanism and equations
 
-`L=-log sigmoid(u_pos dot v_center)-sum log sigmoid(-u_neg dot v_center).`
+$$
+\begin{aligned}
+L=-\log\sigma(u_o^\top v_c)-\sum_{j=1}^K\log\sigma(-u_{n_j}^\top v_c)
+\end{aligned}
+$$
+
+Here v-c is the center embedding, u-o a positive context embedding, u-n the K sampled negative context embeddings, and sigma the sigmoid. This is skip-gram negative sampling, not full-vocabulary softmax.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

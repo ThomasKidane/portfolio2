@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+\tilde x=m\odot x,\quad z=\tanh(W_e\tilde x+b_e),\\ \hat x=\sigma(W_dz+b_d),\quad L=\frac1d\lVert\hat x-x\rVert_2^2
+\end{aligned}
+$$
+
+Here x is a clean d-pixel image, m a sampled binary keep mask, z the bottleneck, W and b encoder/decoder parameters, and sigma the sigmoid. Average this reconstruction loss over the batch; digit labels are unused.
+
 reconstruct clean MNIST from corrupted inputs under a bottleneck parameter budget. Encode flattened MNIST into a 16-unit tanh bottleneck, decode to sigmoid pixel values and reshape to the input image. Corrupt only the input with a seeded 30 percent masking process and train MSE against clean pixels for 48 updates. Ignore MNIST digit class labels. The compact 784-to-16-to-784 network has 25888 parameters; compare clean-target reconstruction under the same evaluation corruption for all ablations. Runtime evaluation must target clean images, not compare output pixels with digit labels.
 
 Read [Extracting and Composing Robust Features with Denoising Autoencoders](https://doi.org/10.1145/1390156.1390294) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

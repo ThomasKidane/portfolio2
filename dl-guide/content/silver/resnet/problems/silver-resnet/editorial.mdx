@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+h'=\operatorname{ReLU}(h+F(h)),\\ \frac{\partial(h+F(h))}{\partial h}=I+J_F(h)
+\end{aligned}
+$$
+
+Here h is the input, F the residual branch, I the identity, and J the branch Jacobian. The derivative shown is before the final ReLU; identity addition requires matching shapes.
+
 learn a residual correction around an identity shortcut rather than an unconstrained replacement. A branch applies conv–batchnorm–ReLU–conv–batchnorm, then adds the input before ReLU. The stem and both blocks preserve spatial size and width 16, so the identity shortcut is valid without projection. Global average pooling makes the final classifier independent of spatial dimensions. This is a tiny two-block residual network, not ResNet-18/50.
 
 Read [Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

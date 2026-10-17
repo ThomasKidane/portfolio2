@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+y=r+\gamma(1-d)\max_{a'}Q_{\bar\theta}(s',a'),\\ L(\theta)=\mathbb E[(Q_\theta(s,a)-\operatorname{stopgrad}(y))^2]
+\end{aligned}
+$$
+
+Here s/a/r/s-prime are replay transitions, d indicates a true terminal state, gamma discounts rewards, theta is the online network, and bar-theta the delayed target network. Time-limit truncation is not automatically terminal.
+
 adapt replay and target-network temporal-difference learning to CartPole and evaluate independent episodes. adapt replay and target-network temporal-difference learning to CartPole and evaluate independent episodes
 
 Read [Playing Atari with Deep Reinforcement Learning](https://arxiv.org/abs/1312.5602) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

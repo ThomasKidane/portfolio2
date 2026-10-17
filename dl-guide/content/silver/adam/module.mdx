@@ -16,7 +16,13 @@ prerequisites: ["silver-resnet"]
 
 ## Mechanism and equations
 
-`m=beta1*m+(1-beta1)*g; v=beta2*v+(1-beta2)*g^2; w-=eta*m_hat/(sqrt(v_hat)+epsilon).`
+$$
+\begin{aligned}
+m_t=\beta_1m_{t-1}+(1-\beta_1)g_t,\quad v_t=\beta_2v_{t-1}+(1-\beta_2)g_t^2,\\ \hat m_t=\frac{m_t}{1-\beta_1^t},\quad \hat v_t=\frac{v_t}{1-\beta_2^t},\\ w_{t+1}=w_t-\eta\frac{\hat m_t}{\sqrt{\hat v_t}+\epsilon}
+\end{aligned}
+$$
+
+Here g is the loss gradient, m and v zero-initialized moments, beta coefficients their decay rates, eta the learning rate, and epsilon a stabilizer outside the square root. Squares, roots, and divisions are elementwise; AdamW additionally decays weights separately.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

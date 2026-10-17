@@ -1,0 +1,124 @@
+---
+id: "advanced-circuit-tracing-module"
+title: "Circuit tracing and attribution graphs"
+division: "advanced"
+module: "circuit-tracing"
+kind: "research"
+status: "draft"
+year: 2025
+prerequisites: ["advanced-feature-attribution-module"]
+problems: []
+description: "Distinguish replacement-model attribution graphs from validated causal mechanisms and token attribution."
+order: 3
+---
+
+# Circuit tracing and attribution graphs
+
+**Research exploration — not a calibrated problem.**
+
+Research selection checked on **2026-10-17**; this is a curated reading route, not an exhaustive or newest-paper claim.
+
+## Research question and objectives
+
+An attribution graph is useful only if its edges mean something precise about a model's computation.
+The 2025 Circuit Tracing paper builds graphs using a replacement model with cross-layer transcoders.
+Your objective is to separate an explanatory approximation, a graph visualization, and evidence from intervention in the original model.
+Learn to track what is held fixed, what is approximated, and what is omitted from each graph.
+Do not confuse a sparse feature graph with a chain of natural-language reasoning steps.
+
+## Notation and edge semantics
+
+Let $a_i$ be the activation of feature node $i$, and let $u_j$ be a downstream preactivation or chosen scalar score.
+For a local differentiable computation, a diagnostic edge quantity is
+
+$$
+E_{i\to j}=a_i\frac{\partial u_j}{\partial a_i}.
+$$
+
+This simplified local attribution is a teaching definition, not a complete reimplementation of the paper's graph construction.
+Its magnitude depends on the operating point and feature parameterization.
+It is not a probability and does not by itself measure the effect of deleting a whole causal pathway.
+For an edit $a_i\leftarrow a_i+\delta$, compare predicted and measured downstream responses:
+
+$$
+\widehat{\Delta u_j}=\delta\frac{\partial u_j}{\partial a_i},\qquad
+\epsilon_j=\Delta u_j-\widehat{\Delta u_j}.
+$$
+
+Report $\epsilon_j$ as a function of edit size instead of accepting a graph because its labels tell a coherent story.
+In an autoregressive transformer, position and layer are both part of a node's identity.
+A graph for one next-token decision does not automatically explain the full generated answer.
+
+## Reading route: established method and newer frontier
+
+Read the 2025 methods paper's replacement-model construction, graph pruning, and perturbation validation sections.
+The learned replacement approximates parts of the model; approximation errors remain scientifically relevant nodes or residual terms.
+The original method also has limitations around fixed attention patterns and other omitted nonlinear computation.
+Check which limitations apply to the exact implementation/version you inspect rather than assuming every graph tool is equivalent.
+The 2026 FlashTrace paper addresses multi-token attribution over extended reasoning and propagation back to inputs.
+That input/token-attribution problem is complementary to, not identical with, sparse internal-feature circuit tracing.
+Its reported efficiency and faithfulness results are method-specific evidence, not proof that all long reasoning traces are explained.
+
+## Intervention protocol
+
+1. Choose one short prompt and one next-token contrast, then freeze a small family of paraphrases.
+2. Record the original model, replacement model, dictionary revisions, and graph-building configuration.
+3. Compare original and replacement logits before interpreting any node labels.
+4. Save an unpruned graph or sufficient statistics before tuning a visualization threshold.
+5. Select one positive edge and one near-zero edge on development examples.
+6. Predict downstream changes from local derivatives for three small edit sizes.
+7. Perform the corresponding intervention in the original computation where a compatible feature edit is defined.
+8. Recheck held-out paraphrases and report which prediction signs and magnitudes survive.
+
+If a tool exposes only a replacement model, label every causal test as a replacement-model test.
+Do not imply that a graph screenshot alone validates the original model mechanism.
+When testing a proposed path, distinguish editing its source from selectively removing its edge contribution.
+An upstream edit can alter many downstream nodes, including paths omitted by pruning.
+
+## Controls and limits
+
+- Compare a same-node no-op edit against the untouched model before interpreting any graph discrepancy.
+- Match perturbation norms across important and low-attribution nodes.
+- Sweep pruning thresholds and measure omitted attribution mass rather than hiding unstable edges.
+- Include reconstruction-error contributions and identify any unmodeled residual computation.
+- Keep the attention pattern fixed only when the method requires it, and label the resulting conditional explanation.
+- Check both predicted downstream-node effects and the eventual answer-score effect.
+
+A sparse graph can look persuasive because a human supplies missing semantic connections.
+A node's natural-language name is an interpretation of its activation examples, not an observed variable from the original training task.
+A graph can be locally predictive while failing under a large counterfactual or a new prompt family.
+Those failures define the boundary of the explanation; they are not optional negative examples to discard.
+
+## Bounded manual CPU/Colab exploration
+
+Start on CPU with a two-layer ReLU network of width 16 and eight synthetic sparse input factors.
+Write its exact computational graph, then linearize the downstream effect at ten fixed examples.
+Compare the derivative-predicted and actual changes from three perturbation magnitudes at two hidden nodes.
+Show how pruning low local contributions can fail when an edit changes a ReLU gate.
+This requires only small matrix operations and can be completed without a language-model download.
+For an optional Colab extension, inspect one published small-model attribution graph and its available validation artifacts.
+Cap the extension at one prompt family and three interventions if compatible open weights and tools are available.
+Do not promise that a free Colab session can construct a frontier-model cross-layer transcoder.
+
+## Established findings and open hypotheses
+
+**Established in cited experiments:** replacement-model graphs can support testable, partially faithful explanations of selected behaviors.
+**Open hypothesis:** the pruned subgraph you select remains predictive under a new intervention and new prompt template.
+Long-horizon attribution and completeness of feature-level explanations remain active research questions.
+Avoid turning partial mechanistic evidence into a claim of reading the model's private thoughts.
+
+## Research deliverable
+
+Provide a graph with explicit node and edge semantics, an approximation-error audit, and predicted-versus-measured intervention results.
+Name at least two computations the graph does not explain and one observation that could falsify your preferred path.
+Distinguish your toy-network validation from any paper's large-model case study.
+Continue to [representation steering](../representation-steering/module.mdx) to evaluate controls rather than explanations alone.
+
+## Primary references and verification
+
+- [Circuit Tracing: Revealing Computational Graphs in Language Models](https://transformer-circuits.pub/2025/attribution-graphs/methods.html) — 2025; primary page/title checked 2026-10-17.
+- [Towards Long-Horizon Interpretability: Efficient and Faithful Multi-Token Attribution for Reasoning LLMs](https://arxiv.org/abs/2602.01914) — 2026; primary page/title checked 2026-10-17.
+
+Years denote first preprint/publication, except the explicitly identified 2026 conference counterpoint. Live HTTP checks are available through `python3 tools/seed_research.py --verify-urls`; reachability does not validate a scientific claim.
+
+All instructional prose and project designs here are independently authored; no paper results or benchmark measurements are fabricated.

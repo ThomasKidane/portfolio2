@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+-\mathrm{ELBO}=\mathbb E_{q_\phi(z\mid x)}[-\log p_\theta(x\mid z)]+D_{\mathrm{KL}}(q_\phi(z\mid x)\Vert p(z)),\\ z=\mu_\phi(x)+\sigma_\phi(x)\odot\varepsilon,\quad\varepsilon\sim\mathcal N(0,I)
+\end{aligned}
+$$
+
+Here x is data, z a latent, q the encoder posterior, p the prior/decoder, theta and phi their parameters, and mu/sigma the diagonal Gaussian mean/standard deviation. KL is relative entropy; reconstruction loss must match the decoder likelihood.
+
 implement diagonal-Gaussian reparameterization and MNIST negative ELBO with explicit reconstruction and KL terms. implement diagonal-Gaussian reparameterization and MNIST negative ELBO with explicit reconstruction and KL terms
 
 Read [Auto-Encoding Variational Bayes](https://arxiv.org/abs/1312.6114) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

@@ -16,7 +16,13 @@ prerequisites: ["platinum-lora"]
 
 ## Mechanism and equations
 
-`m_new=max(m_old,max(scores)); l_new=exp(m_old-m_new)*l_old+sum exp(scores-m_new); rescale the output accumulator likewise.`
+$$
+\begin{aligned}
+m'=\max(m,\max_j s_j),\\ \ell'=e^{m-m'}\ell+\sum_j e^{s_j-m'},\\ o'=e^{m-m'}o+\sum_j e^{s_j-m'}v_j,\quad y=\frac{o'}{\ell'}
+\end{aligned}
+$$
+
+Here s are a new block of scaled scores for one query, v corresponding values, m the running maximum, ell the exponential sum, and o the unnormalized weighted-value accumulator. Initialize from the first nonempty allowed block; handle fully masked rows separately. This exact online softmax identity alone does not implement the fused GPU kernel.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

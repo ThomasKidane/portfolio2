@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+K_{\mathrm{cache}}=[K_{\mathrm{past}};K_{\mathrm{new}}],\quad V_{\mathrm{cache}}=[V_{\mathrm{past}};V_{\mathrm{new}}],\\ a(x)=\min\!\left(1,\frac{p(x)}{q(x)}\right),\quad p_{\mathrm{reject}}(x)=\frac{[p(x)-q(x)]_+}{\sum_y[p(y)-q(y)]_+}
+\end{aligned}
+$$
+
+Here K/V concatenate keys/values along time. In speculative sampling p is the target and q the draft distribution at the same prefix, and a accepts a token drawn from q. After rejection sample the positive-part residual; acceptance ratios alone are not the full algorithm. The residual is needed only when rejection is possible.
+
 implement cached autoregressive decoding and rejection-corrected speculative sampling; audit exactness and tokens per second. implement cached autoregressive decoding and rejection-corrected speculative sampling; audit exactness and tokens per second
 
 Read [Fast Inference from Transformers via Speculative Decoding](https://arxiv.org/abs/2211.17192) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

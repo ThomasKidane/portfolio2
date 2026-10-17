@@ -16,7 +16,13 @@ prerequisites: ["platinum-long-context-rope"]
 
 ## Mechanism and equations
 
-`Throughput=completed_units/elapsed_seconds; report quality at the same measured compute and memory constraints.`
+$$
+\begin{aligned}
+\mathrm{throughput}=\frac{U_{\mathrm{completed}}}{t_{\mathrm{elapsed}}},\\ C\le C_0,\quad M_{\mathrm{peak}}\le M_0
+\end{aligned}
+$$
+
+Here U counts declared work units, t measured wall seconds, C measured compute, and M peak memory; C-zero/M-zero are fixed caps. Compare held-out quality under the same constraints and define whether timing includes compilation, data loading, and evaluation; no benchmark is implied.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

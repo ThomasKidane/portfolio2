@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+z_0=[x_{\mathrm{cls}};x_p^1E;\ldots;x_p^NE]+E_{\mathrm{pos}}
+\end{aligned}
+$$
+
+Here x-p are flattened image patches, E the patch projection, x-cls a learned class token, N patch count, and E-pos position embeddings including the class position. Brackets concatenate along the sequence axis.
+
 patchify CIFAR-10 and train a transformer classifier; aspirational accuracy 0.85 within 600 seconds. patchify CIFAR-10 and train a transformer classifier; aspirational accuracy 0.85 within 600 seconds
 
 Read [An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale](https://arxiv.org/abs/2010.11929) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

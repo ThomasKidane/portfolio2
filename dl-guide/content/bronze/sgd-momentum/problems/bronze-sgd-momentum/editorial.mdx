@@ -8,7 +8,15 @@ status: draft
 
 ## The mechanism
 
-implement velocity updates on an ill-conditioned quadratic and a tiny MLP. Velocity follows v=beta*v+gradient and weights follow w-=learning_rate*v. Do not multiply the new gradient by (1-beta) unless you consistently use that alternative convention. The quadratic control has diagonal curvature (1,20), learning rate 0.03 and 60 steps from (2,2), comparing beta 0 and 0.8. The MLP uses beta 0.9 for 40 full minibatch updates. Record oscillations as well as final objective; momentum is not guaranteed to improve every problem.
+$$
+\begin{aligned}
+g_t=\nabla L(w_t),\quad v_t=\beta v_{t-1}+g_t,\\ w_{t+1}=w_t-\eta v_t
+\end{aligned}
+$$
+
+Here L is the loss, w the weights, g the gradient, v the velocity initialized to zero, beta the momentum coefficient, and eta the learning rate. This convention does not multiply the new gradient by one minus beta.
+
+implement velocity updates on an ill-conditioned quadratic and a tiny MLP. Use the velocity and weight updates shown above. Do not multiply the new gradient by one minus the momentum coefficient unless you consistently use that alternative convention. The quadratic control has diagonal curvature (1,20), learning rate 0.03 and 60 steps from (2,2), comparing beta 0 and 0.8. The MLP uses beta 0.9 for 40 full minibatch updates. Record oscillations as well as final objective; momentum is not guaranteed to improve every problem.
 
 Read [Some methods of speeding up the convergence of iteration methods](https://doi.org/10.1016/0041-5553(64)90137-5) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.
 

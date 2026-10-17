@@ -16,7 +16,13 @@ prerequisites: ["platinum-flashattention"]
 
 ## Mechanism and equations
 
-`RMSNorm(x)=x/sqrt(mean(x^2)+epsilon)*gain; SwiGLU(x)=swish(xW_gate)*(xW_value).`
+$$
+\begin{aligned}
+\operatorname{RMSNorm}(x)=g\odot\frac{x}{\sqrt{\frac1d\sum_{i=1}^d x_i^2+\epsilon}},\\ \operatorname{SwiGLU}(x)=[\operatorname{swish}(xW_g)\odot(xW_v)]W_o,\\ \operatorname{swish}(u)=u\sigma(u)
+\end{aligned}
+$$
+
+Here d is feature width, g learned gain, epsilon a stabilizer, W-g/W-v/W-o gate/value/output projections, and sigma sigmoid. RMS normalization does not subtract a mean; the SwiGLU expression uses row-vector inputs and omits biases.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+\mu_B=\frac1m\sum_i x_i,\quad \sigma_B^2=\frac1m\sum_i(x_i-\mu_B)^2,\\ y_i=\gamma\frac{x_i-\mu_B}{\sqrt{\sigma_B^2+\epsilon}}+\beta
+\end{aligned}
+$$
+
+Here m counts values in a normalized channel, mu and sigma-squared are batch statistics, gamma and beta learned affine parameters, and epsilon a numerical stabilizer. Convolutional statistics include spatial positions; evaluation uses running statistics.
+
 normalize channel activations in a plain convolutional network and measure time to a fixed validation quality. normalize channel activations in a plain convolutional network and measure time to a fixed validation quality
 
 Read [Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift](https://arxiv.org/abs/1502.03167) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

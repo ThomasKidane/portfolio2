@@ -1,0 +1,129 @@
+---
+id: "advanced-evaluation-robustness-module"
+title: "Model evaluation: robustness, safety, and leakage"
+division: "advanced"
+module: "evaluation-robustness"
+kind: "research"
+status: "draft"
+year: 2025
+prerequisites: ["advanced-reasoning-compute-module"]
+problems: []
+description: "Design leakage-aware, threat-modelled evaluation with grouped uncertainty and transparent abstention accounting."
+order: 7
+---
+
+# Model evaluation: robustness, safety, and leakage
+
+**Research exploration — not a calibrated problem.**
+
+Research selection checked on **2026-10-17**; this is a curated reading route, not an exhaustive or newest-paper claim.
+
+## Research question and objectives
+
+A score is a property of a model, dataset, prompt, sampler, judge, and execution protocol together.
+This module asks how fragile that score is under paraphrase, leakage, invalid scoring, and a declared threat model.
+Design an evaluation that distinguishes capability, robustness, refusal behavior, and data exposure.
+Learn why a recent dataset release or a private test file alone does not prove the absence of contamination.
+An evaluation can be careful without claiming to certify a model as safe.
+
+## Notation and grouped uncertainty
+
+Let $g$ index independent task families and $r$ index matched surface variants within a family.
+For a correctness indicator $c_{g,r}$, compare clean and transformed performance using paired differences.
+A useful family-level robustness summary is
+
+$$
+R_g=\frac{1}{n_g}\sum_{r=1}^{n_g} c_{g,r},\qquad
+\Delta_g=R_g^{\mathrm{transformed}}-R_g^{\mathrm{clean}}.
+$$
+
+Average and resample at the independent family level when variants share content or a generation template.
+Treating many near-identical paraphrases as independent greatly overstates precision.
+Record the denominator for every metric, including invalid outputs and abstentions.
+For a system allowed to decline a question, report coverage and conditional accuracy separately:
+
+$$
+\mathrm{coverage}=\frac{N_{\mathrm{answered}}}{N},\qquad
+\mathrm{accuracy}_{\mathrm{answered}}=\frac{N_{\mathrm{correct}}}{N_{\mathrm{answered}}}.
+$$
+
+Conditional accuracy is undefined when no items are answered; do not silently substitute a perfect score.
+Also report correct answers divided by all items so abstention policy cannot disappear from the comparison.
+
+## Primary readings and claim boundaries
+
+AntiLeakBench constructs evaluations from updated real-world knowledge and explicitly addresses pre-existing knowledge in new material.
+Its framework is evidence about a contamination-control approach, not a universal audit of hidden model training corpora.
+Read how new knowledge is identified and which assumptions about model cutoffs the method relies on.
+Reasoning Models Don't Always Say What They Think motivates checking behavior rather than trusting trace descriptions alone.
+Its hint-based faithfulness tests are different from contamination detection, but both expose gaps between observable text and causal claims.
+Do not infer model intent from an evaluation failure when a narrower explanation, such as a parser flaw, fits the evidence.
+
+## Leakage taxonomy and intervention protocol
+
+1. Freeze task generation, scoring, and model selection before opening final test responses.
+2. Separate training overlap, development-set tuning, retrieval access, judge leakage, and test-answer exposure in your audit.
+3. Generate 12 small task families from fresh seeds and inspect for exact and normalized near-duplicates.
+4. Hold out entire structural families, not just alternate numbers from a template used during prompt tuning.
+5. Create meaning-preserving paraphrases and irrelevant-context variants using a documented transformation rule.
+6. Randomize item order and answer-option order while preserving a mapping back to canonical answers.
+7. Run a fixed-budget baseline and a transformed condition with identical generation settings.
+8. Review parser disagreements and preserve raw outputs before aggregating scores.
+
+Fresh seeds reduce exact overlap with your development set; they do not prove the model never learned the underlying task.
+A post-cutoff fact can still be accessible through retrieval or later training revisions.
+Record model revision, retrieval/tool permissions, timestamps, and whether any provider updated the system during the run.
+Keep answer keys inaccessible to retrieval tools and judges except where explicitly needed for scoring.
+
+## Safety and privacy threat model
+
+Use synthetic data only: plant a harmless fictional canary such as a randomly generated project code in a mock document.
+Declare the attacker controls, the protected field, and what counts as exposure before testing a toy retrieval assistant.
+Test whether benign instructions can cause the assistant to repeat a field it was instructed not to disclose.
+Do not use real passwords, personal data, production systems, or harmful instructions.
+Record both exposure and utility on permitted questions; a model that refuses everything is not a useful protected assistant.
+For broader refusal behavior, use only appropriately licensed benign/unsafe-category metadata or approved evaluation resources.
+Do not expand this bounded exercise into adaptive offensive testing against a live service.
+
+## Controls and limits
+
+- Include an answer-key-only checker test to establish that scoring is correct before involving a model.
+- Reorder options to detect letter or position heuristics without changing semantic content.
+- Evaluate benign requests near the refusal boundary to measure over-refusal separately from safety compliance.
+- Audit judge agreement on a blind sample; an LLM judge is not automatically ground truth.
+- Report all attempted variants and any exclusions, including failures caused by API or parsing errors.
+- Keep hypothesis generation after test inspection clearly separate from confirmatory evidence.
+
+An attack failure on 12 toy examples does not certify privacy or jailbreak resistance.
+A canary exposure is a concrete failure under the stated setup, not proof of general extraction of training data.
+A confidence interval quantifies sampling uncertainty, not hidden contamination or distribution-shift uncertainty.
+
+## Bounded manual CPU/Colab exploration
+
+Generate 12 families with two variants each and use a small local model or previously saved, provenance-labelled outputs.
+Limit generation to 64 tokens per item and total model execution to 20 minutes.
+Compute grouped summaries and inspect every invalid answer manually; no training is necessary.
+A CPU-only scorer can fully audit duplicates, parsing, and grouped uncertainty even without running a language model.
+Label that route an evaluation-pipeline audit, not evidence about an untested model's behavior.
+Keep the fictional-canary extension to five mock documents and ten benign requests in an isolated local setup.
+
+## Established findings and open hypotheses
+
+**Established:** leakage controls, scoring validity, and task sampling are distinct requirements of credible evaluation.
+**Open hypothesis:** your measured robustness gap persists across unseen families and a frozen model revision.
+Passing this exploration provides no safety certification and no calibrated grade.
+
+## Research deliverable
+
+Write a compact evaluation card containing provenance, threat model, grouping unit, exclusions, and all metric denominators.
+Show one concrete way an apparently improved score could arise without a better model.
+Carry the audit into the [research reproduction capstone](../research-reproduction/module.mdx).
+
+## Primary references and verification
+
+- [AntiLeakBench: Preventing Data Contamination by Automatically Constructing Benchmarks with Updated Real-World Knowledge](https://aclanthology.org/2025.acl-long.901/) — 2025; primary page/title checked 2026-10-17.
+- [Reasoning Models Don't Always Say What They Think](https://arxiv.org/abs/2505.05410) — 2025; primary page/title checked 2026-10-17.
+
+Years denote first preprint/publication, except the explicitly identified 2026 conference counterpoint. Live HTTP checks are available through `python3 tools/seed_research.py --verify-urls`; reachability does not validate a scientific claim.
+
+All instructional prose and project designs here are independently authored; no paper results or benchmark measurements are fabricated.

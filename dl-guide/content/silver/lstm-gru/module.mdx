@@ -16,7 +16,13 @@ prerequisites: ["silver-word2vec"]
 
 ## Mechanism and equations
 
-`c_t=f_t*c_prev+i_t*tanh(candidate); h_t=o_t*tanh(c_t). GRU instead mixes old and candidate states through update gates.`
+$$
+\begin{aligned}
+(i_t,f_t,o_t)=\sigma(W_g[x_t;h_{t-1}]+b_g),\\ \tilde c_t=\tanh(W_c[x_t;h_{t-1}]+b_c),\\ c_t=f_t\odot c_{t-1}+i_t\odot\tilde c_t,\quad h_t=o_t\odot\tanh(c_t),\\ h_t^{\mathrm{GRU}}=(1-z_t)\odot h_{t-1}+z_t\odot\tilde h_t
+\end{aligned}
+$$
+
+Here x is input, h hidden state, c LSTM cell state, i/f/o input/forget/output gates, and W/b learned affine maps; brackets concatenate. In the shown GRU convention z weights the candidate, whose computation includes a reset gate. Products are elementwise.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

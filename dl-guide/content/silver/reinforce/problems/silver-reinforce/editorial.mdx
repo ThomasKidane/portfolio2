@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+\nabla_\theta J=\mathbb E\!\left[\sum_t\nabla_\theta\log\pi_\theta(a_t\mid s_t)(G_t-b(s_t))\right],\\ G_t=\sum_{k=t}^{T-1}\gamma^{k-t}r_k
+\end{aligned}
+$$
+
+Here pi is the policy, s/a states/actions, G reward-to-go, b an action-independent baseline, r reward, and T episode length. This objective uses undiscounted episodic returns when gamma equals one; a start-state discounted objective additionally weights each time term by gamma to the power t. Do not backpropagate through the sampled advantage in the policy update.
+
 estimate CartPole policy gradients with reward-to-go and a learned value baseline. estimate CartPole policy gradients with reward-to-go and a learned value baseline
 
 Read [Simple statistical gradient-following algorithms for connectionist reinforcement learning](https://doi.org/10.1007/BF00992696) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

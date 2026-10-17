@@ -16,7 +16,13 @@ prerequisites: ["silver-vgg"]
 
 ## Mechanism and equations
 
-`h_next=ReLU(h+F(h)); d(h+F(h))/dh=I+J_F.`
+$$
+\begin{aligned}
+h'=\operatorname{ReLU}(h+F(h)),\\ \frac{\partial(h+F(h))}{\partial h}=I+J_F(h)
+\end{aligned}
+$$
+
+Here h is the input, F the residual branch, I the identity, and J the branch Jacobian. The derivative shown is before the final ReLU; identity addition requires matching shapes.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

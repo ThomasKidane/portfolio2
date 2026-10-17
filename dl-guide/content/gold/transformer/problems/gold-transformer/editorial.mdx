@@ -8,7 +8,15 @@ status: draft
 
 ## The mechanism
 
-derive numerically stable scaled dot-product attention and explicit mask semantics. Compute scores = Q K^T / sqrt(d_k), mask scores, softmax over keys, and multiply by V. Do not softmax over queries or scale by sequence length. Support different query/key lengths and value widths. Boolean True allows a key (unlike some other PyTorch mask APIs); additive masks typically contain zero and negative infinity. A fully blocked row needs zero output instead of NaN. No positional encoding, projections, multi-head wrapper, feed-forward block or translation training is claimed by this isolated attention lab.
+$$
+\begin{aligned}
+\operatorname{Attention}(Q,K,V)=\operatorname{softmax}_{\mathrm{keys}}\!\left(\frac{QK^\top}{\sqrt{d_k}}+M\right)V
+\end{aligned}
+$$
+
+Here Q/K/V are query/key/value matrices, d-k the key width, and M an additive mask with zero for allowed keys and negative infinity for blocked keys. Fully blocked rows require an explicit zero-output convention rather than an undefined softmax.
+
+derive numerically stable scaled dot-product attention and explicit mask semantics. Compute scaled query-key scores, add the mask, normalize over keys, and form the weighted sum of values as shown above. Do not softmax over queries or scale by sequence length. Support different query/key lengths and value widths. Boolean True allows a key (unlike some other PyTorch mask APIs); additive masks typically contain zero and negative infinity. A fully blocked row needs zero output instead of NaN. No positional encoding, projections, multi-head wrapper, feed-forward block or translation training is claimed by this isolated attention lab.
 
 Read [Attention Is All You Need](https://arxiv.org/abs/1706.03762) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.
 

@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+M_t=\beta M_{t-1}+G_t,\quad M_t=U\Sigma V^\top,\\ O_t=UV^\top,\quad W_{t+1}=W_t-\eta O_t
+\end{aligned}
+$$
+
+Here W is a matrix weight, G its gradient, M momentum, beta its coefficient, and eta the step size. U/Sigma/V denote a compact SVD; O is the ideal polar-factor direction. Practical Muon approximates this with finite Newton-Schulz iterations and may use Nesterov, shape scaling, and separate vector-parameter updates; this is a simplified core, not an exact implementation prescription.
+
 orthogonalize matrix momentum with Newton-Schulz iterations and compare with AdamW under a fixed token budget. orthogonalize matrix momentum with Newton-Schulz iterations and compare with AdamW under a fixed token budget
 
 Read [Muon: An optimizer for hidden layers in neural networks](https://kellerjordan.github.io/posts/muon/) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

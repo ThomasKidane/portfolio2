@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+\hat A_i=\frac{R_i-\bar R}{s_R+\delta},\quad r_{it}=\frac{\pi_\theta(o_{it}\mid x,o_{i,1:t-1})}{\pi_{\mathrm{old}}(o_{it}\mid x,o_{i,1:t-1})},\\ J=\mathbb E\frac1G\sum_{i=1}^G\frac1{T_i}\sum_{t=1}^{T_i}\left[\min(r_{it}\hat A_i,\operatorname{clip}(r_{it},1-\epsilon,1+\epsilon)\hat A_i)-\beta k_{it}\right],\\ u_{it}=\frac{\pi_{\mathrm{ref}}(o_{it}\mid x,o_{i,1:t-1})}{\pi_\theta(o_{it}\mid x,o_{i,1:t-1})},\quad k_{it}=u_{it}-\log u_{it}-1
+\end{aligned}
+$$
+
+Here G completions o share prompt x, R are rewards, bar-R/s-R group mean/standard deviation, delta a stabilizer, T-i completion lengths, epsilon clip width, and beta reference-penalty weight. Maximize J with fixed advantages; old is the sampling policy and ref a frozen reference. The shown sampled KL surrogate and length averaging specify one convention, not every GRPO variant.
+
 train on generated verifiable arithmetic using group-normalized rewards without a value network. train on generated verifiable arithmetic using group-normalized rewards without a value network
 
 Read [DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models](https://arxiv.org/abs/2402.03300) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

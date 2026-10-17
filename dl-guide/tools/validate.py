@@ -7,7 +7,7 @@ import re
 import sys
 from common import ROOT, config, links, read_json, records, reference, safe_path, source, starter
 
-DIVISIONS = {"bronze", "silver", "gold", "platinum", "Bronze", "Silver", "Gold", "Platinum"}
+DIVISIONS = {"bronze", "silver", "gold", "platinum", "advanced", "Bronze", "Silver", "Gold", "Platinum", "Advanced"}
 DIRECTIONS = {"maximize", "minimize", "higher", "lower", "max", "min", "higher_is_better", "lower_is_better"}
 STATUSES = {"draft", "stub", "planned", "published", "calibrated", "ready"}
 

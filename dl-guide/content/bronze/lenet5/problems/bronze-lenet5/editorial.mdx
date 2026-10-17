@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+h'=\tanh(W*h+b),\\ p_{ij}=\frac14\sum_{a=0}^{1}\sum_{b=0}^{1}h'_{2i+a,2j+b}
+\end{aligned}
+$$
+
+Here h is an input feature map, W is a convolution kernel, the star denotes convolution, b in the first line is a bias, and a and b in the sum are spatial offsets. The second line is stride-two average pooling, the teaching adaptation rather than every historical LeNet detail.
+
 compose learned local filters, tanh nonlinearities and spatial averaging into a digit classifier. Use 5x5 convolutions with 6 then 16 channels, average pooling and tanh; flatten a 4x4 pooled map into 120 and 84 hidden units. The reference uses fully connected C3 channels and a linear-logit classifier rather than the original partial-connectivity and RBF output. These deviations are deliberate and must not be presented as an exact historical reproduction.
 
 Read [Gradient-Based Learning Applied to Document Recognition](https://ieeexplore.ieee.org/document/726791) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

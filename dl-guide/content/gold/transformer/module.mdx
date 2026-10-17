@@ -16,7 +16,13 @@ prerequisites: ["silver-resnet"]
 
 ## Mechanism and equations
 
-`Attention(Q,K,V)=softmax(QK^T/sqrt(d_k)+mask)V.`
+$$
+\begin{aligned}
+\operatorname{Attention}(Q,K,V)=\operatorname{softmax}_{\mathrm{keys}}\!\left(\frac{QK^\top}{\sqrt{d_k}}+M\right)V
+\end{aligned}
+$$
+
+Here Q/K/V are query/key/value matrices, d-k the key width, and M an additive mask with zero for allowed keys and negative infinity for blocked keys. Fully blocked rows require an explicit zero-output convention rather than an undefined softmax.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

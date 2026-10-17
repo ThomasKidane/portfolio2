@@ -16,7 +16,13 @@ prerequisites: ["platinum-mup"]
 
 ## Mechanism and equations
 
-`q=clip(round(x/scale)+zero_point,qmin,qmax); x_hat=scale*(q-zero_point).`
+$$
+\begin{aligned}
+q=\operatorname{clip}\!\left(\operatorname{round}(x/s)+z,q_{\min},q_{\max}\right),\\ \hat x=s(q-z)
+\end{aligned}
+$$
+
+Here x is a real value, s a positive scale, z an integer zero point, q-min/q-max integer limits, and hat-x dequantized reconstruction. Declare per-tensor or per-channel scale and the rounding convention.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

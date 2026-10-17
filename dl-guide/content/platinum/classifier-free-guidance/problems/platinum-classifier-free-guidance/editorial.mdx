@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+\hat\varepsilon=\varepsilon_\theta(x_t,t,\varnothing)+s\left[\varepsilon_\theta(x_t,t,c)-\varepsilon_\theta(x_t,t,\varnothing)\right]
+\end{aligned}
+$$
+
+Here x-t is a noisy sample, t its step, c conditioning, the empty symbol dropped conditioning, and s the guidance scale. Scale one gives the conditional prediction and zero the unconditional one; train with conditioning dropout.
+
 train condition-dropout denoisers and combine conditional and unconditional predictions at sampling. train condition-dropout denoisers and combine conditional and unconditional predictions at sampling
 
 Read [Classifier-Free Diffusion Guidance](https://arxiv.org/abs/2207.12598) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

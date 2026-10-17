@@ -16,7 +16,13 @@ prerequisites: ["bronze-lenet5"]
 
 ## Mechanism and equations
 
-`h_next=ReLU(conv(h,W)+b); dropout(h)=Bernoulli(keep)*h/keep during training.`
+$$
+\begin{aligned}
+h'=\operatorname{ReLU}(W*h+b),\\ \tilde h=\frac{m\odot h'}{p},\quad m_j\sim\operatorname{Bernoulli}(p)
+\end{aligned}
+$$
+
+Here W and b are convolution parameters, the star denotes convolution, h is an activation, and p is the keep probability. Inverted dropout uses independent mask entries during training and is the identity during evaluation.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

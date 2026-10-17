@@ -16,7 +16,13 @@ prerequisites: ["gold-preln-postln"]
 
 ## Mechanism and equations
 
-`L=-sum_t log p(token_t|tokens_before_t); causal masks prohibit access to future tokens.`
+$$
+\begin{aligned}
+L_{\mathrm{AR}}=-\sum_{t=1}^T\log p_\theta(x_t\mid x_{1:t-1}),\\ M_{ij}=\begin{cases}0&j\le i\\-\infty&j>i\end{cases}
+\end{aligned}
+$$
+
+Here x are tokens, theta model parameters, T target count, and M the causal attention mask for shifted input positions i and keys j. Sum or average valid target losses consistently; future tokens must be inaccessible.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

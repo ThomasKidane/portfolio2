@@ -1,0 +1,122 @@
+---
+id: "advanced-verifiable-rewards-module"
+title: "Verifiable rewards and the limits of RL reasoning claims"
+division: "advanced"
+module: "verifiable-rewards"
+kind: "research"
+status: "draft"
+year: 2025
+prerequisites: ["platinum-grpo-module", "advanced-reasoning-compute-module"]
+problems: []
+description: "Audit verifier validity, sampling efficiency, and competing claims about RL-induced reasoning capacity."
+order: 6
+---
+
+# Verifiable rewards and the limits of RL reasoning claims
+
+**Research exploration — not a calibrated problem.**
+
+Research selection checked on **2026-10-17**; this is a curated reading route, not an exhaustive or newest-paper claim.
+
+## Research question and objectives
+
+A reward that is easy to compute is not necessarily a complete test of task success.
+Reinforcement learning with verifiable rewards optimizes a measurable outcome; research must examine what that outcome omits.
+Distinguish verifier correctness, policy optimization, answer correctness, reasoning validity, and generalization.
+Read opposing empirical claims about reasoning capacity without turning either into a universal theorem.
+The [GRPO lesson](../../platinum/grpo/module.mdx) supplies the optimization background; this module audits its interpretation.
+
+## Notation and the verifier boundary
+
+Let $y\sim\pi_\theta(\cdot\mid x)$ be a sampled completion and let $V(x,y)$ be a deterministic checker.
+A simplified outcome-reward objective, omitting implementation-specific clipping and estimators, is
+
+$$
+J(\theta)=\mathbb{E}_{x,y}[V(x,y)]-\beta\,\mathbb{E}_x\!\left[D_{\mathrm{KL}}(\pi_\theta\Vert\pi_{\mathrm{ref}})\right].
+$$
+
+This objective encourages verifier acceptance, not automatically every property a researcher calls reasoning.
+A final numeric match may reward lucky guesses or invalid derivations that reach the expected answer.
+A code test suite may accept a special-case program that fails untested inputs.
+Keep verifier acceptance $V$ distinct from an independently audited validity label $C$:
+
+$$
+\mathrm{false\ acceptance}=P(V=1\mid C=0),\qquad
+\mathrm{false\ rejection}=P(V=0\mid C=1).
+$$
+
+Both rates depend on the distribution of candidate errors used to audit the checker.
+A checker that rejects malformed strings perfectly can still fail on a mathematically wrong but well-formatted answer.
+
+## Reading route and active disagreement
+
+DeepSeek-R1 reports strong reasoning results using RL-based training and explicitly discusses reward reliability and domain limits.
+The 2025 reasoning-capacity study compares base and RL-trained models at multiple sampling budgets.
+It reports settings where improved pass@1 accompanies limited or reduced high-budget coverage.
+The 2026 ICLR counterpoint revisits this question with intermediate-reasoning-sensitive evaluation, including CoT-Pass@K.
+It reports evidence that RLVR can improve reasoning and extend measured boundaries in its tested settings.
+These are competing empirical interpretations with different models, training conditions, and measurements.
+Neither establishes that RL can never learn a new algorithm or that every answer-reward setup reliably learns valid reasoning.
+Read methods and definitions before deciding whether the studies are measuring the same object.
+
+## Intervention protocol
+
+1. Build a tiny expression task with integers, explicit operator precedence, and exact rational arithmetic.
+2. Write an independent reference evaluator and a candidate-answer checker; never use Python eval on untrusted text.
+3. Assemble 40 candidate outputs including correct answers, wrong answers, malformed fractions, and equivalent valid forms.
+4. Add benign adversarial cases: extra answer markers, whitespace, duplicated fields, and misleading prefixes.
+5. Audit false acceptance and rejection against independently reviewed labels before optimizing any policy.
+6. Compare a strict exact parser with a deliberately weak last-number parser and inspect accepted shortcuts.
+7. Split the task generator by expression structure, not merely by random seed.
+8. Freeze the stronger verifier and holdout split before conducting any optional policy experiment.
+
+For an optional CPU demonstration, use a tabular softmax policy over a fixed small candidate set.
+Perform at most 200 reward-weighted updates and track probability mass on valid, invalid, and parser-exploiting candidates.
+This demonstrates selection pressure under verifier errors, not GRPO training of a language model.
+Do not describe redistributing mass among fixed candidates as discovering new reasoning strategies.
+
+## Sampling and coverage controls
+
+If comparing real base and post-trained checkpoints, verify lineage and record prompt templates and token budgets.
+For $n$ samples with $c$ correct completions, an established pass@k estimator for $k\le n$ is
+
+$$
+\widehat{\mathrm{pass@}k}=1-\frac{\binom{n-c}{k}}{\binom{n}{k}}.
+$$
+
+Use the convention that the numerator is zero when fewer than $k$ failures are available.
+Report pass@1 and high-budget coverage separately; one can rise while another falls in finite experiments.
+The estimator measures sampled answer success, not a formal boundary of all algorithms a model can represent.
+Increasing $k$ also increases evaluation cost and opportunities to exploit a weak verifier.
+
+## Bounded manual CPU/Colab exploration
+
+The verifier audit and tabular-policy experiment require only Python, a seeded RNG, and small arrays.
+Keep the candidate set below 100 entries and log all updates to make the shortcut visible.
+An optional Colab comparison uses saved completions from two documented checkpoints, not a large RL training job.
+Cap at 16 questions and eight completions per model; explain why that budget cannot settle high-pass@k literature claims.
+No model training, paid API, or unsafe code execution is required for the core project.
+If using external completion artifacts, record provenance and avoid selecting samples after seeing correctness.
+
+## Established findings and open hypotheses
+
+**Established:** outcome verifiers and finite sampling metrics measure different aspects of policy behavior.
+**Established in cited experiments:** RLVR can improve measured performance; claims about capacity depend on operational definitions and settings.
+**Open hypothesis:** your verifier remains reliable as the policy distribution shifts toward outputs it accepts.
+Improving a benchmark score does not by itself demonstrate faithful reasoning or broad safety alignment.
+
+## Research deliverable
+
+Provide a verifier test suite, explicit acceptance grammar, observed failure cases, and a comparison of the papers' definitions.
+State whether any result concerns sampling efficiency, support under finite sampling, intermediate validity, or generalization.
+Continue to [robustness, safety, and leakage evaluation](../evaluation-robustness/module.mdx) to broaden the measurement boundary.
+
+## Primary references and verification
+
+- [DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning](https://arxiv.org/abs/2501.12948) — 2025; primary page/title checked 2026-10-17.
+- [Does Reinforcement Learning Really Incentivize Reasoning Capacity in LLMs Beyond the Base Model?](https://arxiv.org/abs/2504.13837) — 2025; primary page/title checked 2026-10-17.
+- [Reinforcement Learning with Verifiable Rewards Implicitly Incentivizes Correct Reasoning in Base LLMs](https://proceedings.iclr.cc/paper_files/paper/2026/hash/517f9b9c227b9dd51dba4560f37165ed-Abstract-Conference.html) — 2026; primary page/title checked 2026-10-17.
+
+Years denote first preprint/publication, except the explicitly identified 2026 conference counterpoint. Live HTTP checks are available through `python3 tools/seed_research.py --verify-urls`; reachability does not validate a scientific claim.
+
+All instructional prose and project designs here are independently authored; no paper results or benchmark measurements are fabricated.

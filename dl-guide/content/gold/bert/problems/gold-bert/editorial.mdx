@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+L_{\mathrm{MLM}}=-\sum_{i\in\mathcal M}\log p_\theta(x_i\mid\tilde x)
+\end{aligned}
+$$
+
+Here x is the original token sequence, tilde-x its corrupted bidirectional input, M the selected prediction positions, and theta the model parameters. This is the masked-language objective only, not the full original BERT pretraining system.
+
 implement masked-token pretraining and then fine-tune an SST-2 classifier without split leakage. implement masked-token pretraining and then fine-tune an SST-2 classifier without split leakage
 
 Read [BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding](https://arxiv.org/abs/1810.04805) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

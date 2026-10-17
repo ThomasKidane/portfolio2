@@ -16,7 +16,13 @@ prerequisites: ["gold-ddpm"]
 
 ## Mechanism and equations
 
-`GCN: H_next=sigma(D_hat^-1/2 A_hat D_hat^-1/2 H W). GAT replaces fixed weights by normalized learned edge scores.`
+$$
+\begin{aligned}
+\tilde A=A+I,\quad\tilde D_{ii}=\sum_j\tilde A_{ij},\\ H'=\sigma(\tilde D^{-1/2}\tilde A\tilde D^{-1/2}HW),\\ h_i^{\mathrm{GAT}}=\sigma\!\left(\sum_{j\in\mathcal N(i)\cup\{i\}}\alpha_{ij}Wh_j\right)
+\end{aligned}
+$$
+
+Here A is adjacency, I self-loops, D node degree, H node features, W a learned projection, and sigma an activation. GAT instead uses learned edge scores alpha normalized by softmax over each node's allowed neighbors; the last line is a single head.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

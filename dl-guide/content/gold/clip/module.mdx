@@ -16,7 +16,13 @@ prerequisites: ["gold-simclr"]
 
 ## Mechanism and equations
 
-`L=(CE(image_text_logits,paired_indices)+CE(image_text_logits^T,paired_indices))/2.`
+$$
+\begin{aligned}
+S_{ij}=\frac{u_i^\top v_j}{\tau},\\ L=-\frac1{2B}\sum_{i=1}^B\left[\log\frac{e^{S_{ii}}}{\sum_j e^{S_{ij}}}+\log\frac{e^{S_{ii}}}{\sum_j e^{S_{ji}}}\right]
+\end{aligned}
+$$
+
+Here u and v are unit-normalized image/text embeddings for B aligned pairs, S similarity logits, and tau positive temperature. The two terms classify image-to-text and text-to-image pairs respectively.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

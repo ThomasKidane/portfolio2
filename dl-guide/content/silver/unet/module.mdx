@@ -16,7 +16,13 @@ prerequisites: ["silver-dcgan"]
 
 ## Mechanism and equations
 
-`decoder_level=conv(concat(upsample(decoder_next),encoder_skip)); IoU=intersection/union.`
+$$
+\begin{aligned}
+d_\ell=f_\ell([\operatorname{up}(d_{\ell+1});e_\ell]),\\ \mathrm{IoU}=\frac{\lvert P\cap T\rvert}{\lvert P\cup T\rvert}
+\end{aligned}
+$$
+
+Here d and e are decoder and encoder features at aligned resolution, up is upsampling, brackets concatenate channels, and f is a convolution block. P and T are predicted and true foreground pixel sets; declare an empty-union convention when reporting IoU.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+x_t=(1-t)x_0+tx_1,\quad t\sim\mathcal U(0,1),\\ L=\mathbb E\lVert v_\theta(x_t,t)-(x_1-x_0)\rVert_2^2
+\end{aligned}
+$$
+
+Here x-zero is noise, x-one data drawn under a declared coupling, and v-theta the learned velocity. This conditional flow-matching loss uses a straight-line interpolation; generation integrates the velocity from time zero to one.
+
 fit conditional velocity fields with a small diffusion-transformer backbone and integrate samples. fit conditional velocity fields with a small diffusion-transformer backbone and integrate samples
 
 Read [Flow Matching for Generative Modeling](https://arxiv.org/abs/2210.02747) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

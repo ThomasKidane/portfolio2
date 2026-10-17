@@ -16,7 +16,13 @@ prerequisites: ["bronze-perceptron"]
 
 ## Mechanism and equations
 
-`H=tanh(XW1+b1); dZ=(softmax(HW2+b2)-Y)/N; dW1=X^T((dZ W2^T)*(1-H^2)).`
+$$
+\begin{aligned}
+H=\tanh(XW_1+b_1),\quad Z=HW_2+b_2,\\ G_Z=\frac{\operatorname{softmax}(Z)-Y}{N},\quad G_{W_2}=H^\top G_Z,\\ G_H=(G_ZW_2^\top)\odot(1-H^2),\quad G_{W_1}=X^\top G_H
+\end{aligned}
+$$
+
+Here X holds N input rows, Y is one-hot labels, H is the hidden activation, Z is logits, W and b are weights and biases, and G denotes a loss gradient. Softmax is rowwise; products and squares inside the tanh derivative are elementwise. Bias gradients sum rows.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

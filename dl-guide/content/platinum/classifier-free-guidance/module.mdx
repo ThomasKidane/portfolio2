@@ -16,7 +16,13 @@ prerequisites: ["platinum-flow-matching"]
 
 ## Mechanism and equations
 
-`epsilon_guided=epsilon_uncond+s*(epsilon_cond-epsilon_uncond).`
+$$
+\begin{aligned}
+\hat\varepsilon=\varepsilon_\theta(x_t,t,\varnothing)+s\left[\varepsilon_\theta(x_t,t,c)-\varepsilon_\theta(x_t,t,\varnothing)\right]
+\end{aligned}
+$$
+
+Here x-t is a noisy sample, t its step, c conditioning, the empty symbol dropped conditioning, and s the guidance scale. Scale one gives the conditional prediction and zero the unconditional one; train with conditioning dropout.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

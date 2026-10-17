@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+L_{\mathrm{AR}}=-\sum_{t=1}^T\log p_\theta(x_t\mid x_{1:t-1}),\\ M_{ij}=\begin{cases}0&j\le i\\-\infty&j>i\end{cases}
+\end{aligned}
+$$
+
+Here x are tokens, theta model parameters, T target count, and M the causal attention mask for shifted input positions i and keys j. Sum or average valid target losses consistently; future tokens must be inaccessible.
+
 train a causal decoder on a documented TinyStories subset within a provisional ten-minute run. train a causal decoder on a documented TinyStories subset within a provisional ten-minute run
 
 Read [Language Models are Unsupervised Multitask Learners](https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

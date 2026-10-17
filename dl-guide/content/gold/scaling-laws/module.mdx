@@ -16,7 +16,13 @@ prerequisites: ["gold-mixture-of-experts"]
 
 ## Mechanism and equations
 
-`L(N,D)=L_infinity+A/N^alpha+B/D^beta; held-out relative error=abs(pred-actual)/actual.`
+$$
+\begin{aligned}
+L(N,D)=L_\infty+AN^{-\alpha}+BD^{-\beta},\\ e_{\mathrm{rel}}=\frac{\lvert\hat L-L_{\mathrm{obs}}\rvert}{\lvert L_{\mathrm{obs}}\rvert}
+\end{aligned}
+$$
+
+Here N is parameter count, D training-token count, L-infinity the fitted floor, A/B positive amplitudes, and alpha/beta positive exponents. Hat-L is a held-out prediction and L-obs a nonzero observation; this empirical fit is not a universal law.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

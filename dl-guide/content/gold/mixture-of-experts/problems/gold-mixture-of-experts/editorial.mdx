@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+p(x)=\operatorname{softmax}(g(x)),\quad e^*=\arg\max_e p_e(x),\\ y=p_{e^*}(x)f_{e^*}(x),\quad L_{\mathrm{aux}}=E\sum_{e=1}^E f_e^{\mathrm{load}}\bar p_e
+\end{aligned}
+$$
+
+Here g is router logits, f-e expert networks, E expert count, load-f the batch fraction assigned to an expert, and bar-p its mean routing probability. This is a Switch-style top-one convention; specify capacity and overflow handling separately and weight the auxiliary loss explicitly.
+
 implement top-1 routing capacity handling and load-balancing loss; compare iso-FLOP dense baselines. implement top-1 routing capacity handling and load-balancing loss; compare iso-FLOP dense baselines
 
 Read [Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity](https://arxiv.org/abs/2101.03961) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

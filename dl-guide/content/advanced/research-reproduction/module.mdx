@@ -1,0 +1,126 @@
+---
+id: "advanced-research-reproduction-module"
+title: "Research reproduction and falsification capstone"
+division: "advanced"
+module: "research-reproduction"
+kind: "research"
+status: "draft"
+year: 2025
+prerequisites: ["advanced-circuit-tracing-module", "advanced-representation-steering-module", "advanced-verifiable-rewards-module", "advanced-evaluation-robustness-module"]
+problems: []
+description: "Reproduce one narrow research claim with a frozen protocol, explicit deviations, and a falsification attempt."
+order: 8
+---
+
+# Research reproduction and falsification capstone
+
+**Research exploration — not a calibrated problem.**
+
+Research selection checked on **2026-10-17**; this is a curated reading route, not an exhaustive or newest-paper claim.
+
+## Research question and objectives
+
+A reproduction is a chain of justified correspondences between a paper's claim and a runnable experiment.
+It is not a similar-looking plot obtained from an unrelated model or task.
+Choose one narrow result from circuit tracing, inference-time compute, or verifiable-reward evaluation.
+Define what would count as agreement, disagreement, or an inconclusive reduced-scale adaptation before running the study.
+The capstone rewards honest boundaries in the report, not a positive result or a benchmark rank.
+
+## Select a claim with an operational target
+
+For circuit tracing, target a prediction about an intervention's sign at a specified node on a specified prompt family.
+For inference-time compute, target a budget-matched comparison with an explicit feasible answer-selection rule.
+For RLVR, target a verifier or metric claim rather than attempting frontier-model training on a free accelerator.
+Read both the primary method and the relevant limitations before selecting the claim.
+Use the [circuit-tracing module](../circuit-tracing/module.mdx), [compute module](../reasoning-compute/module.mdx), or [RLVR module](../verifiable-rewards/module.mdx) as the prerequisite protocol.
+The cited 2026 RLVR counterpoint is a reminder that changing a measurement can alter the apparent scientific conclusion.
+
+## Notation and decision rule
+
+Let $\delta$ be a paired effect on an explicitly named statistic, with $G$ independent task families.
+For treatment and control family outcomes $s_g^T$ and $s_g^C$, estimate
+
+$$
+\hat\delta=\frac{1}{G}\sum_{g=1}^{G}(s_g^T-s_g^C).
+$$
+
+Choose a scientifically meaningful tolerance $\tau$ before observing final-test effects.
+Report an interval for $\delta$ using a family-level method appropriate to your sample size and design.
+Do not declare reproduction merely because a null-hypothesis test fails to reject zero.
+If the paper claims a positive effect, a broad interval spanning substantial harm and benefit is inconclusive.
+A teaching adaptation may test only the direction of a claim; label that weaker target explicitly.
+
+## Protocol registration before execution
+
+1. Record the paper version, target figure or claim, exact task, and the authors' stated assumptions.
+2. Record code and model revisions, weight licenses, dependencies, hardware, precision, and random seeds.
+3. Write a correspondence list: original component, local substitute, expected consequence of the substitution.
+4. Freeze task-family splits, prompt construction, scoring, and the selection of intervention sites or budgets.
+5. Define the primary statistic, tolerance, uncertainty method, exclusions, and maximum run budget.
+6. Specify one negative control and one serious alternative explanation to test.
+7. Save the protocol before looking at final outcomes; timestamp any later amendments separately.
+8. Execute a small plumbing pilot on development examples, not the reserved final set.
+
+Changing a failed parser after seeing test responses may be necessary, but it makes that round exploratory.
+Keep the original outputs, document the change, and use fresh held-out examples for any confirmatory rerun.
+Do not replace a paper's hard task with a convenient easy task while retaining the original performance claim.
+Model size and training history are potential causal changes, not clerical details.
+
+## Falsification attempt and controls
+
+For a proposed circuit, test a counterfactual that changes the hypothesized variable while preserving distractors.
+For a steering claim, change topic or paraphrase while retaining the intended behavior and intervention scale.
+For a compute claim, compare at matched total tokens and include selector cost rather than oracle selection alone.
+For an RLVR claim, independently validate the verifier and distinguish answer validity from intermediate reasoning validity.
+Run the negative control with the same care and reporting detail as the preferred condition.
+If an identity intervention changes outputs, stop the scientific interpretation until implementation correctness is restored.
+
+A failed reproduction can reflect implementation error, task mismatch, or a genuine limit of the original claim.
+These explanations require different evidence; listing them is not the same as discriminating among them.
+Use a minimal diagnostic rerun to isolate one possibility rather than broad unregistered hyperparameter search.
+Report unavailable proprietary weights or missing artifacts as blockers, not silently substituted reproductions.
+
+## Bounded manual CPU/Colab exploration
+
+Plan for two hours of human reading and setup, with at most 30 minutes of model execution.
+CPU route: reproduce local linearization failure in a small ReLU graph or audit a verifiable expression checker.
+Colab route: run one frozen small checkpoint on at most 24 prompt pairs with two intervention conditions.
+Reserve half the compute budget for controls and a fresh diagnostic set rather than spending it all on the headline condition.
+Set a hard output-token and disk-cache cap, and record wall time and peak memory if available.
+No distributed training, premium API, giant dataset, or paper-level benchmark target is required.
+If your budget cannot resolve the effect, return an uncertainty analysis and a next-experiment recommendation.
+This is a reduced-scale research exploration unless the original setting and artifacts are actually reproduced.
+
+## Interpreting disagreement
+
+Compare qualitative direction, effect magnitude, and failure modes separately.
+A tiny effect in the expected direction may still be practically inconsistent with a large claimed gain.
+A faithful implementation with a smaller model can reveal a scaling dependence without disproving a frontier-model result.
+A successful replication on one prompt does not establish broad generalization.
+A negative result under a carefully matched condition is worth retaining even when it is inconvenient.
+Never invent a benchmark number to make the report look complete.
+
+## Established findings and open hypotheses
+
+**Established:** the cited papers supply concrete claims, methods, and limitations that can be checked at different levels of fidelity.
+**Open hypothesis:** the one you select survives your declared change of scale, task family, and evaluation budget.
+Your report should distinguish direct observation, implementation inference, and speculative explanation in separate sentences.
+Research status remains draft even if the manual exploration succeeds; no grading calibration is implied.
+
+## Research deliverable and review checklist
+
+Provide the frozen protocol, environment details, raw outputs or small permitted artifacts, and a script invocation that reruns the analysis.
+Include a deviations log, negative-control result, failure inventory, and the strongest alternative explanation still consistent with the data.
+Finish with one of three qualified conclusions: matched reproduction, informative reduced-scale adaptation, or inconclusive attempt.
+Explain what single next experiment would most reduce uncertainty and what resources it would actually require.
+There is no generated notebook, submission interface, leaderboard score, or pretend calibrated problem associated with this capstone.
+
+## Primary references and verification
+
+- [Circuit Tracing: Revealing Computational Graphs in Language Models](https://transformer-circuits.pub/2025/attribution-graphs/methods.html) — 2025; primary page/title checked 2026-10-17.
+- [s1: Simple test-time scaling](https://arxiv.org/abs/2501.19393) — 2025; primary page/title checked 2026-10-17.
+- [Reinforcement Learning with Verifiable Rewards Implicitly Incentivizes Correct Reasoning in Base LLMs](https://proceedings.iclr.cc/paper_files/paper/2026/hash/517f9b9c227b9dd51dba4560f37165ed-Abstract-Conference.html) — 2026; primary page/title checked 2026-10-17.
+
+Years denote first preprint/publication, except the explicitly identified 2026 conference counterpoint. Live HTTP checks are available through `python3 tools/seed_research.py --verify-urls`; reachability does not validate a scientific claim.
+
+All instructional prose and project designs here are independently authored; no paper results or benchmark measurements are fabricated.

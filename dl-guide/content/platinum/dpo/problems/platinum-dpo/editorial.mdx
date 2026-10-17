@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+L_{\mathrm{DPO}}=-\mathbb E\log\sigma\!\left(\beta\left[\log\frac{\pi_\theta(y_w\mid x)}{\pi_{\mathrm{ref}}(y_w\mid x)}-\log\frac{\pi_\theta(y_l\mid x)}{\pi_{\mathrm{ref}}(y_l\mid x)}\right]\right)
+\end{aligned}
+$$
+
+Here x is a prompt, y-w/y-l preferred/rejected completions, pi-theta the trained policy, pi-ref a frozen reference, beta positive preference scale, and sigma sigmoid. Sequence log probabilities sum completion-token log probabilities under the same conditioning.
+
 implement reference-relative chosen-rejected log-probability margins on licensed preferences. implement reference-relative chosen-rejected log-probability margins on licensed preferences
 
 Read [Direct Preference Optimization: Your Language Model is Secretly a Reward Model](https://arxiv.org/abs/2305.18290) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

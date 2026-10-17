@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+h'=\operatorname{ReLU}(W*h+b),\\ \tilde h=\frac{m\odot h'}{p},\quad m_j\sim\operatorname{Bernoulli}(p)
+\end{aligned}
+$$
+
+Here W and b are convolution parameters, the star denotes convolution, h is an activation, and p is the keep probability. Inverted dropout uses independent mask entries during training and is the identity during evaluation.
+
 adapt convolution ReLU pooling and dropout to CIFAR-10; aspirational accuracy 0.85 within 300 seconds. adapt convolution ReLU pooling and dropout to CIFAR-10; aspirational accuracy 0.85 within 300 seconds
 
 Read [ImageNet Classification with Deep Convolutional Neural Networks](https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

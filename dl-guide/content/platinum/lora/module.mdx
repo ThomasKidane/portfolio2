@@ -16,7 +16,13 @@ prerequisites: ["gold-transformer"]
 
 ## Mechanism and equations
 
-`W_effective=W_frozen+(alpha/r)*B*A; trainable_fraction=adapter_parameters/total_parameters.`
+$$
+\begin{aligned}
+W_{\mathrm{eff}}=W_0+\frac\alpha r BA,\\ A\in\mathbb R^{r\times d_{\mathrm{in}}},\quad B\in\mathbb R^{d_{\mathrm{out}}\times r},\\ f_{\mathrm{train}}=\frac{P_{\mathrm{trainable}}}{P_{\mathrm{total}}}
+\end{aligned}
+$$
+
+Here W-zero is frozen, A/B are rank-r adapters, alpha their scale, d-in/d-out layer dimensions, and P parameter counts. State whether biases or other heads are trainable when reporting the fraction.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

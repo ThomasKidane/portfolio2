@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+q(x_t\mid x_{t-1})=\operatorname{Cat}(x_{t-1}Q_t),\\ q(x_t\mid x_0)=\operatorname{Cat}(x_0\bar Q_t),\quad\bar Q_t=Q_1\cdots Q_t,\\ (Q_t)_{mm}=1
+\end{aligned}
+$$
+
+Here x is a row one-hot token, Q a row-stochastic transition matrix, Cat a categorical distribution, and m an absorbing mask state. Once masked the forward process stays masked; a learned reverse process reconstructs tokens.
+
 implement absorbing-mask corruption and reverse token prediction on text8 or TinyShakespeare. implement absorbing-mask corruption and reverse token prediction on text8 or TinyShakespeare
 
 Read [Structured Denoising Diffusion Models in Discrete State-Spaces](https://arxiv.org/abs/2107.03006) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

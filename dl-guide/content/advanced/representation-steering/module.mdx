@@ -1,0 +1,116 @@
+---
+id: "advanced-representation-steering-module"
+title: "Representation steering and causal controls"
+division: "advanced"
+module: "representation-steering"
+kind: "research"
+status: "draft"
+year: 2023
+prerequisites: ["advanced-causal-circuits-module", "advanced-feature-attribution-module"]
+problems: []
+description: "Construct held-out contrastive steering tests with dose response, off-target controls, and distribution limits."
+order: 4
+---
+
+# Representation steering and causal controls
+
+**Research exploration — not a calibrated problem.**
+
+Research selection checked on **2026-10-17**; this is a curated reading route, not an exhaustive or newest-paper claim.
+
+## Research question and objectives
+
+A direction that predicts a property is not automatically a direction that selectively controls that property.
+Representation steering tests a stronger intervention claim by modifying hidden states during a forward pass.
+Learn to separate a useful engineering control from an interpretation of a naturally occurring mechanism.
+Design a dose-response experiment that can reveal collateral degradation, not merely a few successful generations.
+Use benign topics such as formal versus informal style; this project does not require bypassing safety safeguards.
+
+## Notation and contrastive direction
+
+Let $h_\ell(x_i^+)$ and $h_\ell(x_i^-)$ be matched activations from positive and negative style examples.
+For $n$ training pairs, form a mean contrast at a declared token position:
+
+$$
+v_\ell=\frac{1}{n}\sum_{i=1}^{n}\left(h_\ell(x_i^+)-h_\ell(x_i^-)\right),\qquad
+h'_{\ell,t}=h_{\ell,t}+\alpha v_\ell.
+$$
+
+The application positions $t$, layer $\ell$, and coefficient $\alpha$ are all part of the intervention specification.
+Record whether $v_\ell$ is normalized; coefficients cannot be compared across layers without a scale convention.
+Paired examples should differ in the intended behavior without systematically changing topic, length, or answer correctness.
+Otherwise the mean contrast may encode those confounds instead of style.
+
+## Readings and evidential status
+
+Steering Llama 2 via Contrastive Activation Addition first appeared as a 2023 preprint, with later revisions.
+It studies averaged contrast directions and behavior changes under activation addition.
+Its observed effects establish controllability in its tested conditions, not a universal linear axis for a human concept.
+The 2025 SAE steering paper shows why selecting a feature by input activation need not select a strong output control.
+Read that distinction before treating a descriptive feature name as a reliable intervention handle.
+An SAE-based edit and a contrastive mean direction are different bases and require matched displacement controls.
+
+## Intervention protocol
+
+1. Write 20 paired short examples of formal/informal wording across five benign topics.
+2. Split by topic: three for direction estimation, one for coefficient selection, and one frozen for testing.
+3. Freeze the model and cache one declared position at each of at most three candidate layers.
+4. Estimate $v_\ell$ using only training examples; choose a layer using the development topic.
+5. Evaluate $\alpha=0$ and a symmetric set of small positive and negative coefficients.
+6. Keep decoding settings, random seeds, maximum output tokens, and stopping rules identical.
+7. Score style with a prewritten rubric and separately score factual preservation and grammatical coherence.
+8. Evaluate the frozen topic once with all planned coefficients and keep unsuccessful generations.
+
+When using stochastic decoding, pair seeds across intervention conditions and report prompt-level aggregates.
+A style classifier trained on the same contrast examples can reward artifacts; include a small blind human check.
+For manual annotation, hide intervention labels and define how ties and ambiguous cases are handled.
+Avoid selecting only generations that contain an obvious stylistic keyword.
+
+## Causal controls
+
+- A zero-vector hook must reproduce the untouched model.
+- A norm-matched random direction estimates the disruption caused by adding arbitrary energy.
+- A label-shuffled contrast estimates how much the extraction procedure works without the intended association.
+- A sign reversal tests directional behavior, but lack of symmetry is not automatically an implementation bug.
+- A prompt-only style instruction is a practical baseline with a different mechanism.
+- A held-out factual task measures whether steering damages unrelated behavior.
+
+Record the residual-stream norm and relative intervention size at every chosen layer.
+A coefficient that forces a style word while destroying answer content is not a successful selective control.
+Changing LayerNorm statistics can create broad effects even if the direction has an appealing semantic description.
+Repeat direction extraction across training subsets to expose instability hidden by a single averaged vector.
+
+## Bounded manual CPU/Colab exploration
+
+Use a small local causal LM with auditable forward hooks and at most 40 generated tokens per prompt.
+CPU users can test eight prompt pairs, two layers, and three coefficient values; keep the reduced design explicit.
+A Colab GPU can extend to the full 20-pair design without finetuning the model.
+Stop after 120 generations or 20 minutes of execution, whichever comes first, and record incomplete conditions.
+Measure actual elapsed time and token counts rather than claiming a universal speed or effect size.
+If model access is unavailable, use a small trained synthetic classifier and disclose the weaker behavioral scope.
+Do not imply that the synthetic fallback demonstrates language-style control.
+No safety-sensitive prompt collection or hidden service access is necessary.
+
+## Established findings and open hypotheses
+
+**Established in cited settings:** activation additions can change behavior, and input-detection scores alone can be insufficient for choosing controls.
+**Open hypothesis:** your extracted direction controls style while preserving task content on a new topic family.
+A useful intervention need not correspond to a unique feature that the unmodified model naturally uses.
+A successful benign control also does not imply that safety controls will generalize under adaptive attack.
+
+## Research deliverable
+
+Produce a coefficient-response plot or short annotated result list with target and off-target outcomes kept separate.
+Describe extraction examples, hook placement, norm conventions, blind rubric, and failure cases precisely enough to repeat.
+State whether evidence supports controllability, interpretation, both, or neither.
+There is no benchmark threshold, graded reward, or generated notebook for this module.
+Connect this distinction to [reasoning and inference-time compute](../reasoning-compute/module.mdx).
+
+## Primary references and verification
+
+- [Steering Llama 2 via Contrastive Activation Addition](https://arxiv.org/abs/2312.06681) — 2023; primary page/title checked 2026-10-17.
+- [SAEs Are Good for Steering – If You Select the Right Features](https://arxiv.org/abs/2505.20063) — 2025; primary page/title checked 2026-10-17.
+
+Years denote first preprint/publication, except the explicitly identified 2026 conference counterpoint. Live HTTP checks are available through `python3 tools/seed_research.py --verify-urls`; reachability does not validate a scientific claim.
+
+All instructional prose and project designs here are independently authored; no paper results or benchmark measurements are fabricated.

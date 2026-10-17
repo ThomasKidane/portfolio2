@@ -1,0 +1,125 @@
+---
+id: "advanced-feature-attribution-module"
+title: "Sparse features, superposition, and attribution beyond reconstruction"
+division: "advanced"
+module: "feature-attribution"
+kind: "research"
+status: "draft"
+year: 2024
+prerequisites: ["platinum-sparse-autoencoders-module", "advanced-causal-circuits-module"]
+problems: []
+description: "Audit sparse feature explanations with residual-preserving interventions and dictionary stability checks."
+order: 2
+---
+
+# Sparse features, superposition, and attribution beyond reconstruction
+
+**Research exploration — not a calibrated problem.**
+
+Research selection checked on **2026-10-17**; this is a curated reading route, not an exhaustive or newest-paper claim.
+
+## Research question and objectives
+
+The [Platinum SAE lesson](../../platinum/sparse-autoencoders/module.mdx) introduces dictionary fitting and sparsity tradeoffs.
+Here the dictionary is a measurement instrument, not the final scientific explanation.
+Ask whether an interpretable latent has a reproducible causal role rather than merely a plausible list of top examples.
+Separate superposition in the model, dictionary non-identifiability, and feature attribution in your own argument.
+Learn to preserve reconstruction error when intervening so that a latent edit is not confused with replacing the entire representation.
+
+## Notation and a change of basis
+
+Let $h\in\mathbb{R}^d$ be a frozen activation, $z=E(h)\in\mathbb{R}^m$ a sparse code, and $D\in\mathbb{R}^{d\times m}$ a decoder.
+The decoder columns $d_j$ need not be orthogonal; an overcomplete dictionary can have $m>d$.
+Write the reconstruction as $\hat h=b+Dz$ and the residual as $e=h-\hat h$.
+To alter just latent $j$, keep that residual rather than silently discarding it:
+
+$$
+h^{(j\to c)}=b+D z^{(j\to c)}+e
+=h+(c-z_j)d_j.
+$$
+
+This identity makes the intervention explicit even when reconstruction is imperfect.
+It does not imply that the new activation is in distribution or that the encoder would return the edited code.
+A first-order attribution estimate for output score $m(h)$ is
+
+$$
+A_j=(c-z_j)\,d_j^\top\nabla_h m(h).
+$$
+
+Compare $A_j$ with the exact forward change; large edits can invalidate the local linear approximation.
+Keep decoder normalization fixed because rescaling $d_j$ changes the numerical meaning of a unit code edit.
+
+## Reading route and conceptual distinction
+
+Toy Models of Superposition constructs simplified settings where more sparse features than dimensions can be represented.
+Those constructions establish a mechanism in toy models, not a universal decomposition of every language model activation.
+Scaling and evaluating sparse autoencoders extends evaluation beyond reconstruction loss and sparsity alone.
+Read the downstream-effect and feature-quality discussions before accepting a favorable reconstruction frontier as interpretability evidence.
+The 2025 steering paper distinguishes features that detect input patterns from those whose interventions drive outputs.
+A strongly activating feature therefore need not be the best control variable for its apparent semantic label.
+
+## Intervention protocol
+
+1. Freeze a small model and choose one layer using development data only.
+2. Use a compatible published dictionary with a recorded checkpoint, or fit a tiny dictionary on a separate activation pool.
+3. Split examples by template family rather than randomly splitting nearly identical sentences.
+4. Select at most three latents from development examples; write predicted positive and negative cases in advance.
+5. Compute no-edit, full-reconstruction, and residual-preserving no-edit forwards.
+6. Set each selected latent to zero, to a matched donor value, and to a modest positive increment.
+7. Measure exact changes in the predeclared answer contrast and off-target next-token loss.
+8. Compare those changes with the gradient estimate and evaluate the predicted sign on held-out templates.
+
+Record the sparse-code values, decoder norms, residual norm, and actual activation displacement for every edit.
+Full-reconstruction replacement tests the dictionary as a whole; it is not a selective feature ablation.
+If residual-preserving no-edit does not reproduce the baseline, stop and debug the hook or numerical precision.
+Do not call a feature universally monosemantic based on ten highly selected activations.
+
+## Controls and identifiability
+
+- Match a random decoder-direction intervention by activation-space norm, not by latent coefficient.
+- Compare active and inactive latents to detect changes caused simply by a large injected vector.
+- Repeat on two dictionary seeds or widths if fitting locally; match features by decoder similarity and examples, not index.
+- Inspect whether the named behavior is spread across multiple latents or absorbed into a broader feature.
+- Check reconstruction-only loss recovery separately from behavioral specificity.
+- Keep discovery examples, label-writing examples, and final test examples distinguishable in the report.
+
+Feature splitting means two dictionaries may encode a behavior at different levels of granularity.
+Feature absorption can make a narrow concept appear inside another latent's activation pattern.
+Neither low mean squared error nor a clean feature label settles those ambiguities.
+A reliable causal effect on one output contrast is stronger evidence than an attractive label, but still local evidence.
+
+## Bounded manual CPU/Colab exploration
+
+A CPU-only alternative uses 2,000 synthetic activations from 12 sparse factors embedded in six dimensions.
+Generate independent sparse Bernoulli factors with fixed decoder directions and reserve 500 new samples for evaluation.
+Fit two 24-latent dictionaries for no more than 500 minibatch steps each; record the chosen optimizer and seed.
+Compare recovered directions with the known generating directions under permutation and sign conventions.
+Then intervene on a linear downstream readout and observe when reconstruction quality fails to predict attribution accuracy.
+This synthetic option tests a measurement issue, not whether a real language model has the same factor structure.
+An optional Colab extension uses a published small-model SAE and 20 short prompts, without training a frontier-scale dictionary.
+Do not advertise either route as reproducing the cited large-model scaling experiment.
+
+## Established findings and open hypotheses
+
+**Established in cited settings:** sparse reconstructions can expose useful structure, while feature quality needs more than reconstruction metrics.
+**Open hypothesis:** your selected latent is a stable causal handle across dictionaries and template families.
+A sign disagreement between gradient attribution and exact editing may indicate nonlinearity, hook errors, or a poor feature basis.
+Investigate those alternatives before claiming a new semantic discovery.
+
+## Research deliverable
+
+Submit a feature audit with predicted counterexamples, exact versus approximate effects, and dictionary provenance.
+Include a case where the feature label overpredicted the causal effect, or explain why your sample was inconclusive.
+State which residual and off-target controls were retained and which you could not afford.
+There is no graded feature-quality threshold or notebook badge attached to this reading.
+Next, connect local feature effects in [circuit tracing](../circuit-tracing/module.mdx).
+
+## Primary references and verification
+
+- [Toy Models of Superposition](https://transformer-circuits.pub/2022/toy_model/index.html) — 2022; primary page/title checked 2026-10-17.
+- [Scaling and evaluating sparse autoencoders](https://arxiv.org/abs/2406.04093) — 2024; primary page/title checked 2026-10-17.
+- [SAEs Are Good for Steering – If You Select the Right Features](https://arxiv.org/abs/2505.20063) — 2025; primary page/title checked 2026-10-17.
+
+Years denote first preprint/publication, except the explicitly identified 2026 conference counterpoint. Live HTTP checks are available through `python3 tools/seed_research.py --verify-urls`; reachability does not validate a scientific claim.
+
+All instructional prose and project designs here are independently authored; no paper results or benchmark measurements are fabricated.

@@ -8,7 +8,15 @@ status: draft
 
 ## The mechanism
 
-track activation and gradient variance through deep sigmoid and tanh networks. Glorot weights have variance 2/(fan_in+fan_out); a uniform implementation uses bounds plus/minus sqrt(6/(fan_in+fan_out)). Zero biases. Probe eight equally wide layers under the same random seed and input using tanh and sigmoid, recording every activation variance and retained gradient norm. Sigmoid has a nonzero mean and can still attenuate gradients even with Glorot initialization. The reference trains a six-hidden-layer tanh classifier for 32 SGD steps and includes separate controlled diagnostics, not a convergence claim.
+$$
+\begin{aligned}
+\operatorname{Var}(W_{ij})=\frac{2}{n_{\mathrm{in}}+n_{\mathrm{out}}},\\ W_{ij}\sim\mathcal U(-a,a),\quad a=\sqrt{\frac{6}{n_{\mathrm{in}}+n_{\mathrm{out}}}}
+\end{aligned}
+$$
+
+Here W is a weight matrix, n-in and n-out are fan-in and fan-out, and a is the Glorot uniform half-width. Biases start at zero; variance preservation is an approximation, not a guarantee for deep sigmoid networks.
+
+track activation and gradient variance through deep sigmoid and tanh networks. Initialize weights with the Glorot variance and uniform bounds shown above. Zero biases. Probe eight equally wide layers under the same random seed and input using tanh and sigmoid, recording every activation variance and retained gradient norm. Sigmoid has a nonzero mean and can still attenuate gradients even with Glorot initialization. The reference trains a six-hidden-layer tanh classifier for 32 SGD steps and includes separate controlled diagnostics, not a convergence claim.
 
 Read [Understanding the difficulty of training deep feedforward neural networks](https://proceedings.mlr.press/v9/glorot10a.html) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.
 

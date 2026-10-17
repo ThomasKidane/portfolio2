@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+S_{ij}=\frac{u_i^\top v_j}{\tau},\\ L=-\frac1{2B}\sum_{i=1}^B\left[\log\frac{e^{S_{ii}}}{\sum_j e^{S_{ij}}}+\log\frac{e^{S_{ii}}}{\sum_j e^{S_{ji}}}\right]
+\end{aligned}
+$$
+
+Here u and v are unit-normalized image/text embeddings for B aligned pairs, S similarity logits, and tau positive temperature. The two terms classify image-to-text and text-to-image pairs respectively.
+
 align licensed image-caption pairs using symmetric contrastive loss and report retrieval recall; explicit Gold capstone exception. align licensed image-caption pairs using symmetric contrastive loss and report retrieval recall; explicit Gold capstone exception
 
 Read [Learning Transferable Visual Models From Natural Language Supervision](https://arxiv.org/abs/2103.00020) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

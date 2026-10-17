@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+\ell_i=-\log\frac{\exp(\operatorname{sim}(z_i,z_{j(i)})/\tau)}{\sum_{k\ne i}^{2B}\exp(\operatorname{sim}(z_i,z_k)/\tau)}
+\end{aligned}
+$$
+
+Here z are projected embeddings of two views of each of B images, j(i) indexes the paired view, sim is cosine similarity, and tau positive temperature. Exclude self but include the positive in the denominator; average over both views.
+
 implement normalized temperature-scaled contrastive loss and a frozen CIFAR linear probe. implement normalized temperature-scaled contrastive loss and a frozen CIFAR linear probe
 
 Read [A Simple Framework for Contrastive Learning of Visual Representations](https://arxiv.org/abs/2002.05709) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

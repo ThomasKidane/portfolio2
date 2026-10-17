@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+z=\operatorname{ReLU}(W_e(x-b_d)+b_e),\quad\hat x=W_dz+b_d,\\ L=\lVert\hat x-x\rVert_2^2+\lambda\lVert z\rVert_1
+\end{aligned}
+$$
+
+Here x is a frozen-model activation, z sparse features, W-e/W-d encoder/decoder matrices, b biases, and lambda the sparsity penalty. Average over samples and constrain decoder column norms to prevent trivial rescaling of the L1 penalty.
+
 fit a sparse dictionary to frozen activations and report reconstruction versus L0 with dead-feature counts. fit a sparse dictionary to frozen activations and report reconstruction versus L0 with dead-feature counts
 
 Read [Towards Monosemanticity: Decomposing Language Models With Dictionary Learning](https://transformer-circuits.pub/2023/monosemantic-features/index.html) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

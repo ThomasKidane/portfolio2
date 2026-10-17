@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+\min_G\max_D\ \mathbb E_{x\sim p_{\mathrm{data}}}\log D(x)+\mathbb E_{z\sim p_z}\log(1-D(G(z))),\\ L_G^{\mathrm{NS}}=-\mathbb E_{z\sim p_z}\log D(G(z))
+\end{aligned}
+$$
+
+Here G generates from noise z, D estimates real-data probability, and x is a real sample. The second line is the non-saturating generator loss used instead of minimizing the saturating minimax term; this alone does not specify the DCGAN architecture.
+
 train MNIST convolutional generator and discriminator; audit classifier confidence and class diversity. train MNIST convolutional generator and discriminator; audit classifier confidence and class diversity
 
 Read [Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks](https://arxiv.org/abs/1511.06434) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

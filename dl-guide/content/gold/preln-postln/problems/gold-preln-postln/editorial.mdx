@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+x'_{\mathrm{pre}}=x+F(\operatorname{LN}(x)),\\ x'_{\mathrm{post}}=\operatorname{LN}(x+F(x))
+\end{aligned}
+$$
+
+Here x is the residual stream, F an attention or feed-forward sublayer, and LN layer normalization over features. These equations isolate normalization placement for one residual sublayer.
+
 compare normalization placement and warmup using matched-depth language models and gradient traces. compare normalization placement and warmup using matched-depth language models and gradient traces
 
 Read [On Layer Normalization in the Transformer Architecture](https://arxiv.org/abs/2002.04745) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

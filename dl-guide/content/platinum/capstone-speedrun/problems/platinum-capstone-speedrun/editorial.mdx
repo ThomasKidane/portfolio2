@@ -8,6 +8,14 @@ status: draft
 
 ## The mechanism
 
+$$
+\begin{aligned}
+\mathrm{throughput}=\frac{U_{\mathrm{completed}}}{t_{\mathrm{elapsed}}},\\ C\le C_0,\quad M_{\mathrm{peak}}\le M_0
+\end{aligned}
+$$
+
+Here U counts declared work units, t measured wall seconds, C measured compute, and M peak memory; C-zero/M-zero are fixed caps. Compare held-out quality under the same constraints and define whether timing includes compilation, data loading, and evaluation; no benchmark is implied.
+
 combine an explicitly chosen model optimization and evaluation task into a reproducible fixed-compute speedrun; benchmark citation is methodological background not a canonical speedrun model paper. combine an explicitly chosen model optimization and evaluation task into a reproducible fixed-compute speedrun; benchmark citation is methodological background not a canonical speedrun model paper
 
 Read [MLPerf Training Benchmark](https://arxiv.org/abs/1910.01500) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.

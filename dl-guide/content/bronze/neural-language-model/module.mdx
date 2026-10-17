@@ -16,7 +16,13 @@ prerequisites: ["bronze-lenet5"]
 
 ## Mechanism and equations
 
-`p(c_next|context)=softmax(W_out*tanh(W_h*concat(emb(context))+b_h)+b_out); bpc=CE/log(2).`
+$$
+\begin{aligned}
+e=\operatorname{concat}(E[c_1],\ldots,E[c_k]),\\ p(c_{k+1}\mid c_{1:k})=\operatorname{softmax}(W_o\tanh(W_he+b_h)+b_o),\\ \mathrm{bpc}=\frac{-\frac1N\sum_{i=1}^N\log p(c_i\mid\mathrm{context}_i)}{\log 2}
+\end{aligned}
+$$
+
+Here c are characters, E is the embedding table, k the fixed context length, W and b learned projections and biases, and N the number of evaluated targets. Natural-log cross-entropy is converted to bits per character; the original paper used words.
 
 Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
 

@@ -154,6 +154,25 @@ def test_attention_operator_uses_real_equivalence_metric(guide):
     assert verdict.parameters == 0
 
 
+def test_reconstruction_uses_seeded_corruption_and_clean_pixel_targets(guide, monkeypatch):
+    import torch
+    monkeypatch.setenv('DLGUIDE_SMOKE', '1')
+    p = problem(guide, dataset={'name': 'mnist', 'target': 'clean-image', 'train_size': 12, 'val_size': 4, 'test_size': 4}, metric={'name': 'mse', 'direction': 'minimize', 'target': 'clean-input', 'corruption_probability': 0.3, 'corruption_seed': 19})
+    with pytest.warns(UserWarning):
+        p.data()
+    class Identity(torch.nn.Module):
+        def forward(self, x):
+            return x
+    sub = Submission(Identity())
+    score = p._score(sub)
+    clean = p._data['test'].tensors[0]
+    keep = torch.rand(clean.shape, generator=torch.Generator().manual_seed(19)) >= 0.3
+    expected = ((clean * keep - clean) ** 2).mean().item()
+    assert score == pytest.approx(expected)
+    assert score > 0
+    assert p._score(sub) == score
+
+
 def test_unknown_problem_actionable(tmp_path):
     with pytest.raises(ValueError, match="build_problem_tables"):
         Problem("missing", tmp_path)

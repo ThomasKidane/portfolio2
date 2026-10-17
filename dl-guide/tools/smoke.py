@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Execute notebooks using reference code substituted ONLY in memory.
 
-Draft stubs are explicitly skipped, not counted as passes. --require-complete
-makes any skipped/incomplete pipeline a failure. Never writes executed notebooks.
+DLGUIDE_SMOKE=1 explicitly selects synthetic, labeled image/text fixtures;
+these executions are not benchmark results or calibrated passes. Draft stubs
+are explicitly skipped. --require-complete makes any skipped/unpublished
+pipeline a failure. Never writes executed notebooks. Kernels use the invoking
+Python interpreter, one CPU thread, and are cleaned up after each notebook.
 """
 import argparse
 from pathlib import Path
@@ -17,7 +20,7 @@ def smoke(root=ROOT, require_complete=False, timeout=900):
     except ImportError as exc:
         raise RuntimeError("Install requirements-dev.txt to execute smoke notebooks.") from exc
     problems, _, _ = records(root)
-    failed, passed, skipped = [], [], []
+    failed, passed, skipped, executed = [], [], [], []
     for problem in problems:
         pid = problem["id"]
         code = reference(root, problem)
@@ -32,18 +35,23 @@ def smoke(root=ROOT, require_complete=False, timeout=900):
             target.source = code
             # Use the local built runtime; no installation or network in setup.
             setup = next(c for c in notebook.cells if c.get("id") == "setup")
-            setup.source = "import sys, os\nsys.path.insert(0, {!r})\nos.environ['DLGUIDE_METADATA'] = {!r}\nfrom dlguide import Problem, Submission\nP = Problem({!r}, seed=0)\nsubmission = None\n".format(str(root / "dlguide"), str(root / "dlguide" / "dlguide" / "metadata"), pid)
+            setup.source = "import sys, os\nos.environ['DLGUIDE_SMOKE'] = '1'\nos.environ.pop('DLGUIDE_DOWNLOAD', None)\nsys.path.insert(0, {!r})\nos.environ['DLGUIDE_METADATA'] = {!r}\nimport torch\ntorch.set_num_threads(1)\nfrom dlguide import Problem, Submission\nP = Problem({!r}, seed=0)\nsubmission = None\nprint('SMOKE FIXTURES ONLY: not genuine benchmark data or calibrated evidence')\n".format(str(root / "dlguide"), str(root / "dlguide" / "dlguide" / "metadata"), pid)
             # Drafts may have a functioning reference but no calibrated threshold.
             # They execute fully, then explicitly report incomplete instead of PASS.
             grade = next(c for c in notebook.cells if c.get("id") == "grade")
             if problem.get("status") in ("draft", "stub", "planned"):
-                grade.source += "\nassert submission is not None, P._failure\nassert not P._failure, P._failure\n"
+                grade.source += "\nimport math\nassert submission is not None, P._failure\nassert not P._failure, P._failure\nassert verdict.metric is not None and math.isfinite(verdict.metric), verdict.message\nassert verdict.passed or 'No calibrated pass threshold' in verdict.message, verdict.message\nprint('REFERENCE EXECUTED on smoke fixtures; metric=', verdict.metric, 'time=', verdict.elapsed, 'device=', verdict.gpu)\n"
             else:
                 grade.source += "\nassert verdict.passed, verdict.message\n"
-            NotebookClient(notebook, timeout=timeout, kernel_name="python3", resources={"metadata": {"path": str(root)}}).execute()
+            from jupyter_client import KernelManager
+            manager = KernelManager(kernel_name="python3")
+            manager.kernel_spec.argv = [sys.executable, "-m", "ipykernel_launcher", "-f", "{connection_file}"]
+            NotebookClient(notebook, timeout=timeout, kernel_name="python3", km=manager, resources={"metadata": {"path": str(root)}}).execute(cleanup_kc=True)
             if problem.get("status") in ("draft", "stub", "planned"):
-                print("SKIP {}: reference executed, but draft is not calibrated/published".format(pid))
-                skipped.append(pid)
+                outputs = "".join(o.get("text", "") for c in notebook.cells for o in c.get("outputs", []))
+                details = next((line for line in outputs.splitlines() if line.startswith("REFERENCE EXECUTED")), "")
+                print("EXECUTED {}: {}; uncalibrated, not a benchmark PASS".format(pid, details))
+                executed.append(pid)
             else:
                 print("PASS {}: reference notebook executed in memory".format(pid))
                 passed.append(pid)
@@ -53,8 +61,8 @@ def smoke(root=ROOT, require_complete=False, timeout=900):
     if not problems:
         print("FAIL: no generated problems to execute")
         failed.append("<empty>")
-    print("Smoke summary: {} passed, {} skipped/incomplete, {} failed".format(len(passed), len(skipped), len(failed)))
-    return not failed and (not require_complete or not skipped)
+    print("Smoke summary: {} published passes, {} references executed (uncalibrated fixtures), {} skipped/unimplemented, {} failed".format(len(passed), len(executed), len(skipped), len(failed)))
+    return not failed and (not require_complete or not (skipped or executed))
 
 
 if __name__ == "__main__":

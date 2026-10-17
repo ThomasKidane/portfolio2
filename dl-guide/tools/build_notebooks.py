@@ -31,7 +31,7 @@ def notebook(problem, cfg, root=ROOT):
         cell("code", install, "setup"),
         cell("markdown", "## Task and constraints\n\n{}\n\nMetric: `{}`\n\nBudget: `{}`\n".format(task, problem.get("metric"), problem.get("budget", {})), "task"),
         cell("markdown", "## Refresher\n\n{}\n".format(refresher), "refresher"),
-        cell("code", 'data = None\ntry:\n    data = P.data()\n    print({name: len(split) for name, split in data.items()})\n    print("Input and target shapes:", [tuple(t.shape) for t in data["train"].tensors])\nexcept Exception as exc:\n    P._failure = "Dataset unavailable: " + str(exc)\n    print(P._failure)\n', "data"),
+        cell("code", 'data = None\ntry:\n    data = P.data()\n    print({name: len(data[name]) for name in ("train", "val")})\n    print("Input and target shapes:", [tuple(t.shape) for t in data["train"].tensors])\nexcept Exception as exc:\n    P._failure = "Dataset unavailable: " + str(exc)\n    print(P._failure)\n', "data"),
         cell("code", starter(root, problem), "student-solve"),
         cell("code", 'try:\n    if data is None:\n        raise RuntimeError(P._failure or "Dataset unavailable")\n    with P.budget() as budget:\n        submission = solve(data)\n        budget.validate(submission.model)\nexcept NotImplementedError as exc:\n    P._failure = "Starter incomplete: " + str(exc)\n    submission = None\nexcept Exception as exc:\n    P._failure = type(exc).__name__ + ": " + str(exc)\n    submission = None\n', "train"),
         cell("code", 'if submission is not None:\n    try:\n        P.check(submission)\n    except Exception as exc:\n        P._failure = "Self-check failed: " + str(exc)\nelse:\n    P.check()\n', "self-check"),

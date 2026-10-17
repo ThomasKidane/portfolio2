@@ -155,6 +155,19 @@ def test_student_notebook_executes_to_fail_without_exception(guide):
     assert not any(output.get("output_type") == "error" for cell in nb.cells for output in cell.get("outputs", []))
 
 
+def test_smoke_rejects_unsupported_metric_instead_of_fake_success(guide):
+    from smoke import smoke
+    from common import ROOT
+    import shutil
+    root, problem = guide
+    problem['metric']['name'] = 'unimplemented-pipeline-metric'
+    (root / 'content/catalog.json').write_text(json.dumps({'problems': [problem]}))
+    shutil.copytree(ROOT / 'dlguide/dlguide', root / 'dlguide/dlguide')
+    tables(root)
+    notebooks(root)
+    assert not smoke(root, timeout=60)
+
+
 def test_smoke_executes_reference_in_memory_only(guide):
     from smoke import smoke
     root, problem = guide

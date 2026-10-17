@@ -41,6 +41,21 @@ def test_image_loader_never_downloads_without_opt_in(monkeypatch):
     assert calls[0]["download"] is False
 
 
+@pytest.mark.parametrize('name,shape', [('mnist', (1, 28, 28)), ('cifar10', (3, 32, 32))])
+def test_explicit_image_smoke_fixture_is_deterministic_and_labeled(monkeypatch, name, shape):
+    import torch
+    monkeypatch.setenv('DLGUIDE_SMOKE', '1')
+    meta = {'dataset': {'name': name, 'train_size': 12, 'val_size': 4, 'test_size': 4}}
+    with pytest.warns(UserWarning, match='NOT the actual'):
+        a = load(meta)
+    with pytest.warns(UserWarning):
+        b = load(meta)
+    assert a['smoke'] is True
+    assert a['train'].tensors[0].shape == (12,) + shape
+    assert torch.equal(a['train'].tensors[0], b['train'].tensors[0])
+    assert not torch.equal(a['train'].tensors[0][:4], a['test'].tensors[0])
+
+
 def test_memory_cap_enforced_on_cpu(monkeypatch):
     import torch
     from dlguide import Budget, BudgetExceeded

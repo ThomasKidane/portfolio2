@@ -213,6 +213,11 @@ class Problem:
         spec = metric_spec(self.meta)
         name = spec["name"].lower()
         total, count = 0.0, 0
+        reconstruction = spec.get("target") in ("clean-input", "clean-image") or (isinstance(self.meta.get("dataset"), dict) and self.meta["dataset"].get("target") == "clean-image")
+        corruption_generator = torch.Generator().manual_seed(int(spec.get("corruption_seed", 1729)))
+        probability = float(spec.get("corruption_probability", self.meta.get("dataset", {}).get("corruption_probability", 0.3) if isinstance(self.meta.get("dataset"), dict) else 0.3))
+        if reconstruction and not 0 <= probability <= 1:
+            raise ValueError("Corruption probability must lie in [0, 1].")
         with torch.no_grad():
             for batch in torch.utils.data.DataLoader(ds, batch_size=256, shuffle=False):
                 if name == "attention_max_error":
@@ -226,6 +231,12 @@ class Problem:
                         self._budget.tick()
                     continue
                 x, y = batch[0].to(device), batch[1].to(device)
+                if reconstruction:
+                    # Evaluation corruption is deterministic and independent of
+                    # training RNG. Targets are clean pixels, never digit labels.
+                    y = x
+                    keep = torch.rand(x.shape, generator=corruption_generator) >= probability
+                    x = x * keep.to(device)
                 output = submission.predict_fn(model, x) if submission.predict_fn else model(x)
                 if not isinstance(output, torch.Tensor) or not torch.isfinite(output).all():
                     raise ValueError("Predictions must be finite torch tensors.")

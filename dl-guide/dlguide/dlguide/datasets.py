@@ -64,6 +64,21 @@ def load(meta, seed=0):
             result[split] = torch.utils.data.TensorDataset(*(t[start:start + size] for t in (q, k, v, expected)))
             start += size
         return result
+    if name in ("mnist", "cifar10", "cifar-10") and os.environ.get("DLGUIDE_SMOKE") == "1":
+        import warnings
+        warnings.warn("Synthetic image smoke fixture only; NOT the actual {} benchmark.".format(name), UserWarning)
+        channels, side, classes = (1, 28, 10) if name == "mnist" else (3, 32, 10)
+        # Independent, seeded image patterns preserve the genuine shape/dtype
+        # contract without claiming that random patterns are benchmark images.
+        labels = torch.arange(total) % classes
+        prototypes = torch.rand(classes, channels, side, side, generator=generator)
+        images = (prototypes[labels] + 0.05 * torch.randn(total, channels, side, side, generator=generator)).clamp(0, 1)
+        result, start = {}, 0
+        for split, size in (("train", ntrain), ("val", nval), ("test", ntest)):
+            result[split] = torch.utils.data.TensorDataset(images[start:start + size], labels[start:start + size])
+            start += size
+        result["smoke"] = True
+        return result
     if name in ("mnist", "cifar10", "cifar-10"):
         try:
             import torchvision.datasets as vision

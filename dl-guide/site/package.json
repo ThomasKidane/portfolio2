@@ -1,0 +1,40 @@
+{
+  "name": "dl-guide-site",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@fontsource/press-start-2p": "5.3.0",
+    "@fontsource/space-mono": "5.3.0",
+    "@mdx-js/react": "3.1.0",
+    "flexsearch": "0.8.212",
+    "katex": "0.19.0",
+    "lucide-react": "0.468.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "overrides": {
+    "katex": "$katex"
+  },
+  "devDependencies": {
+    "@mdx-js/rollup": "3.1.0",
+    "@types/node": "22.15.30",
+    "@types/react": "19.1.6",
+    "@types/react-dom": "19.1.6",
+    "@vitejs/plugin-react": "4.5.2",
+    "rehype-highlight": "7.0.2",
+    "rehype-katex": "7.0.1",
+    "remark-frontmatter": "5.0.0",
+    "remark-gfm": "4.0.1",
+    "remark-math": "6.0.0",
+    "typescript": "5.8.3",
+    "vite": "6.4.4",
+    "vitest": "4.1.11"
+  }
+}

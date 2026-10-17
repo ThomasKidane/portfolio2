@@ -105,7 +105,7 @@
     "branch": "main",
     "notebook_root": "dl-guide/notebooks",
     "runtime_path": "dl-guide/dlguide",
-    "runtime_ref": "main",
+    "runtime_ref": "24d60a86199b4b53ca417b2a1cf291932adfcb9a",
     "site_url": "https://www.thomaskidane.com/dl-guide/"
   },
   "check_module": "bronze-lenet5.py"

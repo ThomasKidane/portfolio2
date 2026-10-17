@@ -1,0 +1,8 @@
+-e ./dlguide
+pytest>=7,<9
+PyYAML>=6,<7
+nbformat>=5.9,<6
+nbclient>=0.9,<0.11
+ipykernel>=6,<7
+numpy>=1.24,<3
+torch>=2.0

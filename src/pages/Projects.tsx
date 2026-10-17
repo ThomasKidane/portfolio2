@@ -1,3 +1,5 @@
+import { MySitesSection } from '../components/MySitesSection'
+
 export function Projects() {
   return (
     <div className="min-h-screen bg-white p-12">
@@ -17,6 +19,8 @@ export function Projects() {
         
         <div className="border-t-2 border-dotted border-gray-300 mt-4 mb-12" />
         
+        <MySitesSection />
+
         <div className="text-center py-16">
           {/* Construction Figure */}
           <div className="border-4 border-blue-500 bg-white p-8 mb-8 inline-block">

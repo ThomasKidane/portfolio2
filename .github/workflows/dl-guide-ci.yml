@@ -1,0 +1,51 @@
+name: DL Guide checks
+
+on:
+  push:
+    paths: ['dl-guide/**', '.github/workflows/dl-guide-*.yml', 'tools/publish-dl-guide.mjs', 'package.json']
+  pull_request:
+    paths: ['dl-guide/**', '.github/workflows/dl-guide-*.yml', 'tools/publish-dl-guide.mjs', 'package.json']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: dl-guide/requirements-dev.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: dl-guide/.nvmrc
+          cache: npm
+          cache-dependency-path: dl-guide/site/package-lock.json
+      - name: Install CPU runtime and tools
+        run: |
+          python -m pip install torch==2.6.0 torchvision==0.21.0 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r dl-guide/requirements-dev.txt -e dl-guide/dlguide
+      - name: Generate, validate, and test
+        working-directory: dl-guide
+        run: |
+          make notebooks PYTHON=python
+          make validate PYTHON=python
+          make test PYTHON=python
+          DLGUIDE_SMOKE=1 make smoke PYTHON=python
+      - name: Check committed generated artifacts
+        run: git diff --exit-code -- dl-guide/notebooks dl-guide/site/src/generated dl-guide/dlguide/dlguide/metadata
+      - name: Test and build static site
+        working-directory: dl-guide/site
+        run: |
+          npm ci --no-audit --no-fund
+          npm test -- --run
+          npm run build
+      - name: Build portfolio with embedded guide
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build

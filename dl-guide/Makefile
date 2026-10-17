@@ -5,7 +5,7 @@ venv:
 	python3 -m venv .venv
 install: venv
 	$(PYTHON) -m pip install --upgrade pip
-	$(PYTHON) -m pip install -r requirements-dev.txt
+	$(PYTHON) -m pip install -r requirements-dev.txt -e ./dlguide
 
 tables:
 	$(PYTHON) tools/build_problem_tables.py

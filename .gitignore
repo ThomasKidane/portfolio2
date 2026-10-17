@@ -114,6 +114,15 @@ scraped-questions/
 client_secret_*
 *.secret.*
 
+# Generated standalone site (rebuilt during portfolio builds)
+/public/dl-guide/
+
+# Python environments and data caches
+.venv/
+.pytest_cache/
+*.egg-info/
+.dlguide-cache/
+
 # Python cache
 __pycache__/
 *.pyc

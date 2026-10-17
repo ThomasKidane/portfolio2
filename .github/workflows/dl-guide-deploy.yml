@@ -1,0 +1,45 @@
+name: Deploy DL Guide to GitHub Pages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: dl-guide-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: dl-guide/.nvmrc
+          cache: npm
+          cache-dependency-path: dl-guide/site/package-lock.json
+      - uses: actions/configure-pages@v5
+        id: pages
+      - name: Build the independent static guide
+        working-directory: dl-guide/site
+        env:
+          DL_GUIDE_BASE: ${{ steps.pages.outputs.base_path }}/
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dl-guide/site/dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment

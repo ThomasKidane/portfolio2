@@ -4,9 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "predev": "npm run build:dl-guide",
     "dev": "vite",
-    "build": "vite build",
-    "build-with-types": "tsc && vite build",
+    "build:dl-guide": "npm --prefix dl-guide/site ci --no-audit --no-fund && npm --prefix dl-guide/site run build && node tools/publish-dl-guide.mjs",
+    "build": "npm run build:dl-guide && vite build",
+    "build-with-types": "npm run build:dl-guide && tsc && vite build",
     "preview": "vite preview"
   },
   "dependencies": {

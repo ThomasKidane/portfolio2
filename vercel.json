@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/dl-guide",
+      "destination": "/dl-guide/index.html"
+    },
+    {
+      "source": "/dl-guide/",
+      "destination": "/dl-guide/index.html"
+    },
+    {
       "source": "/gnri/:path*",
       "destination": "https://gnri.vercel.app/:path*"
     },

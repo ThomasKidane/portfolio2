@@ -26,7 +26,7 @@ General functional ideas such as chapter navigation, searchable lessons, progres
 ## Future provenance checks
 
 - Record authorship and external references for newly written learning material.
-- Select and document the new project's code/content licensing separately; this document does not assign a license to the existing portfolio or future app.
+- The independently authored code and curriculum in `dl-guide/` are distributed under the MIT license in `dl-guide/LICENSE`. This does not relicense the rest of the portfolio, cited papers, third-party datasets, pretrained weights, or dependencies. Paper references are links, not redistributed papers.
 - Audit direct/transitive library licenses and any third-party assets selected during implementation. Upstream's license does not replace those obligations.
 - Any future upstream reuse requires a fresh license review and, where needed, explicit permission before it enters the portfolio. Attribution alone does not cure a noncommercial or ShareAlike violation.
 

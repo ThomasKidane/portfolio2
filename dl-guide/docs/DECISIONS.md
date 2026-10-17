@@ -30,6 +30,16 @@ A fork would only be reconsidered with a concrete need for upstream's collaborat
 - Exclude accounts, class/group management, online contribution editor/OAuth, metadata-scraping API, service-backed judge, ads, and upstream analytics. Add remote services only if requirements later justify them and privacy/ownership are explicitly designed.
 - Use original branding and presentation. A rewrite is not license laundering or a pixel-for-pixel clone.
 
-## 4. Step 0 completion gate
+## 4. Implementation decisions
+
+- Keep the requested `dl-guide/` repository-shaped subtree inside the existing public portfolio repository. The guide is a separate Vite/React application under `site/`, built into the portfolio's `public/dl-guide/`; the portfolio uses a normal anchor link rather than routing through its authentication/analytics providers.
+- Visual identity follows the portfolio at the user's request: white backgrounds, royal blue `#4169E1`, pixel headings, monospace interface text, serif reading prose, and dotted separators. A navy/blue dark mode preserves the same identity. The guide remains a standalone app, not a reimplementation of portfolio authentication.
+- Hash routing makes problem and module links work on both GitHub Pages and the existing portfolio host without a server. `DL_GUIDE_BASE` controls the standalone build prefix. Portfolio deployment uses `/dl-guide/`.
+- `site.config.json` is the single source of notebook hosting coordinates and guide backlinks. Runtime installs are pinned to a source commit containing bundled metadata. Generated notebooks and catalogs are committed; compiled site assets are not.
+- Section 11 takes precedence: no `results_schema.json`, result uploads/imports, result checksums, anti-tampering logic, or promises of a secure judge. `progress.json` contains only manual learner statuses, annotations, and notes.
+- The current machine is macOS without a CUDA/T4 runtime. CPU smoke fixtures verify pipeline wiring, not benchmark thresholds. All targets remain uncalibrated drafts until real hardware calibration is recorded. Missing GPU access is a verification limitation, not a reason to fabricate acceptance evidence or block useful static-site/toolchain work.
+- GitHub Pages publishing is manually triggered so it does not silently replace a repository's existing Pages site. The regular portfolio build automatically includes the subsite.
+
+## 5. Step 0 completion gate
 
 Required artifacts are [UPSTREAM_NOTES.md](./UPSTREAM_NOTES.md), [LICENSING.md](./LICENSING.md), and this decision record. The inspection/install evidence and limitations must be written before implementation begins. Step 0 does not create routes, components, content datasets, dependencies, or app configuration, and does not change the upstream checkout. Any subsequent implementation must follow these boundaries.

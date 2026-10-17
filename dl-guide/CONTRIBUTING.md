@@ -1,0 +1,12 @@
+# Add a problem in eight steps
+
+1. Choose a stable division-prefixed ID and a module under `content/<division>/<module>/`. Read adjacent metadata and use the existing fields; IDs are progress-storage keys and should not be renamed casually.
+2. Write `module.mdx`: history, the previous bottleneck, key idea and equations, implementation notes, pitfalls, and further reading. Use original explanations and verify primary-source paper URLs. The site supports MDX, KaTeX, callouts, spoilers, resources, and problem tables.
+3. Create `problems/<id>/problem.yaml` with paper metadata, an acyclic prerequisite list, dataset/splits/seed, budget, interface, checks, hints, difficulty, kind, solve time, and initial targets. Start with `status: draft`, `metric.calibrated: false`. Declare a stub as `implementation: stub` rather than pretending it works.
+4. Write `starter.py`, `solution.py`, `tests.py`, and `editorial.mdx`. The learner implements `solve(data)` and returns `dlguide.Submission`. Keep reference code out of the generated student notebook. Include actionable shape/gradient/unit checks and document model/data assumptions.
+5. Add or reuse a real dataset loader and metric in the runtime. Unsupported datasets must fail explicitly; never substitute synthetic data silently for a benchmark. CPU smoke fixtures must be labeled and must not affect calibration.
+6. Run `make notebooks`, `make validate`, `make test`, and `make smoke`. Check the generated notebook's exact Colab/GitHub/download paths. Add regression tests for new tool/runtime behavior. Run the notebook with both the untouched starter (clear FAIL) and reference implementation (working pipeline).
+7. Run real five-seed calibration on the declared hardware, inspect variance and feasibility, record environment/provenance, and only then consider `status: published`. Test in Colab as a learner; smoke mode alone is not acceptance evidence.
+8. Run `make site`, inspect desktop/mobile/problem/timeline pages, regenerate artifacts, and submit a focused change including sources, generated notebooks/catalog, tests, calibration evidence if available, and documentation of anything not verified.
+
+Never hand-edit generated notebooks or claim GPU calibration from a CPU fixture. Do not introduce accounts, grading uploads, backend dependencies, anti-tampering claims, or result-file import. Progress import/export is exclusively the learner's manual browser state.

@@ -1,0 +1,27 @@
+---
+id: platinum-contest
+title: "Platinum synthesis contest"
+division: platinum
+module: contest
+kind: contest
+status: draft
+prerequisites: ["platinum-lora-module", "platinum-flashattention-module", "platinum-modern-transformer-module"]
+---
+
+# Platinum synthesis contest
+
+This is a local practice format, not a ranked or calibrated event. Work without opening solution.py; papers and your own notes are allowed. Use a fixed seed and declare your hardware before beginning. Provisional timebox: 120 minutes, not a measured training budget.
+
+## Tasks
+
+- Low-rank adaptation: platinum-lora — implement its mechanism and explain one failure case.
+- Tiled exact attention: platinum-flashattention — implement its mechanism and explain one failure case.
+- Modern transformer components: platinum-modern-transformer — implement its mechanism and explain one failure case.
+
+## Scoring and evidence
+
+There is no leaderboard or fabricated target score. For each task produce a shape-correct implementation, a finite numerical result, a training/validation split audit and the requested ablation. Report wall time, parameter count, device, seed and any unsupported component. Never substitute an unrelated classifier for a missing architecture. Stub tasks are paper-design exercises until their loaders and references exist.
+
+## Review
+
+Explain which assumptions broke under the smallest batch, a different sequence/image size and the control ablation. Read the editorial only after writing your own error analysis. No contest pass is advertised until model-specific thresholds have been calibrated on declared hardware over multiple seeds.

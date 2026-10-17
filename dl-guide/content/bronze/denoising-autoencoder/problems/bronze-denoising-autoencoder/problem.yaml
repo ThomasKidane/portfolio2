@@ -1,0 +1,112 @@
+{
+  "id": "bronze-denoising-autoencoder",
+  "title": "Denoising autoencoder",
+  "division": "bronze",
+  "module": "denoising-autoencoder",
+  "year": 2008,
+  "paper": {
+    "title": "Extracting and Composing Robust Features with Denoising Autoencoders",
+    "url": "https://doi.org/10.1145/1390156.1390294",
+    "year": 2008,
+    "authors": "Vincent et al.",
+    "related": [
+      {
+        "title": "Extracting and Composing Robust Features with Denoising Autoencoders (author-hosted PDF)",
+        "year": 2008,
+        "url": "https://www.cs.toronto.edu/~larocheh/publications/icml-2008-denoising-autoencoders.pdf",
+        "authors": "Vincent et al."
+      }
+    ],
+    "year_note": "Original/preprint year except GCN (2017 venue, 2016 preprint) and speculative decoding (2023 venue, 2022 preprint).",
+    "source_type": "research-paper"
+  },
+  "prerequisites": [
+    "bronze-neural-language-model"
+  ],
+  "difficulty": "Easy",
+  "tags": [
+    "bronze",
+    "paper-implementation",
+    "neural-networks"
+  ],
+  "kind": "golf",
+  "previous_model": "bronze-neural-language-model",
+  "statement": "Implement Denoising autoencoder: reconstruct clean MNIST from corrupted inputs under a bottleneck parameter budget. Read the linked paper and isolate the named mechanism. Write a self-contained solve(data), fit using training tensors only, and return Submission(model=model). Keep validation labels out of fitting and preprocessing. This is an educational reduced-scale adaptation, not a claim to reproduce original paper results. Use mnist; required output: [N,1,28,28] -> [N,1,28,28] reconstruction. Evaluate mse (minimize). Train on corrupted clean pairs; metric against clean pixels; fixed 16-unit bottleneck. Required ablation: Train without corruption; compare reconstruction at equal bottleneck width.",
+  "dataset": {
+    "name": "mnist",
+    "seed": 1729,
+    "train_size": 512,
+    "val_size": 128,
+    "test_size": 128,
+    "description": "Train on corrupted clean pairs; metric against clean pixels; fixed 16-unit bottleneck",
+    "split_policy": "Disjoint train/validation/test examples; fit preprocessing using training data only.",
+    "loader_status": "runtime-supported",
+    "target": "clean-image",
+    "corruption_probability": 0.3,
+    "evaluation": "Apply fixed seeded corruption; compare reconstruction with clean input, not digit labels."
+  },
+  "budget": {
+    "wall_seconds": 60,
+    "parameters": 30000,
+    "max_trainable_fraction": null,
+    "memory_mb": 1024,
+    "require_gpu": false,
+    "training_steps": 48,
+    "calibrated": false,
+    "note": "Provisional safety caps, not empirically calibrated GPU budgets."
+  },
+  "metric": {
+    "name": "mse",
+    "direction": "minimize",
+    "threshold": null,
+    "calibrated": false,
+    "pass_target": null,
+    "par_target": null,
+    "stretch_target": null,
+    "targets": {
+      "pass": null,
+      "par": null,
+      "stretch": null
+    },
+    "target_status": "provisional draft targets only; threshold remains null until calibration",
+    "target": "clean-input",
+    "corruption_probability": 0.3,
+    "corruption_seed": 1729
+  },
+  "interface": {
+    "entrypoint": "solve(data)",
+    "returns": "dlguide.Submission",
+    "data": "dict with train and val torch.utils.data.TensorDataset entries",
+    "model": "[N,1,28,28] -> [N,1,28,28] reconstruction",
+    "objective": "Train on corrupted clean pairs; metric against clean pixels; fixed 16-unit bottleneck",
+    "predict_fn": "Optional callable(model, inputs); normally omitted.",
+    "self_contained": true
+  },
+  "checks": [
+    "Return a Submission containing a torch module.",
+    "Do not read validation labels during fitting.",
+    "No NaN or infinite outputs; obey parameter cap.",
+    "Train on corrupted clean pairs; metric against clean pixels; fixed 16-unit bottleneck"
+  ],
+  "ablation": {
+    "change": "Train without corruption; compare reconstruction at equal bottleneck width",
+    "control": "Same split, seed, training steps and optimizer.",
+    "report": "Report metric and parameter/time deltas honestly; do not infer superiority from one seed."
+  },
+  "hints": [
+    "reconstruct clean MNIST from corrupted inputs under a bottleneck parameter budget",
+    "Write down every intermediate tensor shape before implementing the block.",
+    "Start with the smallest deterministic fixture and compare with a trusted primitive."
+  ],
+  "editorial": "editorial.mdx",
+  "estimated_minutes": 60,
+  "status": "draft",
+  "implementation": "reference",
+  "calibration": {
+    "state": "uncalibrated",
+    "hardware": null,
+    "seeds": [],
+    "runs": [],
+    "note": "No GPU calibration performed; no passing threshold advertised."
+  }
+}

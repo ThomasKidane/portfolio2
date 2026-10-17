@@ -1,0 +1,119 @@
+{
+  "id": "silver-adam",
+  "title": "Adam and AdamW from scratch",
+  "division": "silver",
+  "module": "adam",
+  "year": 2014,
+  "paper": {
+    "title": "Adam: A Method for Stochastic Optimization",
+    "url": "https://arxiv.org/abs/1412.6980",
+    "year": 2014,
+    "authors": "Kingma and Ba",
+    "related": [
+      {
+        "title": "Decoupled Weight Decay Regularization",
+        "year": 2017,
+        "url": "https://arxiv.org/abs/1711.05101",
+        "authors": "Loshchilov and Hutter"
+      }
+    ],
+    "year_note": "Original/preprint year except GCN (2017 venue, 2016 preprint) and speculative decoding (2023 venue, 2022 preprint).",
+    "source_type": "research-paper"
+  },
+  "prerequisites": [
+    "silver-resnet"
+  ],
+  "difficulty": "Normal",
+  "tags": [
+    "silver",
+    "paper-implementation",
+    "neural-networks"
+  ],
+  "kind": "debug",
+  "previous_model": "silver-resnet",
+  "statement": "Implement Adam and AdamW from scratch: implement biased moments bias correction epsilon placement and decoupled AdamW decay; match torch updates. Read the linked paper and isolate the named mechanism. Write a self-contained solve(data), fit using training tensors only, and return Submission(model=model). Keep validation labels out of fitting and preprocessing. This is an educational reduced-scale adaptation, not a claim to reproduce original paper results. Use optimizer-fixture; required output: Optimizer adapter over parameter tensors; wrap state in a torch module. Evaluate update_max_error (minimize). Match torch Adam and AdamW step by step including bias correction epsilon and weight decay. Required ablation: Compare coupled L2 penalty with decoupled decay using the same gradients. Curriculum draft: reference, task-specific objective/evaluation adaptation and thresholds remain unimplemented; a named dataset may have a loader but this does not make this model executable. The provided solution raises NotImplementedError.",
+  "dataset": {
+    "name": "optimizer-fixture",
+    "seed": 1729,
+    "train_size": 512,
+    "val_size": 128,
+    "test_size": 128,
+    "description": "Match torch Adam and AdamW step by step including bias correction epsilon and weight decay",
+    "split_policy": "Disjoint train/validation/test examples; fit preprocessing using training data only.",
+    "loader_status": "requires-task-specific-implementation"
+  },
+  "budget": {
+    "wall_seconds": 60,
+    "parameters": 10000000,
+    "max_trainable_fraction": null,
+    "memory_mb": 1024,
+    "require_gpu": false,
+    "training_steps": null,
+    "calibrated": false,
+    "note": "Provisional safety caps, not empirically calibrated GPU budgets."
+  },
+  "metric": {
+    "name": "update_max_error",
+    "direction": "minimize",
+    "threshold": null,
+    "calibrated": false,
+    "pass_target": null,
+    "par_target": null,
+    "stretch_target": null,
+    "targets": {
+      "pass": null,
+      "par": null,
+      "stretch": null
+    },
+    "target_status": "provisional draft targets only; threshold remains null until calibration"
+  },
+  "interface": {
+    "entrypoint": "solve(data)",
+    "returns": "dlguide.Submission",
+    "data": "dict with train and val torch.utils.data.TensorDataset entries",
+    "model": "Optimizer adapter over parameter tensors; wrap state in a torch module",
+    "objective": "Match torch Adam and AdamW step by step including bias correction epsilon and weight decay",
+    "predict_fn": "Optional callable(model, inputs); normally omitted.",
+    "self_contained": true
+  },
+  "checks": [
+    "Return a Submission containing a torch module.",
+    "Do not read validation labels during fitting.",
+    "No NaN or infinite outputs; obey parameter cap.",
+    "Match torch Adam and AdamW step by step including bias correction epsilon and weight decay"
+  ],
+  "ablation": {
+    "change": "Compare coupled L2 penalty with decoupled decay using the same gradients",
+    "control": "Same split, seed, training steps and optimizer.",
+    "report": "Report metric and parameter/time deltas honestly; do not infer superiority from one seed."
+  },
+  "hints": [
+    "implement biased moments bias correction epsilon placement and decoupled AdamW decay; match torch updates",
+    "Write down every intermediate tensor shape before implementing the block.",
+    "Start with the smallest deterministic fixture and compare with a trusted primitive."
+  ],
+  "editorial": "content/silver/adam/problems/silver-adam/editorial.mdx",
+  "estimated_minutes": 100,
+  "status": "draft",
+  "implementation": "stub",
+  "calibration": {
+    "state": "uncalibrated",
+    "hardware": null,
+    "seeds": [],
+    "runs": [],
+    "note": "No GPU calibration performed; no passing threshold advertised."
+  },
+  "starter": "content/silver/adam/problems/silver-adam/starter.py",
+  "reference": "content/silver/adam/problems/silver-adam/solution.py",
+  "tests": "content/silver/adam/problems/silver-adam/tests.py",
+  "config": {
+    "org": "ThomasKidane",
+    "repo": "portfolio2",
+    "branch": "main",
+    "notebook_root": "dl-guide/notebooks",
+    "runtime_path": "dl-guide/dlguide",
+    "runtime_ref": "main",
+    "site_url": "https://www.thomaskidane.com/dl-guide/"
+  },
+  "check_module": "silver-adam.py"
+}

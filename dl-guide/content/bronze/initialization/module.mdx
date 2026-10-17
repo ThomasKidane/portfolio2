@@ -1,0 +1,50 @@
+---
+id: bronze-initialization-module
+title: "Glorot initialization"
+division: bronze
+module: initialization
+kind: lesson
+status: draft
+prerequisites: ["bronze-sgd-momentum"]
+---
+
+# Glorot initialization
+
+## Historical question and bottleneck
+
+[Understanding the difficulty of training deep feedforward neural networks](https://proceedings.mlr.press/v9/glorot10a.html) (Glorot and Bengio, 2010) is the primary reference. The original question motivating this module is how to track activation and gradient variance through deep sigmoid and tanh networks. The practical bottleneck for this exercise is explicit: Record layerwise activation variance and gradient norms for sigmoid/tanh and Glorot/unit-normal controls. This is a reduced teaching adaptation, not a claim that the paper used our dataset or compute budget.
+
+## Mechanism and equations
+
+`Var(W)=2/(fan_in+fan_out); uniform bound=sqrt(6/(fan_in+fan_out)).`
+
+Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
+
+## Implementation notes
+
+Input/task: **synthetic-classification**. Output: **[N,D] -> [N,C] logits**. Optimize or report **accuracy** in the **maximize** direction. Record layerwise activation variance and gradient norms for sigmoid/tanh and Glorot/unit-normal controls.
+
+An executable bounded reference and mechanism tests are available; work in the starter before opening the editorial.
+
+## Controlled experiment
+
+Compare Glorot with unscaled normal weights at the same depth and seed. Keep split, seed, optimizer schedule and training budget fixed unless that factor is the experimental variable. Report raw quality, wall time and parameter count, not an unsupported superiority claim.
+
+## Pitfalls and checks
+
+- Record layerwise activation variance and gradient norms for sigmoid/tanh and Glorot/unit-normal controls.
+- Never fit statistics on validation labels or mix held-out examples into training.
+- Check shape and finite outputs before interpreting quality; an unrelated baseline cannot satisfy the intended mechanism.
+- Draft targets and safety limits have not been GPU-calibrated. No pass threshold is advertised.
+
+## Exercise and editorial
+
+- [Implement bronze-initialization](problems/bronze-initialization/problem.yaml)
+- [Mechanism-specific editorial](problems/bronze-initialization/editorial.mdx)
+
+## Citations
+
+- [Understanding the difficulty of training deep feedforward neural networks](https://proceedings.mlr.press/v9/glorot10a.html) — Glorot and Bengio, 2010.
+
+
+All prose and code are independently authored. **Draft / uncalibrated**; no full-scale paper reproduction or GPU benchmark is claimed.

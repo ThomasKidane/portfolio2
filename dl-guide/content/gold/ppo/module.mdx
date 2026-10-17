@@ -1,0 +1,50 @@
+---
+id: gold-ppo-module
+title: "Proximal policy optimization"
+division: gold
+module: ppo
+kind: lesson
+status: draft
+prerequisites: ["gold-efficient-convs"]
+---
+
+# Proximal policy optimization
+
+## Historical question and bottleneck
+
+[Proximal Policy Optimization Algorithms](https://arxiv.org/abs/1707.06347) (Schulman et al., 2017) is the primary reference. The original question motivating this module is how to implement clipped CartPole policy updates with advantage estimation and independent evaluation episodes. The practical bottleneck for this exercise is explicit: Clipped surrogate sign with negative advantage; independent rollout/evaluation seeds. This is a reduced teaching adaptation, not a claim that the paper used our dataset or compute budget.
+
+## Mechanism and equations
+
+`L_clip=E[min(ratio*A,clip(ratio,1-epsilon,1+epsilon)*A)].`
+
+Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
+
+## Implementation notes
+
+Input/task: **cartpole**. Output: **Observation -> action distribution and state value**. Optimize or report **episode_return** in the **maximize** direction. Clipped surrogate sign with negative advantage; independent rollout/evaluation seeds.
+
+This is a draft skeleton: reference training and task-specific tests are not implemented. The explicit stub must not be mistaken for a finished model.
+
+## Controlled experiment
+
+Remove the probability-ratio clip and inspect KL drift. Keep split, seed, optimizer schedule and training budget fixed unless that factor is the experimental variable. Report raw quality, wall time and parameter count, not an unsupported superiority claim.
+
+## Pitfalls and checks
+
+- Clipped surrogate sign with negative advantage; independent rollout/evaluation seeds.
+- Never fit statistics on validation labels or mix held-out examples into training.
+- Check shape and finite outputs before interpreting quality; an unrelated baseline cannot satisfy the intended mechanism.
+- Draft targets and safety limits have not been GPU-calibrated. No pass threshold is advertised.
+
+## Exercise and editorial
+
+- [Implement gold-ppo](problems/gold-ppo/problem.yaml)
+- [Mechanism-specific editorial](problems/gold-ppo/editorial.mdx)
+
+## Citations
+
+- [Proximal Policy Optimization Algorithms](https://arxiv.org/abs/1707.06347) — Schulman et al., 2017.
+
+
+All prose and code are independently authored. **Draft / uncalibrated**; no full-scale paper reproduction or GPU benchmark is claimed.

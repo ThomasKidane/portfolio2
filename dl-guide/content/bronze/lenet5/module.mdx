@@ -1,0 +1,50 @@
+---
+id: bronze-lenet5-module
+title: "LeNet-5"
+division: bronze
+module: lenet5
+kind: lesson
+status: draft
+prerequisites: ["bronze-initialization"]
+---
+
+# LeNet-5
+
+## Historical question and bottleneck
+
+[Gradient-Based Learning Applied to Document Recognition](https://ieeexplore.ieee.org/document/726791) (LeCun et al., 1998) is the primary reference. The original question motivating this module is how to compose learned local filters, tanh nonlinearities and spatial averaging into a digit classifier. The practical bottleneck for this exercise is explicit: 5x5 convolution average pooling tanh and bounded MNIST training. This is a reduced teaching adaptation, not a claim that the paper used our dataset or compute budget.
+
+## Mechanism and equations
+
+`h_next=tanh(conv(h,W)+b); pooled(i,j)=mean of the local 2x2 region.`
+
+Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
+
+## Implementation notes
+
+Input/task: **mnist**. Output: **[N,1,28,28] -> [N,10] logits**. Optimize or report **accuracy** in the **maximize** direction. 5x5 convolution average pooling tanh and bounded MNIST training.
+
+An executable bounded reference and mechanism tests are available; work in the starter before opening the editorial.
+
+## Controlled experiment
+
+Replace average pooling with max pooling while preserving the training schedule. Keep split, seed, optimizer schedule and training budget fixed unless that factor is the experimental variable. Report raw quality, wall time and parameter count, not an unsupported superiority claim.
+
+## Pitfalls and checks
+
+- 5x5 convolution average pooling tanh and bounded MNIST training.
+- Never fit statistics on validation labels or mix held-out examples into training.
+- Check shape and finite outputs before interpreting quality; an unrelated baseline cannot satisfy the intended mechanism.
+- Draft targets and safety limits have not been GPU-calibrated. No pass threshold is advertised.
+
+## Exercise and editorial
+
+- [Implement bronze-lenet5](problems/bronze-lenet5/problem.yaml)
+- [Mechanism-specific editorial](problems/bronze-lenet5/editorial.mdx)
+
+## Citations
+
+- [Gradient-Based Learning Applied to Document Recognition](https://ieeexplore.ieee.org/document/726791) — LeCun et al., 1998.
+
+
+All prose and code are independently authored. **Draft / uncalibrated**; no full-scale paper reproduction or GPU benchmark is claimed.

@@ -75,10 +75,14 @@ def validate(root=ROOT, notebooks=True):
             errors.append("{} invalid status".format(pid))
         if "implementation" in problem and problem["implementation"] not in ("reference", "stub", "planned"):
             errors.append("{} invalid implementation enum".format(pid))
-        if "kind" in problem and problem["kind"] not in ("model", "mechanism", "pipeline", "ablation", "operator", "training"):
+        if "kind" in problem and problem["kind"] not in ("implement", "ablate", "golf", "debug", "speedrun", "scale", "model", "mechanism", "pipeline", "ablation", "operator", "training"):
             errors.append("{} invalid kind enum".format(pid))
-        if "difficulty" in problem and (not isinstance(problem["difficulty"], int) or not 1 <= problem["difficulty"] <= 5):
-            errors.append("{} difficulty must be integer 1..5".format(pid))
+        difficulty = problem.get("difficulty")
+        if difficulty is not None and not (
+            difficulty in ("Very Easy", "Easy", "Normal", "Hard", "Very Hard", "Insane")
+            or isinstance(difficulty, int) and not isinstance(difficulty, bool) and 1 <= difficulty <= 5
+        ):
+            errors.append("{} invalid difficulty".format(pid))
         paper = problem.get("paper", {})
         if paper and (not isinstance(paper, dict) or not re.match(r"https?://", paper.get("url", ""))):
             errors.append("{} invalid paper URL".format(pid))

@@ -1,0 +1,48 @@
+---
+id: bronze-initialization-editorial
+title: "Glorot initialization: editorial"
+status: draft
+---
+
+# Glorot initialization: derivation and implementation notes
+
+## The mechanism
+
+track activation and gradient variance through deep sigmoid and tanh networks. Glorot weights have variance 2/(fan_in+fan_out); a uniform implementation uses bounds plus/minus sqrt(6/(fan_in+fan_out)). Zero biases. Probe eight equally wide layers under the same random seed and input using tanh and sigmoid, recording every activation variance and retained gradient norm. Sigmoid has a nonzero mean and can still attenuate gradients even with Glorot initialization. The reference trains a six-hidden-layer tanh classifier for 32 SGD steps and includes separate controlled diagnostics, not a convergence claim.
+
+Read [Understanding the difficulty of training deep feedforward neural networks](https://proceedings.mlr.press/v9/glorot10a.html) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.
+
+## A reproducible approach
+
+1. State the model's input/output shapes and the loss before coding.
+2. Set a seed, use only the supplied training split, and keep preprocessing statistics training-only.
+3. Validate the local contract before comparing held-out metrics. A contract check is not an accuracy grade.
+4. Run the ablation with identical splits and compute budget; save your observations outside the shared site.
+
+## Reference and scope
+
+A bounded executable reference is provided. Imports and model classes live inside solve(data) so a learner can copy the function into the editable notebook cell without hidden helpers. The reference returns dlguide.Submission; the notebook owns P.budget() and grading.
+
+Reference training is deliberately bounded. Inspect the mechanism-specific schedule described above and in solution.py; CPU smoke tests establish executability, not convergence or benchmark quality. LeNet and ResNet use 24 Adam minibatches with learning rate 0.01 and clipping at 5.
+
+## Task-specific evaluation
+
+Dataset: **synthetic-classification**. Model contract: **[N,D] -> [N,C] logits**. Metric: **accuracy**, direction **maximize**. Record layerwise activation variance and gradient norms for sigmoid/tanh and Glorot/unit-normal controls.
+
+No calibrated passing threshold is available.
+
+
+
+## Required ablation
+
+Compare Glorot with unscaled normal weights at the same depth and seed. Keep the seed, split, training steps and optimizer fixed. Report both quality and compute cost; one run is not statistical evidence.
+
+## Failure modes
+
+- Fitting on validation labels or allowing split overlap invalidates evaluation.
+- Matching output shape alone does not establish that the intended mechanism was implemented.
+- A small teaching model is not the original full-scale experiment.
+
+## Calibration status
+
+**Draft / uncalibrated.** No GPU run, calibrated pass threshold, original-paper score or hardware-normalized budget is claimed. CPU smoke tests exercise implementation contracts only. A reference solution can be executable while the problem remains draft.

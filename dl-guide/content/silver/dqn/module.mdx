@@ -1,0 +1,50 @@
+---
+id: silver-dqn-module
+title: "Deep Q-network"
+division: silver
+module: dqn
+kind: lesson
+status: draft
+prerequisites: ["silver-unet"]
+---
+
+# Deep Q-network
+
+## Historical question and bottleneck
+
+[Playing Atari with Deep Reinforcement Learning](https://arxiv.org/abs/1312.5602) (Mnih et al., 2013) is the primary reference. The original question motivating this module is how to adapt replay and target-network temporal-difference learning to CartPole and evaluate independent episodes. The practical bottleneck for this exercise is explicit: Replay target excludes true terminal bootstrap; distinguish truncation. This is a reduced teaching adaptation, not a claim that the paper used our dataset or compute budget.
+
+## Mechanism and equations
+
+`target=r+gamma*(1-terminal)*max_a Q_target(s_next,a); L=(Q(s,a)-target)^2.`
+
+Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
+
+## Implementation notes
+
+Input/task: **cartpole**. Output: **Observation -> action Q values**. Optimize or report **episode_return** in the **maximize** direction. Replay target excludes true terminal bootstrap; distinguish truncation.
+
+This is a draft skeleton: reference training and task-specific tests are not implemented. The explicit stub must not be mistaken for a finished model.
+
+## Controlled experiment
+
+Remove replay or the delayed target network separately. Keep split, seed, optimizer schedule and training budget fixed unless that factor is the experimental variable. Report raw quality, wall time and parameter count, not an unsupported superiority claim.
+
+## Pitfalls and checks
+
+- Replay target excludes true terminal bootstrap; distinguish truncation.
+- Never fit statistics on validation labels or mix held-out examples into training.
+- Check shape and finite outputs before interpreting quality; an unrelated baseline cannot satisfy the intended mechanism.
+- Draft targets and safety limits have not been GPU-calibrated. No pass threshold is advertised.
+
+## Exercise and editorial
+
+- [Implement silver-dqn](problems/silver-dqn/problem.yaml)
+- [Mechanism-specific editorial](problems/silver-dqn/editorial.mdx)
+
+## Citations
+
+- [Playing Atari with Deep Reinforcement Learning](https://arxiv.org/abs/1312.5602) — Mnih et al., 2013.
+
+
+All prose and code are independently authored. **Draft / uncalibrated**; no full-scale paper reproduction or GPU benchmark is claimed.

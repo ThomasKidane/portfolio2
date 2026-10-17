@@ -1,0 +1,112 @@
+{
+  "id": "platinum-lora",
+  "title": "Low-rank adaptation",
+  "division": "platinum",
+  "module": "lora",
+  "year": 2021,
+  "paper": {
+    "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+    "url": "https://arxiv.org/abs/2106.09685",
+    "year": 2021,
+    "authors": "Hu et al.",
+    "related": [],
+    "year_note": "Original/preprint year except GCN (2017 venue, 2016 preprint) and speculative decoding (2023 venue, 2022 preprint).",
+    "source_type": "research-paper"
+  },
+  "prerequisites": [
+    "gold-transformer"
+  ],
+  "difficulty": "Very Hard",
+  "tags": [
+    "platinum",
+    "paper-implementation",
+    "neural-networks"
+  ],
+  "kind": "golf",
+  "previous_model": null,
+  "statement": "Implement Low-rank adaptation: fine-tune low-rank residual adapters with at most one percent trainable parameters and frozen base weights. Read the linked paper and isolate the named mechanism. Write a self-contained solve(data), fit using training tensors only, and return Submission(model=model). Keep validation labels out of fitting and preprocessing. This is an educational reduced-scale adaptation, not a claim to reproduce original paper results. Use licensed-adaptation-corpus; required output: Base-model input -> task logits; <=1 percent trainable parameters. Evaluate task_quality (maximize). Freeze base weights; low-rank delta merge agrees with unmerged output. Required ablation: Compare ranks at fixed trainable-parameter budget. Curriculum draft: reference, task-specific objective/evaluation adaptation and thresholds remain unimplemented; a named dataset may have a loader but this does not make this model executable. The provided solution raises NotImplementedError.",
+  "dataset": {
+    "name": "licensed-adaptation-corpus",
+    "seed": 1729,
+    "train_size": 512,
+    "val_size": 128,
+    "test_size": 128,
+    "description": "Freeze base weights; low-rank delta merge agrees with unmerged output",
+    "split_policy": "Disjoint train/validation/test examples; fit preprocessing using training data only.",
+    "loader_status": "requires-task-specific-implementation"
+  },
+  "budget": {
+    "wall_seconds": 600,
+    "parameters": 10000000,
+    "max_trainable_fraction": 0.01,
+    "memory_mb": 1024,
+    "require_gpu": false,
+    "training_steps": null,
+    "calibrated": false,
+    "note": "Provisional safety caps, not empirically calibrated GPU budgets."
+  },
+  "metric": {
+    "name": "task_quality",
+    "direction": "maximize",
+    "threshold": null,
+    "calibrated": false,
+    "pass_target": null,
+    "par_target": null,
+    "stretch_target": null,
+    "targets": {
+      "pass": null,
+      "par": null,
+      "stretch": null
+    },
+    "target_status": "provisional draft targets only; threshold remains null until calibration"
+  },
+  "interface": {
+    "entrypoint": "solve(data)",
+    "returns": "dlguide.Submission",
+    "data": "dict with train and val torch.utils.data.TensorDataset entries",
+    "model": "Base-model input -> task logits; <=1 percent trainable parameters",
+    "objective": "Freeze base weights; low-rank delta merge agrees with unmerged output",
+    "predict_fn": "Optional callable(model, inputs); normally omitted.",
+    "self_contained": true
+  },
+  "checks": [
+    "Return a Submission containing a torch module.",
+    "Do not read validation labels during fitting.",
+    "No NaN or infinite outputs; obey parameter cap.",
+    "Freeze base weights; low-rank delta merge agrees with unmerged output"
+  ],
+  "ablation": {
+    "change": "Compare ranks at fixed trainable-parameter budget",
+    "control": "Same split, seed, training steps and optimizer.",
+    "report": "Report metric and parameter/time deltas honestly; do not infer superiority from one seed."
+  },
+  "hints": [
+    "fine-tune low-rank residual adapters with at most one percent trainable parameters and frozen base weights",
+    "Write down every intermediate tensor shape before implementing the block.",
+    "Start with the smallest deterministic fixture and compare with a trusted primitive."
+  ],
+  "editorial": "content/platinum/lora/problems/platinum-lora/editorial.mdx",
+  "estimated_minutes": 210,
+  "status": "draft",
+  "implementation": "stub",
+  "calibration": {
+    "state": "uncalibrated",
+    "hardware": null,
+    "seeds": [],
+    "runs": [],
+    "note": "No GPU calibration performed; no passing threshold advertised."
+  },
+  "starter": "content/platinum/lora/problems/platinum-lora/starter.py",
+  "reference": "content/platinum/lora/problems/platinum-lora/solution.py",
+  "tests": "content/platinum/lora/problems/platinum-lora/tests.py",
+  "config": {
+    "org": "ThomasKidane",
+    "repo": "portfolio2",
+    "branch": "main",
+    "notebook_root": "dl-guide/notebooks",
+    "runtime_path": "dl-guide/dlguide",
+    "runtime_ref": "main",
+    "site_url": "https://www.thomaskidane.com/dl-guide/"
+  },
+  "check_module": "platinum-lora.py"
+}

@@ -1,0 +1,114 @@
+{
+  "id": "gold-vit",
+  "title": "Vision Transformer",
+  "division": "gold",
+  "module": "vit",
+  "year": 2020,
+  "paper": {
+    "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+    "url": "https://arxiv.org/abs/2010.11929",
+    "year": 2020,
+    "authors": "Dosovitskiy et al.",
+    "related": [],
+    "year_note": "Original/preprint year except GCN (2017 venue, 2016 preprint) and speculative decoding (2023 venue, 2022 preprint).",
+    "source_type": "research-paper"
+  },
+  "prerequisites": [
+    "gold-bert"
+  ],
+  "difficulty": "Hard",
+  "tags": [
+    "gold",
+    "paper-implementation",
+    "neural-networks"
+  ],
+  "kind": "implement",
+  "previous_model": "gold-bert",
+  "statement": "Implement Vision Transformer: patchify CIFAR-10 and train a transformer classifier; aspirational accuracy 0.85 within 600 seconds. Read the linked paper and isolate the named mechanism. Write a self-contained solve(data), fit using training tensors only, and return Submission(model=model). Keep validation labels out of fitting and preprocessing. This is an educational reduced-scale adaptation, not a claim to reproduce original paper results. Use cifar10; required output: [N,3,32,32] -> [N,10] logits. Evaluate accuracy (maximize). Patch size and position interpolation specified. Required ablation: Compare class-token and mean-pooled heads with identical patch encodings. Curriculum draft: reference, task-specific objective/evaluation adaptation and thresholds remain unimplemented; a named dataset may have a loader but this does not make this model executable. The provided solution raises NotImplementedError.",
+  "dataset": {
+    "name": "cifar10",
+    "seed": 1729,
+    "train_size": 512,
+    "val_size": 128,
+    "test_size": 128,
+    "description": "Patch size and position interpolation specified",
+    "split_policy": "Disjoint train/validation/test examples; fit preprocessing using training data only.",
+    "loader_status": "requires-task-specific-implementation"
+  },
+  "budget": {
+    "wall_seconds": 600,
+    "parameters": 10000000,
+    "max_trainable_fraction": null,
+    "memory_mb": 1024,
+    "require_gpu": false,
+    "training_steps": null,
+    "calibrated": false,
+    "note": "Provisional safety caps, not empirically calibrated GPU budgets."
+  },
+  "metric": {
+    "name": "accuracy",
+    "direction": "maximize",
+    "threshold": null,
+    "calibrated": false,
+    "pass_target": 0.85,
+    "par_target": null,
+    "stretch_target": null,
+    "targets": {
+      "pass": 0.85,
+      "par": null,
+      "stretch": null
+    },
+    "target_status": "provisional draft targets only; threshold remains null until calibration",
+    "requested_goal": 0.85,
+    "goal_status": "aspirational user-specified goal; not a calibrated pass threshold"
+  },
+  "interface": {
+    "entrypoint": "solve(data)",
+    "returns": "dlguide.Submission",
+    "data": "dict with train and val torch.utils.data.TensorDataset entries",
+    "model": "[N,3,32,32] -> [N,10] logits",
+    "objective": "Patch size and position interpolation specified",
+    "predict_fn": "Optional callable(model, inputs); normally omitted.",
+    "self_contained": true
+  },
+  "checks": [
+    "Return a Submission containing a torch module.",
+    "Do not read validation labels during fitting.",
+    "No NaN or infinite outputs; obey parameter cap.",
+    "Patch size and position interpolation specified"
+  ],
+  "ablation": {
+    "change": "Compare class-token and mean-pooled heads with identical patch encodings",
+    "control": "Same split, seed, training steps and optimizer.",
+    "report": "Report metric and parameter/time deltas honestly; do not infer superiority from one seed."
+  },
+  "hints": [
+    "patchify CIFAR-10 and train a transformer classifier; aspirational accuracy 0.85 within 600 seconds",
+    "Write down every intermediate tensor shape before implementing the block.",
+    "Start with the smallest deterministic fixture and compare with a trusted primitive."
+  ],
+  "editorial": "content/gold/vit/problems/gold-vit/editorial.mdx",
+  "estimated_minutes": 150,
+  "status": "draft",
+  "implementation": "stub",
+  "calibration": {
+    "state": "uncalibrated",
+    "hardware": null,
+    "seeds": [],
+    "runs": [],
+    "note": "No GPU calibration performed; no passing threshold advertised."
+  },
+  "starter": "content/gold/vit/problems/gold-vit/starter.py",
+  "reference": "content/gold/vit/problems/gold-vit/solution.py",
+  "tests": "content/gold/vit/problems/gold-vit/tests.py",
+  "config": {
+    "org": "ThomasKidane",
+    "repo": "portfolio2",
+    "branch": "main",
+    "notebook_root": "dl-guide/notebooks",
+    "runtime_path": "dl-guide/dlguide",
+    "runtime_ref": "main",
+    "site_url": "https://www.thomaskidane.com/dl-guide/"
+  },
+  "check_module": "gold-vit.py"
+}

@@ -1,0 +1,27 @@
+---
+id: silver-contest
+title: "Silver synthesis contest"
+division: silver
+module: contest
+kind: contest
+status: draft
+prerequisites: ["silver-alexnet-module", "silver-regularization-module", "silver-batchnorm-module"]
+---
+
+# Silver synthesis contest
+
+This is a local practice format, not a ranked or calibrated event. Work without opening solution.py; papers and your own notes are allowed. Use a fixed seed and declare your hardware before beginning. Provisional timebox: 120 minutes, not a measured training budget.
+
+## Tasks
+
+- AlexNet: silver-alexnet — implement its mechanism and explain one failure case.
+- Dropout and weight decay: silver-regularization — implement its mechanism and explain one failure case.
+- Batch normalization: silver-batchnorm — implement its mechanism and explain one failure case.
+
+## Scoring and evidence
+
+There is no leaderboard or fabricated target score. For each task produce a shape-correct implementation, a finite numerical result, a training/validation split audit and the requested ablation. Report wall time, parameter count, device, seed and any unsupported component. Never substitute an unrelated classifier for a missing architecture. Stub tasks are paper-design exercises until their loaders and references exist.
+
+## Review
+
+Explain which assumptions broke under the smallest batch, a different sequence/image size and the control ablation. Read the editorial only after writing your own error analysis. No contest pass is advertised until model-specific thresholds have been calibrated on declared hardware over multiple seeds.

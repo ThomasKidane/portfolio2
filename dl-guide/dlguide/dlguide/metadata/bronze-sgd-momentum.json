@@ -1,0 +1,114 @@
+{
+  "id": "bronze-sgd-momentum",
+  "title": "SGD with momentum",
+  "division": "bronze",
+  "module": "sgd-momentum",
+  "year": 1964,
+  "paper": {
+    "title": "Some methods of speeding up the convergence of iteration methods",
+    "url": "https://doi.org/10.1016/0041-5553(64)90137-5",
+    "year": 1964,
+    "authors": "Polyak",
+    "related": [],
+    "year_note": "Original/preprint year except GCN (2017 venue, 2016 preprint) and speculative decoding (2023 venue, 2022 preprint).",
+    "source_type": "research-paper"
+  },
+  "prerequisites": [
+    "bronze-mlp-backprop"
+  ],
+  "difficulty": "Easy",
+  "tags": [
+    "bronze",
+    "paper-implementation",
+    "neural-networks"
+  ],
+  "kind": "ablate",
+  "previous_model": "bronze-mlp-backprop",
+  "statement": "Implement SGD with momentum: implement velocity updates on an ill-conditioned quadratic and a tiny MLP. Read the linked paper and isolate the named mechanism. Write a self-contained solve(data), fit using training tensors only, and return Submission(model=model). Keep validation labels out of fitting and preprocessing. This is an educational reduced-scale adaptation, not a claim to reproduce original paper results. Use synthetic-classification; required output: [N,D] -> [N,C] logits. Evaluate accuracy (maximize). Explicit v=beta*v+grad and w-=lr*v; record quadratic objective for beta zero and nonzero. Required ablation: Set momentum to zero at the same learning rate and compare objective traces.",
+  "dataset": {
+    "name": "synthetic-classification",
+    "seed": 1729,
+    "train_size": 512,
+    "val_size": 128,
+    "test_size": 128,
+    "description": "Explicit v=beta*v+grad and w-=lr*v; record quadratic objective for beta zero and nonzero",
+    "split_policy": "Disjoint train/validation/test examples; fit preprocessing using training data only.",
+    "loader_status": "runtime-supported",
+    "features": 4,
+    "classes": 2
+  },
+  "budget": {
+    "wall_seconds": 60,
+    "parameters": 2000000,
+    "max_trainable_fraction": null,
+    "memory_mb": 1024,
+    "require_gpu": false,
+    "training_steps": 40,
+    "calibrated": false,
+    "note": "Provisional safety caps, not empirically calibrated GPU budgets."
+  },
+  "metric": {
+    "name": "accuracy",
+    "direction": "maximize",
+    "threshold": null,
+    "calibrated": false,
+    "pass_target": null,
+    "par_target": null,
+    "stretch_target": null,
+    "targets": {
+      "pass": null,
+      "par": null,
+      "stretch": null
+    },
+    "target_status": "provisional draft targets only; threshold remains null until calibration"
+  },
+  "interface": {
+    "entrypoint": "solve(data)",
+    "returns": "dlguide.Submission",
+    "data": "dict with train and val torch.utils.data.TensorDataset entries",
+    "model": "[N,D] -> [N,C] logits",
+    "objective": "Explicit v=beta*v+grad and w-=lr*v; record quadratic objective for beta zero and nonzero",
+    "predict_fn": "Optional callable(model, inputs); normally omitted.",
+    "self_contained": true
+  },
+  "checks": [
+    "Return a Submission containing a torch module.",
+    "Do not read validation labels during fitting.",
+    "No NaN or infinite outputs; obey parameter cap.",
+    "Explicit v=beta*v+grad and w-=lr*v; record quadratic objective for beta zero and nonzero"
+  ],
+  "ablation": {
+    "change": "Set momentum to zero at the same learning rate and compare objective traces",
+    "control": "Same split, seed, training steps and optimizer.",
+    "report": "Report metric and parameter/time deltas honestly; do not infer superiority from one seed."
+  },
+  "hints": [
+    "implement velocity updates on an ill-conditioned quadratic and a tiny MLP",
+    "Write down every intermediate tensor shape before implementing the block.",
+    "Start with the smallest deterministic fixture and compare with a trusted primitive."
+  ],
+  "editorial": "content/bronze/sgd-momentum/problems/bronze-sgd-momentum/editorial.mdx",
+  "estimated_minutes": 60,
+  "status": "draft",
+  "implementation": "reference",
+  "calibration": {
+    "state": "uncalibrated",
+    "hardware": null,
+    "seeds": [],
+    "runs": [],
+    "note": "No GPU calibration performed; no passing threshold advertised."
+  },
+  "starter": "content/bronze/sgd-momentum/problems/bronze-sgd-momentum/starter.py",
+  "reference": "content/bronze/sgd-momentum/problems/bronze-sgd-momentum/solution.py",
+  "tests": "content/bronze/sgd-momentum/problems/bronze-sgd-momentum/tests.py",
+  "config": {
+    "org": "ThomasKidane",
+    "repo": "portfolio2",
+    "branch": "main",
+    "notebook_root": "dl-guide/notebooks",
+    "runtime_path": "dl-guide/dlguide",
+    "runtime_ref": "main",
+    "site_url": "https://www.thomaskidane.com/dl-guide/"
+  },
+  "check_module": "bronze-sgd-momentum.py"
+}

@@ -1,0 +1,48 @@
+---
+id: bronze-neural-language-model-editorial
+title: "Neural probabilistic language model: editorial"
+status: draft
+---
+
+# Neural probabilistic language model: derivation and implementation notes
+
+## The mechanism
+
+learn fixed-context embeddings and predict the next TinyShakespeare character; compare bits per character with a smoothed n-gram. Concatenate learned embeddings of a fixed context, apply a tanh hidden layer, and project to next-character logits. The 2003 paper models words; this tractable character-level TinyShakespeare adaptation intentionally reports bits per character, not the original word perplexity. For shifted sequence labels use only the final next-token target; do not train the final-token predictor against every intermediate label. Cross-entropy is measured in nats, so divide its token mean by log(2). Build smoothed bigram counts only from training context-final-character and next-character pairs. The 64-step reference returns baseline probabilities in extras; evaluate both on identical held-out characters. Vocabulary size is public metadata and may be passed in data; validation labels are read only after fitting to report model and bigram bpc, never to update weights or counts.
+
+Read [A Neural Probabilistic Language Model](https://www.jmlr.org/papers/v3/bengio03a.html) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.
+
+## A reproducible approach
+
+1. State the model's input/output shapes and the loss before coding.
+2. Set a seed, use only the supplied training split, and keep preprocessing statistics training-only.
+3. Validate the local contract before comparing held-out metrics. A contract check is not an accuracy grade.
+4. Run the ablation with identical splits and compute budget; save your observations outside the shared site.
+
+## Reference and scope
+
+A bounded executable reference is provided. Imports and model classes live inside solve(data) so a learner can copy the function into the editable notebook cell without hidden helpers. The reference returns dlguide.Submission; the notebook owns P.budget() and grading.
+
+Reference training is deliberately bounded. Inspect the mechanism-specific schedule described above and in solution.py; CPU smoke tests establish executability, not convergence or benchmark quality. LeNet and ResNet use 24 Adam minibatches with learning rate 0.01 and clipping at 5.
+
+## Task-specific evaluation
+
+Dataset: **tinyshakespeare**. Model contract: **[N,context] token IDs -> [N,vocab] next-character logits**. Metric: **bpc**, direction **minimize**. Character-level natural-log cross-entropy divided by log(2); compare a training-only smoothed n-gram.
+
+No calibrated passing threshold is available.
+
+
+
+## Required ablation
+
+Remove learned embeddings or change context length while keeping the corpus split fixed. Keep the seed, split, training steps and optimizer fixed. Report both quality and compute cost; one run is not statistical evidence.
+
+## Failure modes
+
+- Fitting on validation labels or allowing split overlap invalidates evaluation.
+- Matching output shape alone does not establish that the intended mechanism was implemented.
+- A small teaching model is not the original full-scale experiment.
+
+## Calibration status
+
+**Draft / uncalibrated.** No GPU run, calibrated pass threshold, original-paper score or hardware-normalized budget is claimed. CPU smoke tests exercise implementation contracts only. A reference solution can be executable while the problem remains draft.

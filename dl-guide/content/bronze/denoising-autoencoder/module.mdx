@@ -1,0 +1,50 @@
+---
+id: bronze-denoising-autoencoder-module
+title: "Denoising autoencoder"
+division: bronze
+module: denoising-autoencoder
+kind: lesson
+status: draft
+prerequisites: ["bronze-neural-language-model"]
+---
+
+# Denoising autoencoder
+
+## Historical question and bottleneck
+
+[Extracting and Composing Robust Features with Denoising Autoencoders](https://doi.org/10.1145/1390156.1390294) (Vincent et al., 2008) is the primary reference. The original question motivating this module is how to reconstruct clean MNIST from corrupted inputs under a bottleneck parameter budget. The practical bottleneck for this exercise is explicit: Train on corrupted clean pairs; metric against clean pixels; fixed 16-unit bottleneck. This is a reduced teaching adaptation, not a claim that the paper used our dataset or compute budget.
+
+## Mechanism and equations
+
+`x_corrupt=m*x; z=tanh(W_enc*x_corrupt+b); L=mean((sigmoid(W_dec*z+c)-x)^2).`
+
+Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
+
+## Implementation notes
+
+Input/task: **mnist**. Output: **[N,1,28,28] -> [N,1,28,28] reconstruction**. Optimize or report **mse** in the **minimize** direction. Train on corrupted clean pairs; metric against clean pixels; fixed 16-unit bottleneck.
+
+An executable bounded reference and mechanism tests are available; work in the starter before opening the editorial.
+
+## Controlled experiment
+
+Train without corruption; compare reconstruction at equal bottleneck width. Keep split, seed, optimizer schedule and training budget fixed unless that factor is the experimental variable. Report raw quality, wall time and parameter count, not an unsupported superiority claim.
+
+## Pitfalls and checks
+
+- Train on corrupted clean pairs; metric against clean pixels; fixed 16-unit bottleneck.
+- Never fit statistics on validation labels or mix held-out examples into training.
+- Check shape and finite outputs before interpreting quality; an unrelated baseline cannot satisfy the intended mechanism.
+- Draft targets and safety limits have not been GPU-calibrated. No pass threshold is advertised.
+
+## Exercise and editorial
+
+- [Implement bronze-denoising-autoencoder](problems/bronze-denoising-autoencoder/problem.yaml)
+- [Mechanism-specific editorial](problems/bronze-denoising-autoencoder/editorial.mdx)
+
+## Citations
+
+- [Extracting and Composing Robust Features with Denoising Autoencoders](https://doi.org/10.1145/1390156.1390294) — Vincent et al., 2008.
+- [Extracting and Composing Robust Features with Denoising Autoencoders (author-hosted PDF)](https://www.cs.toronto.edu/~larocheh/publications/icml-2008-denoising-autoencoders.pdf) — Vincent et al., 2008.
+
+All prose and code are independently authored. **Draft / uncalibrated**; no full-scale paper reproduction or GPU benchmark is claimed.

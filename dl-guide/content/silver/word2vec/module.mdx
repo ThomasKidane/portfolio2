@@ -1,0 +1,50 @@
+---
+id: silver-word2vec-module
+title: "Word2Vec"
+division: silver
+module: word2vec
+kind: lesson
+status: draft
+prerequisites: ["silver-adam"]
+---
+
+# Word2Vec
+
+## Historical question and bottleneck
+
+[Efficient Estimation of Word Representations in Vector Space](https://arxiv.org/abs/1301.3781) (Mikolov et al., 2013) is the primary reference. The original question motivating this module is how to learn text8 skip-gram embeddings and evaluate held-out word analogies without training on evaluation pairs. The practical bottleneck for this exercise is explicit: Analogy set must not overlap model selection; negative-sampling unigram distribution is training-only. This is a reduced teaching adaptation, not a claim that the paper used our dataset or compute budget.
+
+## Mechanism and equations
+
+`L=-log sigmoid(u_pos dot v_center)-sum log sigmoid(-u_neg dot v_center).`
+
+Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
+
+## Implementation notes
+
+Input/task: **text8**. Output: **Token IDs -> embedding vectors**. Optimize or report **analogy_accuracy** in the **maximize** direction. Analogy set must not overlap model selection; negative-sampling unigram distribution is training-only.
+
+This is a draft skeleton: reference training and task-specific tests are not implemented. The explicit stub must not be mistaken for a finished model.
+
+## Controlled experiment
+
+Compare negative sampling rates under an equal token budget. Keep split, seed, optimizer schedule and training budget fixed unless that factor is the experimental variable. Report raw quality, wall time and parameter count, not an unsupported superiority claim.
+
+## Pitfalls and checks
+
+- Analogy set must not overlap model selection; negative-sampling unigram distribution is training-only.
+- Never fit statistics on validation labels or mix held-out examples into training.
+- Check shape and finite outputs before interpreting quality; an unrelated baseline cannot satisfy the intended mechanism.
+- Draft targets and safety limits have not been GPU-calibrated. No pass threshold is advertised.
+
+## Exercise and editorial
+
+- [Implement silver-word2vec](problems/silver-word2vec/problem.yaml)
+- [Mechanism-specific editorial](problems/silver-word2vec/editorial.mdx)
+
+## Citations
+
+- [Efficient Estimation of Word Representations in Vector Space](https://arxiv.org/abs/1301.3781) — Mikolov et al., 2013.
+
+
+All prose and code are independently authored. **Draft / uncalibrated**; no full-scale paper reproduction or GPU benchmark is claimed.

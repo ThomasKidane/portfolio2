@@ -1,0 +1,50 @@
+---
+id: platinum-capstone-speedrun-module
+title: "Compute-budget speedrun capstone"
+division: platinum
+module: capstone-speedrun
+kind: lesson
+status: draft
+prerequisites: ["platinum-long-context-rope"]
+---
+
+# Compute-budget speedrun capstone
+
+## Historical question and bottleneck
+
+[MLPerf Training Benchmark](https://arxiv.org/abs/1910.01500) (Mattson et al., 2019) is the primary reference. The original question motivating this module is how to combine an explicitly chosen model optimization and evaluation task into a reproducible fixed-compute speedrun; benchmark citation is methodological background not a canonical speedrun model paper. The practical bottleneck for this exercise is explicit: One task one split and fixed compute; report ablations speed memory and quality honestly. This is a reduced teaching adaptation, not a claim that the paper used our dataset or compute budget.
+
+## Mechanism and equations
+
+`Throughput=completed_units/elapsed_seconds; report quality at the same measured compute and memory constraints.`
+
+Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
+
+## Implementation notes
+
+Input/task: **declared-capstone-task**. Output: **Documented task-specific torch module and reproducible timing harness**. Optimize or report **task_quality** in the **maximize** direction. One task one split and fixed compute; report ablations speed memory and quality honestly.
+
+This is a draft skeleton: reference training and task-specific tests are not implemented. The explicit stub must not be mistaken for a finished model.
+
+## Controlled experiment
+
+Disable each optimization separately and report quality throughput and memory deltas. Keep split, seed, optimizer schedule and training budget fixed unless that factor is the experimental variable. Report raw quality, wall time and parameter count, not an unsupported superiority claim.
+
+## Pitfalls and checks
+
+- One task one split and fixed compute; report ablations speed memory and quality honestly.
+- Never fit statistics on validation labels or mix held-out examples into training.
+- Check shape and finite outputs before interpreting quality; an unrelated baseline cannot satisfy the intended mechanism.
+- Draft targets and safety limits have not been GPU-calibrated. No pass threshold is advertised.
+
+## Exercise and editorial
+
+- [Implement platinum-capstone-speedrun](problems/platinum-capstone-speedrun/problem.yaml)
+- [Mechanism-specific editorial](problems/platinum-capstone-speedrun/editorial.mdx)
+
+## Citations
+
+- [MLPerf Training Benchmark](https://arxiv.org/abs/1910.01500) — Mattson et al., 2019.
+
+
+All prose and code are independently authored. **Draft / uncalibrated**; no full-scale paper reproduction or GPU benchmark is claimed.

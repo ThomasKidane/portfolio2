@@ -1,0 +1,48 @@
+---
+id: silver-adam-editorial
+title: "Adam and AdamW from scratch: editorial"
+status: draft
+---
+
+# Adam and AdamW from scratch: derivation and implementation notes
+
+## The mechanism
+
+implement biased moments bias correction epsilon placement and decoupled AdamW decay; match torch updates. implement biased moments bias correction epsilon placement and decoupled AdamW decay; match torch updates
+
+Read [Adam: A Method for Stochastic Optimization](https://arxiv.org/abs/1412.6980) for the original setting. This lesson and code are independently authored, not copied from that paper's implementation or another guide.
+
+## A reproducible approach
+
+1. State the model's input/output shapes and the loss before coding.
+2. Set a seed, use only the supplied training split, and keep preprocessing statistics training-only.
+3. Validate the local contract before comparing held-out metrics. A contract check is not an accuracy grade.
+4. Run the ablation with identical splits and compute budget; save your observations outside the shared site.
+
+## Reference and scope
+
+This is an explicit implementation stub. Architecture adaptation, dataset loader and reference training are not implemented. solution.py raises NotImplementedError rather than returning an unrelated baseline. Do not treat the starter or these notes as a finished reproduction.
+
+Before promotion, implement an architecture-specific objective and genuine licensed data pipeline, validate shape and numerical checks, and run reproducible calibration.
+
+## Task-specific evaluation
+
+Dataset: **optimizer-fixture**. Model contract: **Optimizer adapter over parameter tensors; wrap state in a torch module**. Metric: **update_max_error**, direction **minimize**. Match torch Adam and AdamW step by step including bias correction epsilon and weight decay.
+
+No calibrated passing threshold is available.
+
+- [Decoupled Weight Decay Regularization](https://arxiv.org/abs/1711.05101) (2017), related component reference.
+
+## Required ablation
+
+Compare coupled L2 penalty with decoupled decay using the same gradients. Keep the seed, split, training steps and optimizer fixed. Report both quality and compute cost; one run is not statistical evidence.
+
+## Failure modes
+
+- Fitting on validation labels or allowing split overlap invalidates evaluation.
+- Matching output shape alone does not establish that the intended mechanism was implemented.
+- A small teaching model is not the original full-scale experiment.
+
+## Calibration status
+
+**Draft / uncalibrated.** No GPU run, calibrated pass threshold, original-paper score or hardware-normalized budget is claimed. CPU smoke tests exercise implementation contracts only. A reference solution can be executable while the problem remains draft.

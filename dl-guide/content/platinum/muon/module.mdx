@@ -1,0 +1,50 @@
+---
+id: platinum-muon-module
+title: "Muon versus AdamW"
+division: platinum
+module: muon
+kind: lesson
+status: draft
+prerequisites: ["platinum-discrete-diffusion-lm"]
+---
+
+# Muon versus AdamW
+
+## Historical question and bottleneck
+
+[Muon: An optimizer for hidden layers in neural networks](https://kellerjordan.github.io/posts/muon/) (Jordan, 2024) is the primary reference. The original question motivating this module is how to orthogonalize matrix momentum with Newton-Schulz iterations and compare with AdamW under a fixed token budget. The practical bottleneck for this exercise is explicit: Handle rectangular matrices and nonmatrix parameters explicitly; Newton-Schulz finite outputs. This is a reduced teaching adaptation, not a claim that the paper used our dataset or compute budget.
+
+## Mechanism and equations
+
+`momentum=beta*momentum+gradient; update approximately orthogonalizes matrix momentum by Newton-Schulz iterations.`
+
+Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
+
+## Implementation notes
+
+Input/task: **tinyshakespeare**. Output: **[N,T] tokens -> [N,T,V] logits with matrix optimizer**. Optimize or report **bpc** in the **minimize** direction. Handle rectangular matrices and nonmatrix parameters explicitly; Newton-Schulz finite outputs.
+
+This is a draft skeleton: reference training and task-specific tests are not implemented. The explicit stub must not be mistaken for a finished model.
+
+## Controlled experiment
+
+Disable orthogonalization while retaining momentum and step schedule. Keep split, seed, optimizer schedule and training budget fixed unless that factor is the experimental variable. Report raw quality, wall time and parameter count, not an unsupported superiority claim.
+
+## Pitfalls and checks
+
+- Handle rectangular matrices and nonmatrix parameters explicitly; Newton-Schulz finite outputs.
+- Never fit statistics on validation labels or mix held-out examples into training.
+- Check shape and finite outputs before interpreting quality; an unrelated baseline cannot satisfy the intended mechanism.
+- Draft targets and safety limits have not been GPU-calibrated. No pass threshold is advertised.
+
+## Exercise and editorial
+
+- [Implement platinum-muon](problems/platinum-muon/problem.yaml)
+- [Mechanism-specific editorial](problems/platinum-muon/editorial.mdx)
+
+## Citations
+
+- [Muon: An optimizer for hidden layers in neural networks](https://kellerjordan.github.io/posts/muon/) — Jordan, 2024.
+
+
+All prose and code are independently authored. **Draft / uncalibrated**; no full-scale paper reproduction or GPU benchmark is claimed.

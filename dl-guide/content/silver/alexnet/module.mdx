@@ -1,0 +1,50 @@
+---
+id: silver-alexnet-module
+title: "AlexNet"
+division: silver
+module: alexnet
+kind: lesson
+status: draft
+prerequisites: ["bronze-lenet5"]
+---
+
+# AlexNet
+
+## Historical question and bottleneck
+
+[ImageNet Classification with Deep Convolutional Neural Networks](https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks) (Krizhevsky et al., 2012) is the primary reference. The original question motivating this module is how to adapt convolution ReLU pooling and dropout to CIFAR-10; aspirational accuracy 0.85 within 300 seconds. The practical bottleneck for this exercise is explicit: CIFAR adaptation not ImageNet reproduction. This is a reduced teaching adaptation, not a claim that the paper used our dataset or compute budget.
+
+## Mechanism and equations
+
+`h_next=ReLU(conv(h,W)+b); dropout(h)=Bernoulli(keep)*h/keep during training.`
+
+Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
+
+## Implementation notes
+
+Input/task: **cifar10**. Output: **[N,3,32,32] -> [N,10] logits**. Optimize or report **accuracy** in the **maximize** direction. CIFAR adaptation not ImageNet reproduction.
+
+This is a draft skeleton: reference training and task-specific tests are not implemented. The explicit stub must not be mistaken for a finished model.
+
+## Controlled experiment
+
+Remove dropout while preserving the training schedule. Keep split, seed, optimizer schedule and training budget fixed unless that factor is the experimental variable. Report raw quality, wall time and parameter count, not an unsupported superiority claim.
+
+## Pitfalls and checks
+
+- CIFAR adaptation not ImageNet reproduction.
+- Never fit statistics on validation labels or mix held-out examples into training.
+- Check shape and finite outputs before interpreting quality; an unrelated baseline cannot satisfy the intended mechanism.
+- Draft targets and safety limits have not been GPU-calibrated. No pass threshold is advertised.
+
+## Exercise and editorial
+
+- [Implement silver-alexnet](problems/silver-alexnet/problem.yaml)
+- [Mechanism-specific editorial](problems/silver-alexnet/editorial.mdx)
+
+## Citations
+
+- [ImageNet Classification with Deep Convolutional Neural Networks](https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks) — Krizhevsky et al., 2012.
+
+
+All prose and code are independently authored. **Draft / uncalibrated**; no full-scale paper reproduction or GPU benchmark is claimed.

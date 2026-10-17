@@ -1,0 +1,50 @@
+---
+id: bronze-perceptron-module
+title: "Perceptron"
+division: bronze
+module: perceptron
+kind: lesson
+status: draft
+prerequisites: []
+---
+
+# Perceptron
+
+## Historical question and bottleneck
+
+[The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain](https://doi.org/10.1037/h0042519) (Rosenblatt, 1958) is the primary reference. The original question motivating this module is how to fit separable blobs with the online mistake-driven linear update. The practical bottleneck for this exercise is explicit: Online mistake updates; no autograd required. This is a reduced teaching adaptation, not a claim that the paper used our dataset or compute budget.
+
+## Mechanism and equations
+
+`w_true := w_true + eta*x; w_pred := w_pred - eta*x on mistakes only.`
+
+Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
+
+## Implementation notes
+
+Input/task: **blobs**. Output: **[N,D] -> [N,C] logits**. Optimize or report **accuracy** in the **maximize** direction. Online mistake updates; no autograd required.
+
+An executable bounded reference and mechanism tests are available; work in the starter before opening the editorial.
+
+## Controlled experiment
+
+Compare raw and averaged iterates with identical example order. Keep split, seed, optimizer schedule and training budget fixed unless that factor is the experimental variable. Report raw quality, wall time and parameter count, not an unsupported superiority claim.
+
+## Pitfalls and checks
+
+- Online mistake updates; no autograd required.
+- Never fit statistics on validation labels or mix held-out examples into training.
+- Check shape and finite outputs before interpreting quality; an unrelated baseline cannot satisfy the intended mechanism.
+- Draft targets and safety limits have not been GPU-calibrated. No pass threshold is advertised.
+
+## Exercise and editorial
+
+- [Implement bronze-perceptron](problems/bronze-perceptron/problem.yaml)
+- [Mechanism-specific editorial](problems/bronze-perceptron/editorial.mdx)
+
+## Citations
+
+- [The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain](https://doi.org/10.1037/h0042519) — Rosenblatt, 1958.
+
+
+All prose and code are independently authored. **Draft / uncalibrated**; no full-scale paper reproduction or GPU benchmark is claimed.

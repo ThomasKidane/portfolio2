@@ -1,0 +1,50 @@
+---
+id: platinum-mup-module
+title: "Maximal-update parameterization"
+division: platinum
+module: mup
+kind: lesson
+status: draft
+prerequisites: ["platinum-muon"]
+---
+
+# Maximal-update parameterization
+
+## Historical question and bottleneck
+
+[Tensor Programs V: Tuning Large Neural Networks via Zero-Shot Hyperparameter Transfer](https://arxiv.org/abs/2203.03466) (Yang et al., 2022) is the primary reference. The original question motivating this module is how to transfer learning rates from narrow to wide models with width-dependent maximal-update scaling. The practical bottleneck for this exercise is explicit: Document width-dependent input hidden and output parameterization. This is a reduced teaching adaptation, not a claim that the paper used our dataset or compute budget.
+
+## Mechanism and equations
+
+`Choose width-dependent initialization, learning-rate multipliers and output scaling so feature updates remain order-one as width grows.`
+
+Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
+
+## Implementation notes
+
+Input/task: **synthetic-classification**. Output: **[N,D] -> class logits across widths**. Optimize or report **width_transfer_gap** in the **minimize** direction. Document width-dependent input hidden and output parameterization.
+
+This is a draft skeleton: reference training and task-specific tests are not implemented. The explicit stub must not be mistaken for a finished model.
+
+## Controlled experiment
+
+Compare standard parameterization and maximal-update scaling across widths. Keep split, seed, optimizer schedule and training budget fixed unless that factor is the experimental variable. Report raw quality, wall time and parameter count, not an unsupported superiority claim.
+
+## Pitfalls and checks
+
+- Document width-dependent input hidden and output parameterization.
+- Never fit statistics on validation labels or mix held-out examples into training.
+- Check shape and finite outputs before interpreting quality; an unrelated baseline cannot satisfy the intended mechanism.
+- Draft targets and safety limits have not been GPU-calibrated. No pass threshold is advertised.
+
+## Exercise and editorial
+
+- [Implement platinum-mup](problems/platinum-mup/problem.yaml)
+- [Mechanism-specific editorial](problems/platinum-mup/editorial.mdx)
+
+## Citations
+
+- [Tensor Programs V: Tuning Large Neural Networks via Zero-Shot Hyperparameter Transfer](https://arxiv.org/abs/2203.03466) — Yang et al., 2022.
+
+
+All prose and code are independently authored. **Draft / uncalibrated**; no full-scale paper reproduction or GPU benchmark is claimed.

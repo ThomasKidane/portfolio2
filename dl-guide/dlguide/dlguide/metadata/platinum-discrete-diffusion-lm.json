@@ -1,0 +1,112 @@
+{
+  "id": "platinum-discrete-diffusion-lm",
+  "title": "Absorbing discrete diffusion language model",
+  "division": "platinum",
+  "module": "discrete-diffusion-lm",
+  "year": 2021,
+  "paper": {
+    "title": "Structured Denoising Diffusion Models in Discrete State-Spaces",
+    "url": "https://arxiv.org/abs/2107.03006",
+    "year": 2021,
+    "authors": "Austin et al.",
+    "related": [],
+    "year_note": "Original/preprint year except GCN (2017 venue, 2016 preprint) and speculative decoding (2023 venue, 2022 preprint).",
+    "source_type": "research-paper"
+  },
+  "prerequisites": [
+    "platinum-classifier-free-guidance"
+  ],
+  "difficulty": "Very Hard",
+  "tags": [
+    "platinum",
+    "paper-implementation",
+    "neural-networks"
+  ],
+  "kind": "implement",
+  "previous_model": "platinum-classifier-free-guidance",
+  "statement": "Implement Absorbing discrete diffusion language model: implement absorbing-mask corruption and reverse token prediction on text8 or TinyShakespeare. Read the linked paper and isolate the named mechanism. Write a self-contained solve(data), fit using training tensors only, and return Submission(model=model). Keep validation labels out of fitting and preprocessing. This is an educational reduced-scale adaptation, not a claim to reproduce original paper results. Use tinyshakespeare; required output: Corrupted tokens time -> clean-token logits. Evaluate token_nll (minimize). Absorbing transition rows sum to one; distinguish mask and padding. Required ablation: Compare uniform and absorbing transition kernels at equal denoiser calls. Curriculum draft: reference, task-specific objective/evaluation adaptation and thresholds remain unimplemented; a named dataset may have a loader but this does not make this model executable. The provided solution raises NotImplementedError.",
+  "dataset": {
+    "name": "tinyshakespeare",
+    "seed": 1729,
+    "train_size": 512,
+    "val_size": 128,
+    "test_size": 128,
+    "description": "Absorbing transition rows sum to one; distinguish mask and padding",
+    "split_policy": "Disjoint train/validation/test examples; fit preprocessing using training data only.",
+    "loader_status": "requires-task-specific-implementation"
+  },
+  "budget": {
+    "wall_seconds": 600,
+    "parameters": 10000000,
+    "max_trainable_fraction": null,
+    "memory_mb": 1024,
+    "require_gpu": false,
+    "training_steps": null,
+    "calibrated": false,
+    "note": "Provisional safety caps, not empirically calibrated GPU budgets."
+  },
+  "metric": {
+    "name": "token_nll",
+    "direction": "minimize",
+    "threshold": null,
+    "calibrated": false,
+    "pass_target": null,
+    "par_target": null,
+    "stretch_target": null,
+    "targets": {
+      "pass": null,
+      "par": null,
+      "stretch": null
+    },
+    "target_status": "provisional draft targets only; threshold remains null until calibration"
+  },
+  "interface": {
+    "entrypoint": "solve(data)",
+    "returns": "dlguide.Submission",
+    "data": "dict with train and val torch.utils.data.TensorDataset entries",
+    "model": "Corrupted tokens time -> clean-token logits",
+    "objective": "Absorbing transition rows sum to one; distinguish mask and padding",
+    "predict_fn": "Optional callable(model, inputs); normally omitted.",
+    "self_contained": true
+  },
+  "checks": [
+    "Return a Submission containing a torch module.",
+    "Do not read validation labels during fitting.",
+    "No NaN or infinite outputs; obey parameter cap.",
+    "Absorbing transition rows sum to one; distinguish mask and padding"
+  ],
+  "ablation": {
+    "change": "Compare uniform and absorbing transition kernels at equal denoiser calls",
+    "control": "Same split, seed, training steps and optimizer.",
+    "report": "Report metric and parameter/time deltas honestly; do not infer superiority from one seed."
+  },
+  "hints": [
+    "implement absorbing-mask corruption and reverse token prediction on text8 or TinyShakespeare",
+    "Write down every intermediate tensor shape before implementing the block.",
+    "Start with the smallest deterministic fixture and compare with a trusted primitive."
+  ],
+  "editorial": "content/platinum/discrete-diffusion-lm/problems/platinum-discrete-diffusion-lm/editorial.mdx",
+  "estimated_minutes": 210,
+  "status": "draft",
+  "implementation": "stub",
+  "calibration": {
+    "state": "uncalibrated",
+    "hardware": null,
+    "seeds": [],
+    "runs": [],
+    "note": "No GPU calibration performed; no passing threshold advertised."
+  },
+  "starter": "content/platinum/discrete-diffusion-lm/problems/platinum-discrete-diffusion-lm/starter.py",
+  "reference": "content/platinum/discrete-diffusion-lm/problems/platinum-discrete-diffusion-lm/solution.py",
+  "tests": "content/platinum/discrete-diffusion-lm/problems/platinum-discrete-diffusion-lm/tests.py",
+  "config": {
+    "org": "ThomasKidane",
+    "repo": "portfolio2",
+    "branch": "main",
+    "notebook_root": "dl-guide/notebooks",
+    "runtime_path": "dl-guide/dlguide",
+    "runtime_ref": "main",
+    "site_url": "https://www.thomaskidane.com/dl-guide/"
+  },
+  "check_module": "platinum-discrete-diffusion-lm.py"
+}

@@ -1,0 +1,50 @@
+---
+id: platinum-long-context-rope-module
+title: "Long-context RoPE and YaRN"
+division: platinum
+module: long-context-rope
+kind: lesson
+status: draft
+prerequisites: ["platinum-sparse-autoencoders"]
+---
+
+# Long-context RoPE and YaRN
+
+## Historical question and bottleneck
+
+[YaRN: Efficient Context Window Extension of Large Language Models](https://arxiv.org/abs/2309.00071) (Peng et al., 2023) is the primary reference. The original question motivating this module is how to compare unscaled NTK-aware and YaRN rotary frequencies on long-context retrieval and short-context retention. The practical bottleneck for this exercise is explicit: Test both extrapolation and original context retention; log exact rotary frequencies. This is a reduced teaching adaptation, not a claim that the paper used our dataset or compute budget.
+
+## Mechanism and equations
+
+`Rotate each feature pair by position*frequency; compare original, NTK-scaled and YaRN-adjusted frequency schedules.`
+
+Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
+
+## Implementation notes
+
+Input/task: **generated-long-retrieval**. Output: **Long token sequence -> answer logits**. Optimize or report **retrieval_accuracy** in the **maximize** direction. Test both extrapolation and original context retention; log exact rotary frequencies.
+
+This is a draft skeleton: reference training and task-specific tests are not implemented. The explicit stub must not be mistaken for a finished model.
+
+## Controlled experiment
+
+Evaluate position interpolation without the YaRN correction on the same lengths. Keep split, seed, optimizer schedule and training budget fixed unless that factor is the experimental variable. Report raw quality, wall time and parameter count, not an unsupported superiority claim.
+
+## Pitfalls and checks
+
+- Test both extrapolation and original context retention; log exact rotary frequencies.
+- Never fit statistics on validation labels or mix held-out examples into training.
+- Check shape and finite outputs before interpreting quality; an unrelated baseline cannot satisfy the intended mechanism.
+- Draft targets and safety limits have not been GPU-calibrated. No pass threshold is advertised.
+
+## Exercise and editorial
+
+- [Implement platinum-long-context-rope](problems/platinum-long-context-rope/problem.yaml)
+- [Mechanism-specific editorial](problems/platinum-long-context-rope/editorial.mdx)
+
+## Citations
+
+- [YaRN: Efficient Context Window Extension of Large Language Models](https://arxiv.org/abs/2309.00071) — Peng et al., 2023.
+
+
+All prose and code are independently authored. **Draft / uncalibrated**; no full-scale paper reproduction or GPU benchmark is claimed.

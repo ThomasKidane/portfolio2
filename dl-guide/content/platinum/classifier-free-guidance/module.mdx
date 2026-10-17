@@ -1,0 +1,50 @@
+---
+id: platinum-classifier-free-guidance-module
+title: "Classifier-free guidance"
+division: platinum
+module: classifier-free-guidance
+kind: lesson
+status: draft
+prerequisites: ["platinum-flow-matching"]
+---
+
+# Classifier-free guidance
+
+## Historical question and bottleneck
+
+[Classifier-Free Diffusion Guidance](https://arxiv.org/abs/2207.12598) (Ho and Salimans, 2022) is the primary reference. The original question motivating this module is how to train condition-dropout denoisers and combine conditional and unconditional predictions at sampling. The practical bottleneck for this exercise is explicit: Conditional dropout and unconditional branch use identical architecture. This is a reduced teaching adaptation, not a claim that the paper used our dataset or compute budget.
+
+## Mechanism and equations
+
+`epsilon_guided=epsilon_uncond+s*(epsilon_cond-epsilon_uncond).`
+
+Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
+
+## Implementation notes
+
+Input/task: **mnist**. Output: **Noisy image time optional class -> noise prediction**. Optimize or report **conditional_generation_quality** in the **maximize** direction. Conditional dropout and unconditional branch use identical architecture.
+
+This is a draft skeleton: reference training and task-specific tests are not implemented. The explicit stub must not be mistaken for a finished model.
+
+## Controlled experiment
+
+Sweep guidance strength including zero and one using identical noise seeds. Keep split, seed, optimizer schedule and training budget fixed unless that factor is the experimental variable. Report raw quality, wall time and parameter count, not an unsupported superiority claim.
+
+## Pitfalls and checks
+
+- Conditional dropout and unconditional branch use identical architecture.
+- Never fit statistics on validation labels or mix held-out examples into training.
+- Check shape and finite outputs before interpreting quality; an unrelated baseline cannot satisfy the intended mechanism.
+- Draft targets and safety limits have not been GPU-calibrated. No pass threshold is advertised.
+
+## Exercise and editorial
+
+- [Implement platinum-classifier-free-guidance](problems/platinum-classifier-free-guidance/problem.yaml)
+- [Mechanism-specific editorial](problems/platinum-classifier-free-guidance/editorial.mdx)
+
+## Citations
+
+- [Classifier-Free Diffusion Guidance](https://arxiv.org/abs/2207.12598) — Ho and Salimans, 2022.
+
+
+All prose and code are independently authored. **Draft / uncalibrated**; no full-scale paper reproduction or GPU benchmark is claimed.

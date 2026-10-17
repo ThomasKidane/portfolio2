@@ -1,0 +1,50 @@
+---
+id: platinum-sparse-autoencoders-module
+title: "Sparse autoencoders"
+division: platinum
+module: sparse-autoencoders
+kind: lesson
+status: draft
+prerequisites: ["platinum-knowledge-distillation"]
+---
+
+# Sparse autoencoders
+
+## Historical question and bottleneck
+
+[Towards Monosemanticity: Decomposing Language Models With Dictionary Learning](https://transformer-circuits.pub/2023/monosemantic-features/index.html) (Bricken et al., 2023) is the primary reference. The original question motivating this module is how to fit a sparse dictionary to frozen activations and report reconstruction versus L0 with dead-feature counts. The practical bottleneck for this exercise is explicit: Report L0 reconstruction error dead features and decoder normalization. This is a reduced teaching adaptation, not a claim that the paper used our dataset or compute budget.
+
+## Mechanism and equations
+
+`z=ReLU(W_enc*(x-b_dec)+b_enc); L=norm(W_dec*z+b_dec-x)^2+lambda*norm(z,1).`
+
+Derive each tensor's dimensions before implementing the equation. State the normalization axis, numerical stabilizer and train/evaluation behavior. Distinguish a mathematical mechanism from the full original training system.
+
+## Implementation notes
+
+Input/task: **frozen-activation-fixture**. Output: **Frozen activations -> reconstruction and sparse codes**. Optimize or report **reconstruction_mse** in the **minimize** direction. Report L0 reconstruction error dead features and decoder normalization.
+
+This is a draft skeleton: reference training and task-specific tests are not implemented. The explicit stub must not be mistaken for a finished model.
+
+## Controlled experiment
+
+Sweep sparsity penalty at fixed dictionary width and activation sample count. Keep split, seed, optimizer schedule and training budget fixed unless that factor is the experimental variable. Report raw quality, wall time and parameter count, not an unsupported superiority claim.
+
+## Pitfalls and checks
+
+- Report L0 reconstruction error dead features and decoder normalization.
+- Never fit statistics on validation labels or mix held-out examples into training.
+- Check shape and finite outputs before interpreting quality; an unrelated baseline cannot satisfy the intended mechanism.
+- Draft targets and safety limits have not been GPU-calibrated. No pass threshold is advertised.
+
+## Exercise and editorial
+
+- [Implement platinum-sparse-autoencoders](problems/platinum-sparse-autoencoders/problem.yaml)
+- [Mechanism-specific editorial](problems/platinum-sparse-autoencoders/editorial.mdx)
+
+## Citations
+
+- [Towards Monosemanticity: Decomposing Language Models With Dictionary Learning](https://transformer-circuits.pub/2023/monosemantic-features/index.html) — Bricken et al., 2023.
+
+
+All prose and code are independently authored. **Draft / uncalibrated**; no full-scale paper reproduction or GPU benchmark is claimed.
